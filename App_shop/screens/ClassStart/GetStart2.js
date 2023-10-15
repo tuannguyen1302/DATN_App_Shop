@@ -7,6 +7,14 @@ const GetStart2 = () => {
       <View>
         <Image source={require("../../assets/anh1.jpg")} style={styles.logo} />
       </View>
+
+
+      <View>
+        <Image source={require("../../assets/anh1.jpg")} style={styles.logo} />
+      </View>
+      <View>
+        <Image source={require("../../assets/anh1.jpg")} style={styles.logo} />
+      </View>
     </View>
   );
 };
