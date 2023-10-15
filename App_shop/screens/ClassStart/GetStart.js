@@ -5,7 +5,7 @@ import * as Progress from "react-native-progress";
 const WelcomeScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate("GetStart2");
+      navigation.replace("BottomTab", { screen: "MyProduct" });
     }, 3000);
   }, []);
 
