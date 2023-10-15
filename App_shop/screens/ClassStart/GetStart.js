@@ -5,7 +5,7 @@ import * as Progress from "react-native-progress";
 const WelcomeScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace("BottomTab", { screen: "MyProduct" });
+      navigation.replace("GetStart2");
     }, 3000);
   }, []);
 
@@ -23,7 +23,7 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.text}> Welcome </Text>
         </View>
       </View>
-      <Image source={require("../../assets/logo.png")} style={styles.logo} />
+      <Image source={require("../../assets/logo1.png")} style={styles.logo} />
       <Progress.CircleSnail
         size={50}
         thickness={4}

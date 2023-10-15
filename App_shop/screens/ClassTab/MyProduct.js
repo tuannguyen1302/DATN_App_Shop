@@ -24,7 +24,7 @@ const MyProduct = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       {/* Logout, Shop */}
       <View style={styles.header}>
-        <Pressable>
+        <Pressable onPress={() => navigation.replace("LoginWithPassword")}>
           <AntDesign name="logout" size={35} />
         </Pressable>
         <View style={styles.headerShop}>
