@@ -1,2 +1,0 @@
-//main
-// okok kok ok 
