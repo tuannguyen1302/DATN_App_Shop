@@ -23,7 +23,7 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.text}> Welcome </Text>
         </View>
       </View>
-      <Image source={require("../../assets/logo.png")} style={styles.logo} />
+      <Image source={require("../../assets/logo1.png")} style={styles.logo} />
       <Progress.CircleSnail
         size={50}
         thickness={4}
