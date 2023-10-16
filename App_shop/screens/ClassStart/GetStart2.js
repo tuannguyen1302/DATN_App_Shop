@@ -12,15 +12,14 @@ const GetStart2 = () => {
       <View style={styles.view1}>
         <Image source={require("../../assets/anh1.jpg")} style={styles.anh1} />
       </View>
-      <View style={styles.view2}>
-        <Image source={require("../../assets/mhc2.jpg")} style={styles.mhc2} />
+      <View>
+        <Image source={require("../../assets/mhc2.jpg")} style={styles.anh2} />
       </View>
-
       <View style={styles.view3}>
         <Text
           style={{
             fontSize: 40,
-            color: "black ",
+            color: "black",
             fontWeight: "bold",
             textAlign: "center",
           }}
@@ -28,7 +27,6 @@ const GetStart2 = () => {
           Post what you want to sell
         </Text>
       </View>
-
       <View>
         <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
           <Text style={styles.buttonText}>Next</Text>
@@ -51,10 +49,15 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginBottom: 30,
   },
-
-  mhc2: {
-    width: 350,
-    height: 350,
+  anh1: {
+    width: 70,
+    height: 70,
+    resizeMode: "contain",
+  },
+  anh2: {
+    width: 320,
+    height: 320,
+    resizeMode: "contain",
     justifyContent: "center",
     alignSelf: "center",
     marginBottom: 50,

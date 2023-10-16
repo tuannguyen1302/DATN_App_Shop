@@ -1,26 +1,28 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-const Login1 = () => {
-  const navigation = useNavigation();
+const Login1 = ({ navigation }) => {
   const loginFacebook = () => {
     alert("facebook");
   };
+
   const loginGmail = () => {
     alert("gmail");
   };
+
   const Signup = () => {
     navigation.navigate("SignUp");
   };
+
   const LoginWithPassword = () => {
     navigation.navigate("LoginWithPassword");
   };
 
   return (
     <View style={styles.container}>
+      {/* Logo */}
       <View style={{}}>
         <Image
           source={require("../../assets/logo12.png")}
@@ -31,57 +33,52 @@ const Login1 = () => {
         style={{
           color: "#000000",
           fontSize: 40,
+          fontWeight: "500",
           textAlign: "center",
-          marginBottom: 47,
+          marginBottom: "5%",
         }}
       >
-        Let's You In{" "}
+        Let's You In
       </Text>
-
+      {/* Button */}
       <TouchableOpacity style={styles.button} onPress={loginFacebook}>
         <Entypo name="facebook-with-circle" size={40} color={"#2421EB"} />
-
         <Text style={styles.buttonText}>Continue with Facebook </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={loginGmail}>
         <AntDesign name="googleplus" size={40} color={"#FF0404"} />
         <Text style={styles.buttonText}>Continue with Google </Text>
       </TouchableOpacity>
-      <View style={{ width: "100%", height: 291 }}>
+      {/* Line */}
+      <View>
         <View
           style={{
-            backgroundColor: "#FFFFFF",
-            width: "100%",
-            height: 50,
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginHorizontal: "5%",
             flexDirection: "row",
           }}
         >
           <View
             style={{
-              borderWidth: 0.2,
+              borderWidth: 0.5,
               width: 150,
               height: 1,
-              marginLeft: 36,
-              marginTop: 26,
               color: "#D9D9D9",
             }}
-          ></View>
+          />
           <Text
             style={{
-              color: "#585555",
               fontSize: 22,
-              alignSelf: "center",
-              margin: 10,
             }}
           >
             Or
           </Text>
           <View
             style={{
-              borderWidth: 0.2,
+              borderWidth: 0.5,
               width: 150,
               height: 1,
-              marginTop: 26,
               color: "#D9D9D9",
             }}
           ></View>
@@ -94,36 +91,24 @@ const Login1 = () => {
         </TouchableOpacity>
         <View
           style={{
-            width: "100%",
-            height: 68,
+            marginTop: "25%",
             flexDirection: "row",
             justifyContent: "center",
           }}
         >
-          <Text style={{ fontSize: 18, color: "#7B7070", alignSelf: "center" }}>
-            Don't have an account ?{" "}
+          <Text style={{ fontSize: 18, color: "#7B7070" }}>
+            Don't have an account?{" "}
           </Text>
-          <View style={{ flexDirection: "column", justifyContent: "center" }}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: "#000000",
-                alignSelf: "center",
-                fontWeight: "900",
-              }}
-              onPress={Signup}
-            >
-              Sign Up{" "}
-            </Text>
-            <View
-              style={{
-                borderWidth: 0.2,
-                width: 70,
-                height: 1,
-                color: "#D9D9D9",
-              }}
-            ></View>
-          </View>
+          <Text
+            style={{
+              fontSize: 18,
+              textDecorationLine: "underline",
+              fontWeight: "bold",
+            }}
+            onPress={Signup}
+          >
+            Sign Up
+          </Text>
         </View>
       </View>
     </View>
@@ -134,15 +119,14 @@ export default Login1;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFFFFF",
     flex: 1,
+    backgroundColor: "#FFFFFF",
   },
   logo: {
-    width: 400,
-    height: 280,
+    width: 300,
+    height: 300,
+    resizeMode: "contain",
     alignSelf: "center",
-    marginTop: 40,
-    marginBottom: 10,
   },
   button: {
     flexDirection: "row",
@@ -154,7 +138,7 @@ const styles = StyleSheet.create({
     height: 64,
     width: 365,
     marginBottom: 37,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonText: {
     marginLeft: 10,
@@ -170,11 +154,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     height: 65,
     width: 354,
-    marginTop: 10,
-    marginBottom: 30,
+    marginTop: "7%",
   },
   buttonText1: {
-    color: "#ffffff",
+    color: "white",
+    fontWeight: "500",
     textAlign: "center",
     fontSize: 15,
   },

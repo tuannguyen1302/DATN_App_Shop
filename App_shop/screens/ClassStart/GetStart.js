@@ -45,8 +45,12 @@ const styles = StyleSheet.create({
   logo: {
     width: 400,
     height: 400,
-
+    resizeMode: "contain",
     marginBottom: 100,
   },
-  text: { color: "#ffff", fontSize: 32, fontWeight: "bold" },
+  text: {
+    color: "#ffff",
+    fontSize: 32,
+    fontWeight: "bold",
+  },
 });

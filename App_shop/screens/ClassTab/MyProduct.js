@@ -14,6 +14,7 @@ import ProductScreen from "./ScreenTab/ProductScreen";
 
 const MyProduct = ({ navigation }) => {
   const [account, setAccount] = useState({
+    id: 1,
     name: "Trần Thị Tuấn",
     avatar:
       "https://i.ytimg.com/vi/O8e-2JTo7wk/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCopE8gdgNPrSPgRLjpE8arOASMeQ",
@@ -39,7 +40,7 @@ const MyProduct = ({ navigation }) => {
         </View>
       </View>
       {/* Tab Product */}
-      <ProductScreen />
+      <ProductScreen navigation={navigation} id={account.id} />
       {/* Button Add Product */}
       <Pressable style={styles.btnAdd}>
         <Feather name="plus-square" size={20} color={"white"} />

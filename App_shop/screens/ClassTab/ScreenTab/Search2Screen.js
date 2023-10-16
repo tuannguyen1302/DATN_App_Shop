@@ -4,12 +4,15 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import React, { useState } from "react";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
+import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const listTab = [
   {
@@ -26,8 +29,8 @@ const listTab = [
   },
 ];
 
-const ProductScreen = (props) => {
-  const { id, navigation } = props;
+const Search2Screen = ({ navigation }) => {
+  const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
   const [array, setArray] = useState([
     {
@@ -67,8 +70,39 @@ const ProductScreen = (props) => {
       product_ratingAverage: 4,
     },
   ]);
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      {/* Search, back */}
+      <View style={styles.header}>
+        <View style={styles.headerSearch}>
+          <Pressable>
+            <Ionicons name="ios-search" size={24} color="black" />
+          </Pressable>
+          <TextInput
+            style={styles.txtInput}
+            defaultValue={search}
+            placeholder="Nhập từ khóa tìm kiếm"
+            keyboardType="default"
+            onChangeText={(content) => setSearch(content)}
+          />
+          {search.length ? (
+            <TouchableOpacity
+              style={{ marginRight: "3%" }}
+              onPress={() => setSearch("")}
+            >
+              <Feather name="x-circle" size={24} color="black" />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        <Pressable
+          onPress={() =>
+            navigation.replace("BottomTab", { screen: "MyProduct" })
+          }
+        >
+          <Text style={styles.txtCancel}>Hủy</Text>
+        </Pressable>
+      </View>
       {/* Tab */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -87,18 +121,6 @@ const ProductScreen = (props) => {
             </Pressable>
           ))}
         </ScrollView>
-      </View>
-      {/* Serach */}
-      <View style={styles.filter}>
-        <View style={styles.iconView}>
-          <Pressable style={{ flexDirection: "row", alignItems: "center" }}>
-            <AntDesign name="bars" size={28} />
-            <Text style={{ left: "10%" }}>Sắp xếp</Text>
-          </Pressable>
-          <Pressable onPress={() => navigation.navigate("SearchScreen")}>
-            <AntDesign name="search1" size={28} />
-          </Pressable>
-        </View>
       </View>
       {/* List Product */}
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -146,21 +168,45 @@ const ProductScreen = (props) => {
           />
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default ProductScreen;
+export default Search2Screen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F2F2F2",
+  },
+  header: {
+    marginTop: "2%",
+    marginHorizontal: "5%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  headerSearch: {
+    flex: 1,
+    height: 50,
+    borderRadius: 10,
+    paddingLeft: "3%",
+    marginRight: "5%",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#D9D9D9",
+  },
+  txtInput: {
+    flex: 1,
+    marginHorizontal: "2%",
+  },
+  txtCancel: {
+    color: "red",
+    fontSize: 20,
+    fontWeight: "500",
   },
   listItem: {
     width: 120,
     height: 40,
-    marginTop: "1%",
+    marginTop: "3%",
     alignItems: "center",
     marginHorizontal: 5,
     backgroundColor: "white",

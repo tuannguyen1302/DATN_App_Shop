@@ -82,23 +82,22 @@ const SignUp = () => {
       <View>
         <Text
           style={{
-            fontSize: 48,
+            fontSize: 45,
             fontWeight: "bold",
             marginTop: 60,
             textAlign: "center",
           }}
         >
-          {" "}
-          Create your Account{" "}
+          Create your Account
         </Text>
       </View>
       <View style={styles.formlogin}>
         <View style={styles.nhapemail}>
-          <Fontisto name="email" size={30} color={"#999999"} />
+          <Fontisto name="email" size={25} color={"#999999"} />
           <TextInput
             style={{
               marginLeft: 10,
-              color: "#000000",
+              color: "black",
               fontSize: 20,
               width: 290,
             }}
@@ -110,69 +109,70 @@ const SignUp = () => {
         </View>
 
         <View style={styles.nhappass}>
-          <Entypo name="lock" size={30} color={"#999999"} />
-          <TextInput
-            style={{
-              marginLeft: 10,
-              color: "#000000",
-              fontSize: 20,
-              width: 250,
-            }}
-            defaultValue={password}
-            secureTextEntry={getpassworsvisible ? false : true}
-            placeholder="Nhập Password"
-            textContentType="password"
-            onChangeText={(content) => setpassword(content)}
-          />
-          <TouchableOpacity
-            style={{ width: 40, height: 40, marginLeft: 3 }}
-            onPress={() => setgetpassworsvisible(!getpassworsvisible)}
-          >
-            {getpassworsvisible ? (
-              <Entypo name="eye" size={35} color={"#000000"} />
-            ) : (
-              <Feather name="eye-off" size={30} color={"#000000"} />
-            )}
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", marginHorizontal: "5%" }}>
+            <Entypo name="lock" size={25} color={"#999999"} />
+            <TextInput
+              style={{
+                marginLeft: 10,
+                color: "black",
+                fontSize: 18,
+                flex: 1,
+              }}
+              defaultValue={password}
+              secureTextEntry={getpassworsvisible ? false : true}
+              placeholder="Nhập Password"
+              textContentType="password"
+              onChangeText={(content) => setpassword(content)}
+            />
+            <TouchableOpacity
+              style={{ marginLeft: 3, alignSelf: "center" }}
+              onPress={() => setgetpassworsvisible(!getpassworsvisible)}
+            >
+              {getpassworsvisible ? (
+                <Entypo name="eye" size={25} color={"black"} />
+              ) : (
+                <Feather name="eye-off" size={25} color={"black"} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.nhappass}>
-          <Entypo name="lock" size={30} color={"#999999"} />
-          <TextInput
-            style={{
-              marginLeft: 10,
-              color: "#000000",
-              fontSize: 20,
-              width: 250,
-            }}
-            defaultValue={ComFirmpassword}
-            secureTextEntry={getpassworsvisible1 ? false : true}
-            placeholder="ComFirm Password"
-            textContentType="password"
-            onChangeText={(content) => setComFirmpassword(content)}
-          />
-          <TouchableOpacity
-            style={{ width: 40, height: 40, marginLeft: 3 }}
-            onPress={() => setgetpassworsvisible1(!getpassworsvisible1)}
-          >
-            {getpassworsvisible1 ? (
-              <Entypo name="eye" size={35} color={"#000000"} />
-            ) : (
-              <Feather name="eye-off" size={30} color={"#000000"} />
-            )}
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", marginHorizontal: "5%" }}>
+            <Entypo name="lock" size={25} color={"#999999"} />
+            <TextInput
+              style={{
+                marginLeft: 10,
+                color: "black",
+                fontSize: 18,
+                flex: 1,
+              }}
+              defaultValue={ComFirmpassword}
+              secureTextEntry={getpassworsvisible1 ? false : true}
+              placeholder="ComFirm Password"
+              textContentType="password"
+              onChangeText={(content) => setComFirmpassword(content)}
+            />
+            <TouchableOpacity
+              style={{ marginLeft: 3, alignSelf: "center" }}
+              onPress={() => setgetpassworsvisible1(!getpassworsvisible1)}
+            >
+              {getpassworsvisible1 ? (
+                <Entypo name="eye" size={25} color={"black"} />
+              ) : (
+                <Feather name="eye-off" size={25} color={"black"} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
         {error ? (
           <Text style={{ color: "red", marginLeft: 40 }}>{error}</Text>
         ) : null}
-        <View
-          style={{ backgroundColor: "#FFFFFF", width: 200, marginLeft: 40 }}
-        >
+        <View style={{ marginLeft: "5%" }}>
           <CheckBox
-            style={{ borderWidth: 0 }}
             title="Remember me "
             checked={isChecked}
-            checkedColor="#000000" // Màu cho trạng thái đã chọn
-            uncheckedColor="#000000" // Màu cho trạng thái chưa chọn
+            checkedColor="black" // Màu cho trạng thái đã chọn
+            uncheckedColor="black" // Màu cho trạng thái chưa chọn
             containerStyle={{ backgroundColor: "white", borderWidth: 0 }} // Màu nền của container
             onPress={() => setIsChecked(!isChecked)}
           />
@@ -180,20 +180,18 @@ const SignUp = () => {
         <View style={{ height: 130 }}>
           <TouchableOpacity
             style={{
-              backgroundColor: "#000000",
-              height: 65,
-              width: 355,
+              backgroundColor: "black",
+              height: 60,
+              width: 350,
               alignSelf: "center",
               justifyContent: "center",
               borderRadius: 30,
-              marginTop: 10,
+              marginTop: "4%",
             }}
             onPress={checkLogin}
           >
-            <Text
-              style={{ textAlign: "center", color: "#ffffff", fontSize: 25 }}
-            >
-              Sign Up{" "}
+            <Text style={{ textAlign: "center", color: "white", fontSize: 25 }}>
+              Sign Up
             </Text>
           </TouchableOpacity>
           <View
@@ -206,30 +204,19 @@ const SignUp = () => {
             <Text
               style={{
                 fontSize: 18,
-                color: "#000000",
+                color: "black",
                 alignSelf: "center",
-                fontWeight: "900",
+                fontWeight: "bold",
+                textDecorationLine: "underline",
               }}
               onPress={forgotpasswork}
             >
               Forgot the password ?
             </Text>
-            <View
-              style={{
-                borderWidth: 0.2,
-                width: 190,
-                height: 1,
-                color: "#D9D9D9",
-                alignSelf: "center",
-              }}
-            ></View>
           </View>
         </View>
         <View
           style={{
-            backgroundColor: "#FFFFFF",
-            width: "100%",
-            height: 50,
             flexDirection: "row",
           }}
         >
@@ -242,7 +229,7 @@ const SignUp = () => {
               marginTop: 26,
               color: "#D9D9D9",
             }}
-          ></View>
+          />
           <Text
             style={{
               color: "#585555",
@@ -261,16 +248,13 @@ const SignUp = () => {
               marginTop: 26,
               color: "#D9D9D9",
             }}
-          ></View>
+          />
         </View>
         <View
           style={{
+            marginTop: "5%",
             flexDirection: "row",
-            justifyContent: "space-between",
-            marginRight: 90,
-            marginLeft: 90,
-            marginTop: 10,
-            marginBottom: 15,
+            justifyContent: "space-around",
           }}
         >
           <TouchableOpacity style={styles.button} onPress={loginFacebook}>
@@ -289,28 +273,21 @@ const SignUp = () => {
           }}
         >
           <Text style={{ fontSize: 18, color: "#7B7070", alignSelf: "center" }}>
-            Do you have an account ?{" "}
+            Do you have an account?{" "}
           </Text>
           <View style={{ flexDirection: "column", justifyContent: "center" }}>
             <Text
               style={{
                 fontSize: 18,
-                color: "#000000",
+                color: "black",
                 alignSelf: "center",
-                fontWeight: "900",
+                fontWeight: "bold",
+                textDecorationLine: "underline",
               }}
               onPress={Signin}
             >
-              Sign In{" "}
+              Sign In
             </Text>
-            <View
-              style={{
-                borderWidth: 0.2,
-                width: 70,
-                height: 1,
-                color: "#D9D9D9",
-              }}
-            ></View>
           </View>
         </View>
       </View>
@@ -326,44 +303,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formlogin: {
-    height: 286,
-    marginTop: 30,
+    height: 280,
+    marginTop: "5%",
   },
   nhapemail: {
     flexDirection: "row",
     alignSelf: "center",
     alignItems: "center",
     backgroundColor: "#EAEAEA",
-    justifyContent: "flex-start",
-    borderRadius: 12,
-    height: 64,
-    width: 365,
-    marginBottom: 17,
-    padding: 20,
+    justifyContent: "center",
+    borderRadius: 10,
+    height: 60,
+    width: 360,
   },
   nhappass: {
-    flexDirection: "row",
     alignSelf: "center",
-    alignItems: "center",
     backgroundColor: "#EAEAEA",
-    justifyContent: "flex-start",
-    borderRadius: 12,
-    height: 64,
-    width: 365,
-    marginBottom: 17,
-    padding: 20,
-  },
-  buttonText: {
-    marginLeft: 24,
-    fontWeight: "bold",
-    color: "#999999",
-    fontSize: 15,
-    textAlign: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    height: 60,
+    width: 360,
+    marginTop: "3%",
   },
   button: {
-    width: 82,
-    height: 64,
-    borderRadius: 12,
+    width: 70,
+    height: 60,
+    borderRadius: 10,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
