@@ -7,6 +7,7 @@ const GetStart2 = () => {
   const handleButtonPress = () => {
     navigation.navigate("Login1");
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.view1}>

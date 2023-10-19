@@ -18,7 +18,7 @@ import LoginWithPassword from "./screens/ClassLogin/LoginWithPassword";
 import SignUp from "./screens/ClassLogin/SignUp";
 import MyProduct from "./screens/ClassTab/MyProduct";
 import Order from "./screens/ClassTab/Order";
-import SearchScreen from "./screens/ClassTab/ScreenTab/SearchScreen";
+import Search1Screen from "./screens/ClassTab/ScreenTab/Search1Screen";
 import Search2Screen from "./screens/ClassTab/ScreenTab/Search2Screen";
 
 const App = () => {
@@ -35,7 +35,7 @@ const App = () => {
         />
         <StackDemo.Screen name="SignUp" component={SignUp} />
         <StackDemo.Screen name="BottomTab" component={BottomTab} />
-        <StackDemo.Screen name="SearchScreen" component={SearchScreen} />
+        <StackDemo.Screen name="Search1Screen" component={Search1Screen} />
         <StackDemo.Screen name="Search2Screen" component={Search2Screen} />
       </StackDemo.Navigator>
     </NavigationContainer>

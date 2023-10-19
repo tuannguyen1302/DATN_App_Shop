@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -67,6 +68,8 @@ const ProductScreen = (props) => {
       product_ratingAverage: 4,
     },
   ]);
+  const [selectedValue, setSelectedValue] = useState("");
+
   return (
     <View style={styles.container}>
       {/* Tab */}
@@ -93,9 +96,22 @@ const ProductScreen = (props) => {
         <View style={styles.iconView}>
           <Pressable style={{ flexDirection: "row", alignItems: "center" }}>
             <AntDesign name="bars" size={28} />
-            <Text style={{ left: "10%" }}>Sắp xếp</Text>
+            {/* Chọn tăng giảm product */}
+            <Picker
+              selectedValue={selectedValue}
+              style={{
+                width: 140,
+              }}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedValue(itemValue)
+              }
+            >
+              <Picker.Item enabled={false} label="Sắp xếp" />
+              <Picker.Item label="Tăng" value="+" />
+              <Picker.Item label="Giảm" value="-" />
+            </Picker>
           </Pressable>
-          <Pressable onPress={() => navigation.navigate("SearchScreen")}>
+          <Pressable onPress={() => navigation.navigate("Search1Screen")}>
             <AntDesign name="search1" size={28} />
           </Pressable>
         </View>
@@ -141,7 +157,12 @@ const ProductScreen = (props) => {
           })
         ) : (
           <Image
-            style={{ width: 150, height: 200, alignSelf: "center" }}
+            style={{
+              width: 300,
+              height: 300,
+              resizeMode: "contain",
+              alignSelf: "center",
+            }}
             source={require("../../../assets/noProduct.png")}
           />
         )}
@@ -177,6 +198,7 @@ const styles = StyleSheet.create({
   iconView: {
     flexDirection: "row",
     marginHorizontal: "5%",
+    alignItems: "center",
     justifyContent: "space-between",
   },
   itemProduct: {

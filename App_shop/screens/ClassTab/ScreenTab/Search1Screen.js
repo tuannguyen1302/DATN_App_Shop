@@ -3,7 +3,7 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-const SearchScreen = ({ navigation }) => {
+const Search1Screen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -27,7 +27,7 @@ const SearchScreen = ({ navigation }) => {
   );
 };
 
-export default SearchScreen;
+export default Search1Screen;
 
 const styles = StyleSheet.create({
   container: {

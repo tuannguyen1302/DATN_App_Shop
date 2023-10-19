@@ -163,7 +163,12 @@ const Search2Screen = ({ navigation }) => {
           })
         ) : (
           <Image
-            style={{ width: 150, height: 200, alignSelf: "center" }}
+            style={{
+              width: 300,
+              height: 300,
+              resizeMode: "contain",
+              alignSelf: "center",
+            }}
             source={require("../../../assets/noProduct.png")}
           />
         )}
