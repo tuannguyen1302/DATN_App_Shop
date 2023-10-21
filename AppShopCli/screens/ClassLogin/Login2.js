@@ -4,18 +4,16 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  Image,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import React, {useState} from 'react';
-
 import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {CheckBox} from 'react-native-elements';
 
-const LoginWithPassword = () => {
+const Login2 = () => {
   const navigation = useNavigation();
   const [isChecked, setIsChecked] = useState(false);
   const [username, setusername] = useState('');
@@ -68,13 +66,13 @@ const LoginWithPassword = () => {
   };
 
   return (
-    <SafeAreaView aView style={styles.continer}>
+    <View aView style={styles.continer}>
       <View>
         <Text
           style={{
             fontSize: 45,
             fontWeight: 'bold',
-            marginTop: 80,
+            marginTop: '8%',
             textAlign: 'center',
           }}>
           Login to your Account
@@ -158,7 +156,7 @@ const LoginWithPassword = () => {
               alignSelf: 'center',
               justifyContent: 'center',
               borderRadius: 30,
-              marginTop: '4%',
+              marginTop: '5%',
             }}
             onPress={checkLogin}>
             <Text style={{textAlign: 'center', color: 'white', fontSize: 25}}>
@@ -167,7 +165,7 @@ const LoginWithPassword = () => {
           </TouchableOpacity>
           <View
             style={{
-              marginTop: 15,
+              marginTop: '5%',
             }}>
             <Text
               style={{
@@ -192,7 +190,7 @@ const LoginWithPassword = () => {
               width: 100,
               height: 1,
               marginLeft: 30,
-              marginTop: 26,
+              marginTop: '8%',
               color: '#D9D9D9',
             }}
           />
@@ -201,7 +199,7 @@ const LoginWithPassword = () => {
               color: '#585555',
               fontSize: 18,
               alignSelf: 'center',
-              margin: 10,
+              margin: '2%',
             }}>
             or continue with
           </Text>
@@ -210,28 +208,33 @@ const LoginWithPassword = () => {
               borderWidth: 0.2,
               width: 100,
               height: 1,
-              marginTop: 26,
+              marginTop: '8%',
               color: '#D9D9D9',
             }}
           />
         </View>
         <View
           style={{
-            marginTop: '5%',
+            marginTop: '8%',
             flexDirection: 'row',
             justifyContent: 'space-around',
           }}>
           <TouchableOpacity style={styles.button} onPress={loginFacebook}>
-            <Entypo name="facebook-with-circle" size={40} color={'#2421EB'} />
+            <Image
+              source={require('../../image/facebook.png')}
+              style={styles.icon}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={loginGmail}>
-            <AntDesign name="googleplus" size={40} color={'#FF0404'} />
+            <Image
+              source={require('../../image/google.png')}
+              style={styles.icon}
+            />
           </TouchableOpacity>
         </View>
         <View
           style={{
-            width: '100%',
-            height: 68,
+            marginTop: '10%',
             flexDirection: 'row',
             justifyContent: 'center',
           }}>
@@ -253,11 +256,11 @@ const LoginWithPassword = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
-export default LoginWithPassword;
+export default Login2;
 
 const styles = StyleSheet.create({
   continer: {
@@ -300,5 +303,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });

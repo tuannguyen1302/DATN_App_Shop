@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from './ScreenTab/ProductScreen';
@@ -22,12 +21,9 @@ const MyProduct = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Logout, Shop */}
       <View style={styles.header}>
-        <Pressable onPress={() => navigation.replace('LoginWithPassword')}>
-          <AntDesign name="logout" size={35} />
-        </Pressable>
         <View style={styles.headerShop}>
           <Image style={styles.avatarShop} source={{uri: account.avatar}} />
           <View style={{right: '10%'}}>
@@ -46,7 +42,7 @@ const MyProduct = ({navigation}) => {
         <Feather name="plus-square" size={20} color={'white'} />
         <Text style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
       </Pressable>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -58,12 +54,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    height: '20%',
+    height: '15%',
     marginTop: '3%',
     marginHorizontal: '3%',
   },
   headerShop: {
-    height: '60%',
+    height: '80%',
     marginTop: '3%',
     borderRadius: 10,
     flexDirection: 'row',
@@ -72,8 +68,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
   },
   avatarShop: {
-    width: 80,
-    height: 80,
+    width: '20%',
+    height: '80%',
     borderRadius: 100,
   },
   name: {

@@ -1,7 +1,5 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Login1 = ({navigation}) => {
   const loginFacebook = () => {
@@ -17,17 +15,14 @@ const Login1 = ({navigation}) => {
   };
 
   const LoginWithPassword = () => {
-    navigation.navigate('LoginWithPassword');
+    navigation.navigate('Login2');
   };
 
   return (
     <View style={styles.container}>
       {/* Logo */}
-      <View style={{}}>
-        <Image
-          source={require('../../assets/logo12.png')}
-          style={styles.logo}
-        />
+      <View>
+        <Image source={require('../../image/Logo2.png')} style={styles.logo} />
       </View>
       <Text
         style={{
@@ -41,11 +36,14 @@ const Login1 = ({navigation}) => {
       </Text>
       {/* Button */}
       <TouchableOpacity style={styles.button} onPress={loginFacebook}>
-        <Entypo name="facebook-with-circle" size={40} color={'#2421EB'} />
-        <Text style={styles.buttonText}>Continue with Facebook </Text>
+        <Image
+          source={require('../../image/facebook.png')}
+          style={styles.icon}
+        />
+        <Text style={styles.buttonText}>Continue with Facebook</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={loginGmail}>
-        <AntDesign name="googleplus" size={40} color={'#FF0404'} />
+        <Image source={require('../../image/google.png')} style={styles.icon} />
         <Text style={styles.buttonText}>Continue with Google </Text>
       </TouchableOpacity>
       {/* Line */}
@@ -84,7 +82,7 @@ const Login1 = ({navigation}) => {
         </TouchableOpacity>
         <View
           style={{
-            marginTop: '25%',
+            marginTop: '20%',
             flexDirection: 'row',
             justifyContent: 'center',
           }}>
@@ -111,7 +109,7 @@ export default Login1;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
   },
   logo: {
     width: 300,
@@ -123,12 +121,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
     justifyContent: 'center',
     borderRadius: 12,
     height: 64,
     width: 365,
-    marginBottom: 37,
+    marginBottom: '8%',
     borderWidth: 1,
   },
   buttonText: {
@@ -152,5 +150,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     fontSize: 15,
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });

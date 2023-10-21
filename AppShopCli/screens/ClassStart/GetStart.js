@@ -29,7 +29,7 @@ const WelcomeScreen = ({navigation}) => {
           <Text style={styles.text}> Welcome </Text>
         </View>
       </View>
-      <Image source={require('../../assets/logo1.png')} style={styles.logo} />
+      <Image source={require('../../image/Logo1.png')} style={styles.logo} />
       <ActivityIndicator size={45} color={'white'} />
     </View>
   );

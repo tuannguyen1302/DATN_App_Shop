@@ -14,12 +14,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import GetStart from './screens/ClassStart/GetStart';
 import GetStart2 from './screens/ClassStart/GetStart2';
 import Login1 from './screens/ClassLogin/Login1';
-import LoginWithPassword from './screens/ClassLogin/LoginWithPassword';
+import Login2 from './screens/ClassLogin/Login2';
 import SignUp from './screens/ClassLogin/SignUp';
 import MyProduct from './screens/ClassTab/MyProduct';
 import Order from './screens/ClassTab/Order';
-import Search1Screen from './screens/ClassTab/ScreenTab/Search1Screen';
-import Search2Screen from './screens/ClassTab/ScreenTab/Search2Screen';
+import SearchScreen from './screens/ClassTab/ScreenTab/SearchScreen';
 
 const App = () => {
   return (
@@ -29,14 +28,10 @@ const App = () => {
         <StackDemo.Screen name="GetStart2" component={GetStart2} />
         {/* viết tiếp các màn hình khác vào đây */}
         <StackDemo.Screen name="Login1" component={Login1} />
-        <StackDemo.Screen
-          name="LoginWithPassword"
-          component={LoginWithPassword}
-        />
+        <StackDemo.Screen name="Login2" component={Login2} />
         <StackDemo.Screen name="SignUp" component={SignUp} />
         <StackDemo.Screen name="BottomTab" component={BottomTab} />
-        <StackDemo.Screen name="Search1Screen" component={Search1Screen} />
-        <StackDemo.Screen name="Search2Screen" component={Search2Screen} />
+        <StackDemo.Screen name="SearchScreen" component={SearchScreen} />
       </StackDemo.Navigator>
     </NavigationContainer>
   );
