@@ -11,10 +11,10 @@ const GetStart2 = () => {
   return (
     <View style={styles.container}>
       <View style={styles.view1}>
-        <Image source={require('../../assets/anh1.jpg')} style={styles.anh1} />
+        <Image source={require('../../image/Icon1.jpg')} style={styles.anh1} />
       </View>
       <View>
-        <Image source={require('../../assets/mhc2.jpg')} style={styles.anh2} />
+        <Image source={require('../../image/Icon2.jpg')} style={styles.anh2} />
       </View>
       <View style={styles.view3}>
         <Text
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   view1: {
     alignSelf: 'flex-end',
-    marginTop: 67,
+    marginTop: '2%',
     marginRight: 20,
     marginBottom: 30,
   },

@@ -4,14 +4,10 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  Image,
 } from 'react-native';
-
-import {SafeAreaView} from 'react-native-safe-area-context';
-
 import React, {useState} from 'react';
-
 import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
@@ -78,7 +74,7 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView style={styles.continer}>
+    <View style={styles.continer}>
       <View>
         <Text
           style={{
@@ -257,10 +253,16 @@ const SignUp = () => {
             justifyContent: 'space-around',
           }}>
           <TouchableOpacity style={styles.button} onPress={loginFacebook}>
-            <Entypo name="facebook-with-circle" size={40} color={'#2421EB'} />
+            <Image
+              source={require('../../image/facebook.png')}
+              style={styles.icon}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={loginGmail}>
-            <AntDesign name="googleplus" size={40} color={'#FF0404'} />
+            <Image
+              source={require('../../image/google.png')}
+              style={styles.icon}
+            />
           </TouchableOpacity>
         </View>
         <View
@@ -288,7 +290,7 @@ const SignUp = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -329,5 +331,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });
