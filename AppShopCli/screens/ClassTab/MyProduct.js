@@ -31,7 +31,7 @@ const MyProduct = ({navigation}) => {
             <Text style={styles.nameShop}>{account.nameShop}</Text>
           </View>
           <TouchableOpacity>
-            <AntDesign name="exclamationcircle" size={40} />
+            <AntDesign name="exclamationcircle" size={40} color={'black'} />
           </TouchableOpacity>
         </View>
       </View>
@@ -73,10 +73,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   name: {
+    color: 'black',
     fontSize: 24,
     fontWeight: '500',
   },
   nameShop: {
+    color: 'black',
     fontSize: 16,
     fontWeight: '400',
   },
@@ -94,5 +96,6 @@ const styles = StyleSheet.create({
   txtAdd: {
     color: 'white',
     left: '10%',
+    fontWeight: '600',
   },
 });

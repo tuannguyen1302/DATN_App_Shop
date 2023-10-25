@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Image,
   Pressable,
   ScrollView,
@@ -12,6 +13,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+// List Tab
 const listTab = [
   {
     status: 'All',
@@ -27,139 +29,144 @@ const listTab = [
   },
 ];
 
+// Cho phep cac componet khac được sử dụng lại nó
+export const ProductList = ({arrays}) => {
+  return (
+    <FlatList
+      scrollEnabled={false}
+      data={arrays}
+      renderItem={({item}) => (
+        <View style={styles.itemProduct}>
+          <View style={styles.item1}>
+            <Image style={styles.imageItem} source={{uri: item.image}} />
+            <View style={{left: '10%'}}>
+              <Text style={styles.txtName}>{item.nameProduct}</Text>
+              <Text style={styles.txtPrice}>
+                đ {item.price.toLocaleString().replace(/,/g, '.')}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.item2}>
+            <View style={styles.icon}>
+              <FontAwesome5 name="boxes" size={15} color={'#222222'} />
+              <Text style={styles.txt}>Kho hàng: {item.quantity}</Text>
+            </View>
+            <View style={styles.icon}>
+              <Feather name="list" size={15} color={'#222222'} />
+              <Text style={styles.txt}>Đã bán: {item.quantity}</Text>
+            </View>
+          </View>
+          <View style={styles.item3}>
+            <Pressable style={styles.btn}>
+              <Text style={styles.txt}>Sửa</Text>
+            </Pressable>
+            <Pressable style={styles.btn}>
+              <Text style={styles.txt}>Ẩn</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
+    />
+  );
+};
+
 const ProductScreen = props => {
+  // Nhận từ componer chính
   const {id, navigation} = props;
+  // Kiem tra khi an chuyen tab
   const [status, setStatus] = useState('All');
+  // Dữ liệu dùng để render
   const [array, setArray] = useState([
     {
-      nameProduct: 'Oto lamborghini aventador j',
-      category: 1,
+      nameProduct: 'Áo Hoodie Oversized Nữ Activated',
       image:
-        'https://th.bing.com/th/id/OIP.LgNenfKk_mgSpG3-kVEzuAHaE2?w=258&h=180&c=7&r=0&o=5&pid=1.7',
+        'https://th.bing.com/th/id/OIP.sB9FPPG22oH-iy-QmN99IAHaLH?w=139&h=208&c=7&r=0&o=5&pid=1.7',
       product_attributes: [
         {
-          color: 'Xanh',
+          color: 'green',
           size: ['xl', 'l', 'xxl'],
           quantity: 5,
         },
       ],
-      des: 'Là sản phẩm cho của giới thượng lưu ...',
-      price: 3500000,
+      price: 350000,
       quantity: 5,
-      shopId: 5,
-      product_ratingAverage: 4,
     },
     {
-      nameProduct: 'Oto lamborghini aventador j',
-      category: 1,
+      nameProduct: 'Áo hoodie ngắn tay hình mặt mèo',
       image:
-        'https://th.bing.com/th/id/OIP.h8s_-BU7Y1c1fK_jmDtGWQHaEK?w=301&h=180&c=7&r=0&o=5&pid=1.7',
+        'https://th.bing.com/th/id/R.8b7d5b399d740757411454b84783aff1?rik=SpcCP%2fi%2bsF1ktw&pid=ImgRaw&r=0',
       product_attributes: [
         {
-          color: 'Xanh',
+          color: 'yellow',
           size: ['xl', 'l', 'xxl'],
           quantity: 5,
         },
       ],
-      des: 'Là sản phẩm cho của giới thượng lưu ...',
-      price: 3500000,
+      price: 250000,
       quantity: 5,
-      shopId: 5,
-      product_ratingAverage: 4,
     },
   ]);
-  const [selectedValue, setSelectedValue] = useState('');
+  // Lựa chọn giá tăng giảm
+  const [selectedValue, setSelectedValue] = useState(null);
 
   return (
     <View style={styles.container}>
-      {/* Tab */}
+      {/* Danh sách tab */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {listTab.map((data, index) => (
             <Pressable
               key={index}
               style={[
-                styles.listItem,
-                data.status == status ? {borderBottomWidth: 3} : null,
+                styles.tabItem,
+                data.status === status ? {borderBottomWidth: 2} : null,
               ]}
               onPress={() => {
                 setStatus(data.status), setArray(null);
               }}>
-              <Text>{data.status}</Text>
+              <Text style={styles.txt}>{data.status}</Text>
             </Pressable>
           ))}
         </ScrollView>
       </View>
-      {/* Serach */}
+
+      {/* Giá tăng, giảm, tìm kiếm sản phẩm */}
       <View style={styles.filter}>
         <View style={styles.iconView}>
           <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
-            <AntDesign name="bars" size={28} />
+            <AntDesign name="bars" size={28} color={'black'} />
             {/* Chọn tăng giảm product */}
             <Picker
               selectedValue={selectedValue}
               style={{
                 width: 140,
               }}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedValue(itemValue)
-              }>
+              onValueChange={itemValue => setSelectedValue(itemValue)}>
               <Picker.Item enabled={false} label="Sắp xếp" />
               <Picker.Item label="Tăng" value="+" />
               <Picker.Item label="Giảm" value="-" />
             </Picker>
           </Pressable>
           <Pressable onPress={() => navigation.navigate('SearchScreen')}>
-            <AntDesign name="search1" size={28} />
+            <AntDesign name="search1" size={28} color={'black'} />
           </Pressable>
         </View>
       </View>
-      {/* List Product */}
+
+      {/* Hiển thị sản phẩm */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {array ? (
-          array.map((data, index) => {
-            return (
-              <View key={index} style={styles.itemProduct}>
-                <View style={styles.item1}>
-                  <Image style={styles.imageItem} source={{uri: data.image}} />
-                  <View style={{left: '10%'}}>
-                    <Text style={styles.txtName}>{data.nameProduct}</Text>
-                    <Text style={styles.txtPrice}>
-                      đ {data.price.toLocaleString().replace(/,/g, '.')}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.item2}>
-                  <View style={styles.icon}>
-                    <FontAwesome5 name="boxes" size={15} />
-                    <Text>Kho hàng: {data.quantity}</Text>
-                  </View>
-                  <View style={styles.icon}>
-                    <Feather name="list" size={15} />
-                    <Text>Đã bán: {data.quantity}</Text>
-                  </View>
-                </View>
-                <View style={styles.item3}>
-                  <Pressable style={styles.btn}>
-                    <Text>Sửa</Text>
-                  </Pressable>
-                  <Pressable style={styles.btn}>
-                    <Text>Ẩn</Text>
-                  </Pressable>
-                </View>
-              </View>
-            );
-          })
+          <ProductList arrays={array} />
         ) : (
-          <Image
-            style={{
-              width: 300,
-              height: 300,
-              resizeMode: 'contain',
-              alignSelf: 'center',
-            }}
-            source={require('../../../image/No1.png')}
-          />
+          <View style={styles.nav}>
+            <Image
+              style={styles.imgButton}
+              source={{
+                uri: 'https://cdn3.iconfinder.com/data/icons/zooloostrations/1000/shopping_e-commerce___shop_store_cart_lost_item_product_empty_animal-256.png',
+              }}
+            />
+            <Text>Không tìm thấy sản phẩm nào</Text>
+          </View>
         )}
       </ScrollView>
     </View>
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F2',
   },
-  listItem: {
+  tabItem: {
     width: 120,
     height: 40,
     marginTop: '1%',
@@ -183,6 +190,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+  },
+  txt: {
+    color: 'black',
+    fontWeight: '500',
   },
   filter: {
     marginTop: '2%',
@@ -216,10 +227,12 @@ const styles = StyleSheet.create({
   },
   txtName: {
     fontSize: 18,
-    fontWeight: '500',
+    color: 'black',
+    fontWeight: '400',
   },
   txtPrice: {
     marginTop: '5%',
+    color: 'black',
     fontSize: 18,
   },
   item2: {
@@ -241,6 +254,7 @@ const styles = StyleSheet.create({
   btn: {
     width: 80,
     height: 25,
+    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 10,
     justifyContent: 'center',
@@ -251,5 +265,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     flexDirection: 'row',
+  },
+  nav: {
+    marginTop: '10%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imgButton: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
   },
 });

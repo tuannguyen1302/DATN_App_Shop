@@ -16,9 +16,12 @@ import GetStart2 from './screens/ClassStart/GetStart2';
 import Login1 from './screens/ClassLogin/Login1';
 import Login2 from './screens/ClassLogin/Login2';
 import SignUp from './screens/ClassLogin/SignUp';
+// Màn hình tab 1
 import MyProduct from './screens/ClassTab/MyProduct';
-import Order from './screens/ClassTab/Order';
 import SearchScreen from './screens/ClassTab/ScreenTab/SearchScreen';
+// Màn hình tab 2
+import Order from './screens/ClassTab/Order';
+import OrderScreen from './screens/ClassTab/ScreenTab/OrderScreen';
 
 const App = () => {
   return (
@@ -26,12 +29,13 @@ const App = () => {
       <StackDemo.Navigator screenOptions={{headerShown: false}}>
         <StackDemo.Screen name="GetStart" component={GetStart} />
         <StackDemo.Screen name="GetStart2" component={GetStart2} />
-        {/* viết tiếp các màn hình khác vào đây */}
         <StackDemo.Screen name="Login1" component={Login1} />
         <StackDemo.Screen name="Login2" component={Login2} />
         <StackDemo.Screen name="SignUp" component={SignUp} />
         <StackDemo.Screen name="BottomTab" component={BottomTab} />
+        {/* viết tiếp các màn hình khác vào đây */}
         <StackDemo.Screen name="SearchScreen" component={SearchScreen} />
+        <StackDemo.Screen name="OrderScreen" component={OrderScreen} />
       </StackDemo.Navigator>
     </NavigationContainer>
   );

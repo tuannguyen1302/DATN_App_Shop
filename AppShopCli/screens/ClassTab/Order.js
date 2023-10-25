@@ -15,7 +15,9 @@ const Order = ({navigation}) => {
       <View style={styles.view}>
         {/* Item quản lý */}
         <Text style={styles.txt}>Quản lý</Text>
-        <Pressable style={styles.buttonView}>
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('OrderScreen')}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <AntDesign name="profile" size={30} color={'#333333'} />
@@ -103,16 +105,16 @@ const styles = StyleSheet.create({
   },
   view: {
     marginVertical: '5%',
-    marginHorizontal: '7%',
+    marginHorizontal: '3%',
   },
   txt: {
     fontSize: 20,
     color: 'black',
-    fontWeight: '700',
+    fontWeight: '500',
   },
   buttonView: {
     marginTop: '3%',
-    height: 50,
+    height: 45,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#999999',

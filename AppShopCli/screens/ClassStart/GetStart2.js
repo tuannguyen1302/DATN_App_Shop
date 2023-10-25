@@ -14,7 +14,12 @@ const GetStart2 = () => {
         <Image source={require('../../image/Icon1.jpg')} style={styles.anh1} />
       </View>
       <View>
-        <Image source={require('../../image/Icon2.jpg')} style={styles.anh2} />
+        <Image
+          source={{
+            uri: 'https://cdn1.iconfinder.com/data/icons/scenes-6/1000/e-commerce___online_store_shop_marketing_smartphone_device_building_shopping-256.png',
+          }}
+          style={styles.anh2}
+        />
       </View>
       <View style={styles.view3}>
         <Text
