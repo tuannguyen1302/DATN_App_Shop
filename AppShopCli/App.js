@@ -22,6 +22,7 @@ import SearchScreen from './screens/ClassTab/ScreenTab/SearchScreen';
 // Màn hình tab 2
 import Order from './screens/ClassTab/Order';
 import OrderScreen from './screens/ClassTab/ScreenTab/OrderScreen';
+import ShopScreen from './screens/ClassTab/ScreenTab/ShopScreen';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
         {/* viết tiếp các màn hình khác vào đây */}
         <StackDemo.Screen name="SearchScreen" component={SearchScreen} />
         <StackDemo.Screen name="OrderScreen" component={OrderScreen} />
+        <StackDemo.Screen name="ShopScreen" component={ShopScreen} />
       </StackDemo.Navigator>
     </NavigationContainer>
   );

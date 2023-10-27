@@ -15,6 +15,7 @@ const Order = ({navigation}) => {
       <View style={styles.view}>
         {/* Item quản lý */}
         <Text style={styles.txt}>Quản lý</Text>
+        {/* Đơn hàng */}
         <Pressable
           style={styles.buttonView}
           onPress={() => navigation.navigate('OrderScreen')}>
@@ -28,7 +29,10 @@ const Order = ({navigation}) => {
             <AntDesign name="right" size={15} />
           </View>
         </Pressable>
-        <Pressable style={styles.buttonView}>
+        {/* Cửa hàng */}
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('ShopScreen')}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Entypo name="shop" size={30} color={'#333333'} />
@@ -41,6 +45,7 @@ const Order = ({navigation}) => {
         </Pressable>
         {/* Item thông tin */}
         <Text style={[styles.txt, {marginTop: '5%'}]}>Thông tin</Text>
+        {/* Thống kê */}
         <Pressable style={styles.buttonView}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -52,6 +57,7 @@ const Order = ({navigation}) => {
             <AntDesign name="right" size={15} />
           </View>
         </Pressable>
+        {/* Tồn kho */}
         <Pressable style={styles.buttonView}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -65,6 +71,7 @@ const Order = ({navigation}) => {
         </Pressable>
         {/* Item khác */}
         <Text style={[styles.txt, {marginTop: '5%'}]}>Thông tin</Text>
+        {/* Đăng xuất */}
         <Pressable
           style={styles.buttonView}
           onPress={() => navigation.replace('Login2')}>
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
   },
   view: {
     marginVertical: '5%',
-    marginHorizontal: '3%',
+    marginHorizontal: '5%',
   },
   txt: {
     fontSize: 20,
