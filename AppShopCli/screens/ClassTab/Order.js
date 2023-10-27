@@ -15,7 +15,10 @@ const Order = ({navigation}) => {
       <View style={styles.view}>
         {/* Item quản lý */}
         <Text style={styles.txt}>Quản lý</Text>
-        <Pressable style={styles.buttonView}>
+        {/* Đơn hàng */}
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('OrderScreen')}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <AntDesign name="profile" size={30} color={'#333333'} />
@@ -26,7 +29,10 @@ const Order = ({navigation}) => {
             <AntDesign name="right" size={15} />
           </View>
         </Pressable>
-        <Pressable style={styles.buttonView}>
+        {/* Cửa hàng */}
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('ShopScreen')}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Entypo name="shop" size={30} color={'#333333'} />
@@ -39,6 +45,7 @@ const Order = ({navigation}) => {
         </Pressable>
         {/* Item thông tin */}
         <Text style={[styles.txt, {marginTop: '5%'}]}>Thông tin</Text>
+        {/* Thống kê */}
         <Pressable style={styles.buttonView}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -50,6 +57,7 @@ const Order = ({navigation}) => {
             <AntDesign name="right" size={15} />
           </View>
         </Pressable>
+        {/* Tồn kho */}
         <Pressable style={styles.buttonView}>
           <View style={styles.rowButton}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -63,6 +71,7 @@ const Order = ({navigation}) => {
         </Pressable>
         {/* Item khác */}
         <Text style={[styles.txt, {marginTop: '5%'}]}>Thông tin</Text>
+        {/* Đăng xuất */}
         <Pressable
           style={styles.buttonView}
           onPress={() => navigation.replace('Login2')}>
@@ -103,16 +112,16 @@ const styles = StyleSheet.create({
   },
   view: {
     marginVertical: '5%',
-    marginHorizontal: '7%',
+    marginHorizontal: '5%',
   },
   txt: {
     fontSize: 20,
     color: 'black',
-    fontWeight: '700',
+    fontWeight: '500',
   },
   buttonView: {
     marginTop: '3%',
-    height: 50,
+    height: 45,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#999999',

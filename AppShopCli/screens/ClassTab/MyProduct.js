@@ -25,13 +25,16 @@ const MyProduct = ({navigation}) => {
       {/* Logout, Shop */}
       <View style={styles.header}>
         <View style={styles.headerShop}>
+          {/* Ảnh đại diện shop */}
           <Image style={styles.avatarShop} source={{uri: account.avatar}} />
+          {/* Thông tin shop */}
           <View style={{right: '10%'}}>
             <Text style={styles.name}>{account.name}</Text>
             <Text style={styles.nameShop}>{account.nameShop}</Text>
           </View>
-          <TouchableOpacity>
-            <AntDesign name="exclamationcircle" size={40} />
+          {/* Sửa shop */}
+          <TouchableOpacity onPress={() => navigation.navigate('ShopScreen')}>
+            <AntDesign name="exclamationcircle" size={40} color={'black'} />
           </TouchableOpacity>
         </View>
       </View>
@@ -73,10 +76,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   name: {
+    color: 'black',
     fontSize: 24,
     fontWeight: '500',
   },
   nameShop: {
+    color: 'black',
     fontSize: 16,
     fontWeight: '400',
   },
@@ -94,5 +99,6 @@ const styles = StyleSheet.create({
   txtAdd: {
     color: 'white',
     left: '10%',
+    fontWeight: '600',
   },
 });

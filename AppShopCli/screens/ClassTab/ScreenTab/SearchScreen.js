@@ -12,8 +12,9 @@ import React, {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {ProductList} from './ProductScreen';
 
+// List Tab
 const listTab = [
   {
     status: 'All',
@@ -36,42 +37,47 @@ const Search1Screen = ({navigation}) => {
   const [status, setStatus] = useState('All');
   const [array, setArray] = useState([
     {
-      nameProduct: 'Oto lamborghini aventador j',
-      category: 1,
+      nameProduct: 'Áo Hoodie Oversized Nữ Activated',
       image:
-        'https://th.bing.com/th/id/OIP.LgNenfKk_mgSpG3-kVEzuAHaE2?w=258&h=180&c=7&r=0&o=5&pid=1.7',
+        'https://th.bing.com/th/id/OIP.sB9FPPG22oH-iy-QmN99IAHaLH?w=139&h=208&c=7&r=0&o=5&pid=1.7',
       product_attributes: [
         {
-          color: 'Xanh',
+          color: 'green',
           size: ['xl', 'l', 'xxl'],
           quantity: 5,
         },
       ],
-      des: 'Là sản phẩm cho của giới thượng lưu ...',
-      price: 3500000,
+      price: 350000,
       quantity: 5,
-      shopId: 5,
-      product_ratingAverage: 4,
     },
     {
-      nameProduct: 'Oto lamborghini aventador j',
-      category: 1,
+      nameProduct: 'Áo hoodie ngắn tay hình mặt mèo',
       image:
-        'https://th.bing.com/th/id/OIP.h8s_-BU7Y1c1fK_jmDtGWQHaEK?w=301&h=180&c=7&r=0&o=5&pid=1.7',
+        'https://th.bing.com/th/id/R.8b7d5b399d740757411454b84783aff1?rik=SpcCP%2fi%2bsF1ktw&pid=ImgRaw&r=0',
       product_attributes: [
         {
-          color: 'Xanh',
+          color: 'yellow',
           size: ['xl', 'l', 'xxl'],
           quantity: 5,
         },
       ],
-      des: 'Là sản phẩm cho của giới thượng lưu ...',
-      price: 3500000,
+      price: 250000,
       quantity: 5,
-      shopId: 5,
-      product_ratingAverage: 4,
     },
   ]);
+
+  // Khai báo ảnh hiện
+  const image = (img, txt) => (
+    <View style={styles.nav}>
+      <Image
+        style={styles.imgButton}
+        source={{
+          uri: img,
+        }}
+      />
+      <Text>{txt}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -81,29 +87,32 @@ const Search1Screen = ({navigation}) => {
         <View>
           {/* Search, back */}
           <View style={styles.header2}>
-            <View style={styles.headerSearch}>
-              <Pressable>
-                <Ionicons name="search" size={24} color="black" />
+            <View style={styles.rowHeader2}>
+              <View style={styles.headerSearch}>
+                <Pressable>
+                  <Ionicons name="search" size={24} color="black" />
+                </Pressable>
+                <TextInput
+                  style={styles.txtInput}
+                  defaultValue={search}
+                  placeholder="Nhập từ khóa tìm kiếm"
+                  keyboardType="default"
+                  onChangeText={content => setSearch(content)}
+                />
+                {search.length ? (
+                  <TouchableOpacity
+                    style={{marginRight: '3%'}}
+                    onPress={() => setSearch('')}>
+                    <Feather name="x-circle" size={24} color="black" />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+              <Pressable onPress={() => navigation.goBack()}>
+                <Text style={styles.txtCancel}>Hủy</Text>
               </Pressable>
-              <TextInput
-                style={styles.txtInput}
-                defaultValue={search}
-                placeholder="Nhập từ khóa tìm kiếm"
-                keyboardType="default"
-                onChangeText={content => setSearch(content)}
-              />
-              {search.length ? (
-                <TouchableOpacity
-                  style={{marginRight: '3%'}}
-                  onPress={() => setSearch('')}>
-                  <Feather name="x-circle" size={24} color="black" />
-                </TouchableOpacity>
-              ) : null}
             </View>
-            <Pressable onPress={() => navigation.goBack()}>
-              <Text style={styles.txtCancel}>Hủy</Text>
-            </Pressable>
           </View>
+
           {/* Tab */}
           <View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -112,65 +121,27 @@ const Search1Screen = ({navigation}) => {
                   key={index}
                   style={[
                     styles.listItem,
-                    data.status == status ? {borderBottomWidth: 3} : null,
+                    data.status == status ? {borderBottomWidth: 2} : null,
                   ]}
                   onPress={() => {
                     setStatus(data.status), setArray(null);
                   }}>
-                  <Text>{data.status}</Text>
+                  <Text style={styles.txt}>{data.status}</Text>
                 </Pressable>
               ))}
             </ScrollView>
           </View>
+
           {/* List Product */}
           <ScrollView showsVerticalScrollIndicator={false}>
             {array ? (
-              array.map((data, index) => {
-                return (
-                  <View key={index} style={styles.itemProduct}>
-                    <View style={styles.item1}>
-                      <Image
-                        style={styles.imageItem}
-                        source={{uri: data.image}}
-                      />
-                      <View style={{left: '10%'}}>
-                        <Text style={styles.txtName}>{data.nameProduct}</Text>
-                        <Text style={styles.txtPrice}>
-                          đ {data.price.toLocaleString().replace(/,/g, '.')}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.item2}>
-                      <View style={styles.icon}>
-                        <FontAwesome5 name="boxes" size={15} />
-                        <Text>Kho hàng: {data.quantity}</Text>
-                      </View>
-                      <View style={styles.icon}>
-                        <Feather name="list" size={15} />
-                        <Text>Đã bán: {data.quantity}</Text>
-                      </View>
-                    </View>
-                    <View style={styles.item3}>
-                      <Pressable style={styles.btn}>
-                        <Text>Sửa</Text>
-                      </Pressable>
-                      <Pressable style={styles.btn}>
-                        <Text>Ẩn</Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                );
-              })
+              <ProductList arrays={array} />
             ) : (
-              <Image
-                style={{
-                  width: 300,
-                  height: 300,
-                  resizeMode: 'contain',
-                  alignSelf: 'center',
-                }}
-                source={require('../../../image/No1.png')}
-              />
+              //  Gọi ảnh
+              image(
+                'https://cdn3.iconfinder.com/data/icons/zooloostrations/1000/shopping_e-commerce___shop_store_cart_lost_item_product_empty_animal-256.png',
+                'Không tìm thấy sản phẩm nào',
+              )
             )}
           </ScrollView>
         </View>
@@ -179,7 +150,7 @@ const Search1Screen = ({navigation}) => {
         <View>
           <View style={styles.header}>
             <Pressable onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={40} />
+              <AntDesign name="arrowleft" size={40} color={'black'} />
             </Pressable>
             <Pressable
               style={styles.searchHeader}
@@ -190,9 +161,11 @@ const Search1Screen = ({navigation}) => {
               </View>
             </Pressable>
           </View>
-          <View style={styles.nav}>
-            <Image source={require('../../../image/No2.png')} />
-          </View>
+          {/* Gọi ảnh */}
+          {image(
+            'https://cdn2.iconfinder.com/data/icons/business-team-9/4000/search_for_value-256.png',
+            'Tìm kiếm trong shop',
+          )}
         </View>
       )}
     </View>
@@ -204,12 +177,13 @@ export default Search1Screen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '3%',
   },
   header: {
+    height: '18%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
   searchHeader: {
     flex: 0.9,
@@ -226,16 +200,19 @@ const styles = StyleSheet.create({
     marginHorizontal: '5%',
   },
   nav: {
-    marginTop: '2%',
+    marginTop: '10%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EEEEEE',
   },
   header2: {
-    marginTop: '2%',
-    marginHorizontal: '5%',
-    flexDirection: 'row',
+    height: 70,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  rowHeader2: {
     alignItems: 'center',
+    flexDirection: 'row',
+    marginHorizontal: '5%',
   },
   headerSearch: {
     flex: 1,
@@ -267,71 +244,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
-  filter: {
-    marginTop: '2%',
-    height: 40,
-    justifyContent: 'center',
-    backgroundColor: '#F6F6F6',
+  txt: {
+    color: 'black',
+    fontWeight: '400',
   },
-  iconView: {
-    flexDirection: 'row',
-    marginHorizontal: '5%',
-    justifyContent: 'space-between',
-  },
-  itemProduct: {
-    margin: '2%',
-    height: 185,
-    borderRadius: 10,
-    borderWidth: 0.5,
-    backgroundColor: 'white',
-  },
-  item1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    margin: '4%',
-  },
-  imageItem: {
-    width: 80,
-    height: 80,
+  imgButton: {
+    width: 200,
+    height: 200,
     resizeMode: 'contain',
-    borderRadius: 10,
-  },
-  txtName: {
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  txtPrice: {
-    marginTop: '5%',
-    fontSize: 18,
-  },
-  item2: {
-    height: '18%',
-    borderTopWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    borderBottomWidth: 1,
-    borderColor: '#D9D9D9',
-    marginHorizontal: '5%',
-  },
-  item3: {
-    height: '22%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  btn: {
-    width: 80,
-    height: 25,
-    borderWidth: 1,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    width: '30%',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
   },
 });
