@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Pressable,
   StyleSheet,
@@ -6,12 +7,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from './ScreenTab/ProductScreen';
 
-const MyProduct = ({navigation}) => {
+
+//ham thêm sản phẩm 
+
+
+const MyProduct = ({ navigation }) => {
+
+
   const [account, setAccount] = useState({
     id: 1,
     name: 'Trần Thị Tuấn',
@@ -26,9 +33,9 @@ const MyProduct = ({navigation}) => {
       <View style={styles.header}>
         <View style={styles.headerShop}>
           {/* Ảnh đại diện shop */}
-          <Image style={styles.avatarShop} source={{uri: account.avatar}} />
+          <Image style={styles.avatarShop} source={{ uri: account.avatar }} />
           {/* Thông tin shop */}
-          <View style={{right: '10%'}}>
+          <View style={{ right: '10%' }}>
             <Text style={styles.name}>{account.name}</Text>
             <Text style={styles.nameShop}>{account.nameShop}</Text>
           </View>
@@ -41,9 +48,9 @@ const MyProduct = ({navigation}) => {
       {/* Tab Product */}
       <ProductScreen navigation={navigation} id={account.id} />
       {/* Button Add Product */}
-      <Pressable style={styles.btnAdd}>
+      <Pressable onPress={() => navigation.navigate('addProduct')} style={styles.btnAdd} >
         <Feather name="plus-square" size={20} color={'white'} />
-        <Text style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
+        <Text onPress={() => { navigation.navigate('addProduct') }} style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
       </Pressable>
     </View>
   );

@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -7,11 +8,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {Picker} from '@react-native-picker/picker';
+import React, { useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 
 // List Tab
 const listTab = [
@@ -28,18 +30,17 @@ const listTab = [
     status: 'Bị ẩn',
   },
 ];
-
 // Cho phep cac componet khac được sử dụng lại nó
-export const ProductList = ({arrays}) => {
+export const ProductList = ({ arrays, navigation }) => {
   return (
     <FlatList
       scrollEnabled={false}
       data={arrays}
-      renderItem={({item}) => (
+      renderItem={({ item }) => (
         <View style={styles.itemProduct}>
           <View style={styles.item1}>
-            <Image style={styles.imageItem} source={{uri: item.image}} />
-            <View style={{left: '10%'}}>
+            <Image style={styles.imageItem} source={{ uri: item.image }} />
+            <View style={{ left: '10%' }}>
               <Text style={styles.txtName}>{item.nameProduct}</Text>
               <Text style={styles.txtPrice}>
                 đ {item.price.toLocaleString().replace(/,/g, '.')}
@@ -57,7 +58,7 @@ export const ProductList = ({arrays}) => {
             </View>
           </View>
           <View style={styles.item3}>
-            <Pressable style={styles.btn}>
+            <Pressable onPress={() => navigation.navigate('UpdateProduct')} style={styles.btn}>
               <Text style={styles.txt}>Sửa</Text>
             </Pressable>
             <Pressable style={styles.btn}>
@@ -70,9 +71,10 @@ export const ProductList = ({arrays}) => {
   );
 };
 
-const ProductScreen = props => {
+const ProductScreen = (props) => {
   // Nhận từ componer chính
-  const {id, navigation} = props;
+  const { navigation } = props;
+
   // Kiem tra khi an chuyen tab
   const [status, setStatus] = useState('All');
   // Dữ liệu dùng để render
@@ -119,7 +121,7 @@ const ProductScreen = props => {
               key={index}
               style={[
                 styles.tabItem,
-                data.status === status ? {borderBottomWidth: 2} : null,
+                data.status === status ? { borderBottomWidth: 2 } : null,
               ]}
               onPress={() => {
                 setStatus(data.status), setArray(null);
@@ -133,7 +135,7 @@ const ProductScreen = props => {
       {/* Giá tăng, giảm, tìm kiếm sản phẩm */}
       <View style={styles.filter}>
         <View style={styles.iconView}>
-          <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Pressable style={{ flexDirection: 'row', alignItems: 'center' }}>
             <AntDesign name="bars" size={28} color={'black'} />
             {/* Chọn tăng giảm product */}
             <Picker
@@ -147,7 +149,13 @@ const ProductScreen = props => {
               <Picker.Item label="Giảm" value="-" />
             </Picker>
           </Pressable>
-          <Pressable onPress={() => navigation.navigate('SearchScreen')}>
+          <Pressable onPress={() => {
+            navigation.navigate('SearchScreen')
+            console.log(navigation);
+          }
+
+
+          }>
             <AntDesign name="search1" size={28} color={'black'} />
           </Pressable>
         </View>
@@ -156,7 +164,7 @@ const ProductScreen = props => {
       {/* Hiển thị sản phẩm */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {array ? (
-          <ProductList arrays={array} />
+          <ProductList arrays={array} navigation={navigation} />
         ) : (
           <View style={styles.nav}>
             <Image

@@ -1,8 +1,8 @@
 // Khai báo điều hướng
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const StackDemo = createNativeStackNavigator();
 const TabDemo = createBottomTabNavigator();
 
@@ -23,11 +23,15 @@ import SearchScreen from './screens/ClassTab/ScreenTab/SearchScreen';
 import Order from './screens/ClassTab/Order';
 import OrderScreen from './screens/ClassTab/ScreenTab/OrderScreen';
 import ShopScreen from './screens/ClassTab/ScreenTab/ShopScreen';
+import addProduct from './screens/Product/AddProduct';
+import AddProduct from './screens/Product/AddProduct';
+import UpdateProduct from './screens/Product/Update';
+import ProductScreen from './screens/ClassTab/ScreenTab/ProductScreen';
 
 const App = () => {
   return (
     <NavigationContainer>
-      <StackDemo.Navigator screenOptions={{headerShown: false}}>
+      <StackDemo.Navigator screenOptions={{ headerShown: false }}>
         <StackDemo.Screen name="GetStart" component={GetStart} />
         <StackDemo.Screen name="GetStart2" component={GetStart2} />
         <StackDemo.Screen name="Login1" component={Login1} />
@@ -38,6 +42,12 @@ const App = () => {
         <StackDemo.Screen name="SearchScreen" component={SearchScreen} />
         <StackDemo.Screen name="OrderScreen" component={OrderScreen} />
         <StackDemo.Screen name="ShopScreen" component={ShopScreen} />
+        <StackDemo.Screen name="addProduct" component={AddProduct} />
+        <StackDemo.Screen name="UpdateProduct" component={UpdateProduct} />
+        <StackDemo.Screen name="MyProduct" component={MyProduct} />
+        <StackDemo.Screen name="Product" component={ProductScreen} />
+
+
       </StackDemo.Navigator>
     </NavigationContainer>
   );
@@ -59,7 +69,7 @@ const BottomTab = () => {
         component={MyProduct}
         options={{
           tabBarLabel: 'Sản phẩm của tôi',
-          tabBarIcon: ({focused, size, color}) => (
+          tabBarIcon: ({ focused, size, color }) => (
             <FontAwesome5
               name={focused ? 'box-open' : 'box'}
               size={size}
@@ -73,7 +83,7 @@ const BottomTab = () => {
         component={Order}
         options={{
           tabBarLabel: 'Đơn hàng',
-          tabBarIcon: ({focused, size, color}) => (
+          tabBarIcon: ({ focused, size, color }) => (
             <MaterialCommunityIcons
               name={focused ? 'clipboard-check-multiple' : 'clipboard-check'}
               size={size}
