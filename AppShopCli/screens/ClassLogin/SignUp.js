@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -5,329 +6,265 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {CheckBox} from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
+
+// Hàm kiểm tra định dạng email
+const isValidEmail = email =>
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
+
+// Hàm kiểm tra định dạng mật khẩu
+const isValidPassword = password =>
+  /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
 const SignUp = () => {
   const navigation = useNavigation();
-  const [isChecked, setIsChecked] = useState(false);
-  const [username, setusername] = useState('');
-  const [password, setpassword] = useState('');
-  const [ComFirmpassword, setComFirmpassword] = useState('');
-  const loginFacebook = () => {
-    // navigation.navigate('GetStart2');
-    alert('facebook');
-  };
-  const [getpassworsvisible, setgetpassworsvisible] = useState(false);
-  const [getpassworsvisible1, setgetpassworsvisible1] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [error, setError] = useState('');
-  // kiểm tra validate email
-  const isValidEmail = email => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-  };
-  // kiểm tra validate password
-  const isValidpass = password => {
-    const passRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])/;
-    return passRegex.test(password);
-  };
-  // check đăng nhập
+
+  // Hàm kiểm tra thông tin đăng ký
   const checkLogin = () => {
-    setError(''); // Đặt lại thông báo lỗi
-
-    if (!username) {
-      setError('Email không được để trống');
-    } else if (!isValidEmail(username)) {
-      setError('Email không đúng định dạng');
-    } else if (!password) {
+    setError('');
+    if (!email) setError('Email không được để trống');
+    else if (!isValidEmail(email)) setError('Email không đúng định dạng');
+    else if (!password || !confirmPassword)
       setError('Mật khẩu không được để trống');
-    } else if (password.length < 6) {
+    else if (password.length < 6 || confirmPassword.length < 6)
       setError('Mật khẩu trên 6 kí tự');
-    } else if (!isValidpass(password)) {
-      setError('Mật khẩu có in hoa , kí tự đặc biệt ');
-    } else if (!ComFirmpassword) {
-      setError('Mật khẩu không được để trống');
-    } else if (ComFirmpassword.length < 6) {
-      setError('Mật khẩu trên 6 kí tự');
-    } else if (!isValidpass(ComFirmpassword)) {
-      setError('Mật khẩu có in hoa , kí tự đặc biệt ');
-    } else if (password != ComFirmpassword) {
-      setError('Mật khẩu khoong trùng khớp ');
-    } else {
-      alert('ok ok ');
-    }
-  };
-
-  const forgotpasswork = () => {
-    alert('forgot');
-  };
-  const loginGmail = () => {
-    alert('gmail');
-  };
-  const Signin = () => {
-    navigation.navigate('Login1');
+    else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
+      setError('Mật khẩu có in hoa, kí tự đặc biệt');
+    else if (password !== confirmPassword)
+      setError('Mật khẩu không trùng khớp');
+    else alert('ok ok');
   };
 
   return (
-    <View style={styles.continer}>
-      <View>
-        <Text
-          style={{
-            fontSize: 45,
-            fontWeight: 'bold',
-            marginTop: 60,
-            textAlign: 'center',
-          }}>
-          Create your Account
-        </Text>
-      </View>
-      <View style={styles.formlogin}>
-        <View style={styles.nhapemail}>
-          <Fontisto name="email" size={25} color={'#999999'} />
-          <TextInput
-            style={{
-              marginLeft: 10,
-              color: 'black',
-              fontSize: 20,
-              width: 290,
-            }}
-            defaultValue={username}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        {/* Tiêu đề màn hình */}
+        <Text style={styles.title}>Create your Account</Text>
+
+        {/* Ô nhập email */}
+        <View style={{marginTop: '10%'}}>
+          <InputField
+            icon={<Fontisto name="email" size={25} color={'#999999'} />}
+            value={email}
             placeholder="Nhập Email"
             keyboardType="email-address"
-            onChangeText={content => setusername(content)}
+            onChangeText={setEmail}
           />
+
+          {/* Ô nhập mật khẩu */}
+          <InputField
+            icon={<Entypo name="lock" size={25} color={'#999999'} />}
+            value={password}
+            placeholder="Nhập Password"
+            textContentType="password"
+            onChangeText={setPassword}
+            isPassword
+            passwordVisible={passwordVisible}
+            setPasswordVisible={setPasswordVisible}
+          />
+
+          {/* Ô nhập xác nhận mật khẩu */}
+          <InputField
+            icon={<Entypo name="lock" size={25} color={'#999999'} />}
+            value={confirmPassword}
+            placeholder="Nhập lại Password"
+            textContentType="password"
+            onChangeText={setConfirmPassword}
+            isPassword
+            passwordVisible={confirmPasswordVisible}
+            setPasswordVisible={setConfirmPasswordVisible}
+          />
+
+          {/* Hiển thị lỗi nếu có */}
+          {error && <Text style={styles.error}>{error}</Text>}
+
+          {/* Nút đăng ký */}
+          <TouchableOpacity style={styles.signUpButton} onPress={checkLogin}>
+            <Text style={styles.signUpButtonText}>Sign Up</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.nhappass}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginHorizontal: '5%',
-              alignItems: 'center',
-            }}>
-            <Entypo name="lock" size={25} color={'#999999'} />
-            <TextInput
-              style={{
-                marginLeft: 10,
-                color: 'black',
-                fontSize: 18,
-                flex: 1,
-              }}
-              defaultValue={password}
-              secureTextEntry={getpassworsvisible ? false : true}
-              placeholder="Nhập Password"
-              textContentType="password"
-              onChangeText={content => setpassword(content)}
-            />
-            <TouchableOpacity
-              style={{marginLeft: 3, alignSelf: 'center'}}
-              onPress={() => setgetpassworsvisible(!getpassworsvisible)}>
-              {getpassworsvisible ? (
-                <Entypo name="eye" size={25} color={'black'} />
-              ) : (
-                <Feather name="eye-off" size={25} color={'black'} />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.nhappass}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginHorizontal: '5%',
-              alignItems: 'center',
-            }}>
-            <Entypo name="lock" size={25} color={'#999999'} />
-            <TextInput
-              style={{
-                marginLeft: 10,
-                color: 'black',
-                fontSize: 18,
-                flex: 1,
-              }}
-              defaultValue={ComFirmpassword}
-              secureTextEntry={getpassworsvisible1 ? false : true}
-              placeholder="ComFirm Password"
-              textContentType="password"
-              onChangeText={content => setComFirmpassword(content)}
-            />
-            <TouchableOpacity
-              style={{marginLeft: 3, alignSelf: 'center'}}
-              onPress={() => setgetpassworsvisible1(!getpassworsvisible1)}>
-              {getpassworsvisible1 ? (
-                <Entypo name="eye" size={25} color={'black'} />
-              ) : (
-                <Feather name="eye-off" size={25} color={'black'} />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-        {error ? (
-          <Text style={{color: 'red', marginLeft: 40}}>{error}</Text>
-        ) : null}
-        <View style={{marginLeft: '5%'}}>
-          <CheckBox
-            title="Remember me "
-            checked={isChecked}
-            checkedColor="black" // Màu cho trạng thái đã chọn
-            uncheckedColor="black" // Màu cho trạng thái chưa chọn
-            containerStyle={{backgroundColor: 'white', borderWidth: 0}} // Màu nền của container
-            onPress={() => setIsChecked(!isChecked)}
-          />
-        </View>
-        <View style={{height: 130}}>
-          <TouchableOpacity
-            style={{
-              backgroundColor: 'black',
-              height: 60,
-              width: 350,
-              alignSelf: 'center',
-              justifyContent: 'center',
-              borderRadius: 30,
-              marginTop: '4%',
-            }}
-            onPress={checkLogin}>
-            <Text style={{textAlign: 'center', color: 'white', fontSize: 25}}>
-              Sign Up
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'center',
-              marginTop: 10,
-            }}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: 'black',
-                alignSelf: 'center',
-                fontWeight: 'bold',
-                textDecorationLine: 'underline',
-              }}
-              onPress={forgotpasswork}>
-              Forgot the password ?
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          <View
-            style={{
-              borderWidth: 0.2,
-              width: 100,
-              height: 1,
-              marginLeft: 30,
-              marginTop: 26,
-            }}
-          />
-          <Text
-            style={{
-              color: '#585555',
-              fontSize: 18,
-              alignSelf: 'center',
-              margin: 10,
-            }}>
-            or continue with
-          </Text>
-          <View
-            style={{
-              borderWidth: 0.2,
-              width: 100,
-              height: 1,
-              marginTop: 26,
-            }}
-          />
-        </View>
-        <View
-          style={{
-            marginTop: '5%',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-          }}>
-          <TouchableOpacity style={styles.button} onPress={loginFacebook}>
-            <Image
-              source={require('../../image/facebook.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={loginGmail}>
-            <Image
-              source={require('../../image/google.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: '100%',
-            height: 68,
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <Text style={{fontSize: 18, color: '#7B7070', alignSelf: 'center'}}>
-            Do you have an account?{' '}
-          </Text>
-          <View style={{flexDirection: 'column', justifyContent: 'center'}}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: 'black',
-                alignSelf: 'center',
-                fontWeight: 'bold',
-                textDecorationLine: 'underline',
-              }}
-              onPress={Signin}>
-              Sign In
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
+        {/* Nút đăng ký bằng tài khoản mạng xã hội */}
+        <SocialLoginButtons />
+
+        {/* Đường link đến màn hình đăng nhập */}
+        <SignInLink onPress={() => navigation.navigate('Login1')} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-export default SignUp;
+// Component ô nhập dữ liệu
+const InputField = ({
+  icon,
+  isPassword,
+  passwordVisible,
+  setPasswordVisible,
+  ...props
+}) => (
+  <View style={styles.inputField}>
+    <View style={styles.iconContainer}>{icon}</View>
+    <TextInput
+      style={styles.inputFieldText}
+      secureTextEntry={isPassword && !passwordVisible}
+      {...props}
+    />
+    {isPassword && (
+      <TouchableOpacity
+        style={styles.eyeIconContainer}
+        onPress={() => setPasswordVisible(!passwordVisible)}>
+        {passwordVisible ? (
+          <Entypo name="eye" size={25} color={'#000000'} />
+        ) : (
+          <Feather name="eye-off" size={25} color={'#000000'} />
+        )}
+      </TouchableOpacity>
+    )}
+  </View>
+);
 
+// Component nút đăng ký bằng tài khoản mạng xã hội
+const SocialLoginButtons = () => (
+  <>
+    {/* Dòng chữ "or continue with" */}
+    <View style={styles.orContinueWith}>
+      <View style={styles.separator} />
+      <Text style={styles.orContinueWithText}>or continue with</Text>
+      <View style={styles.separator} />
+    </View>
+
+    {/* Nút đăng ký bằng Facebook và Google */}
+    <View style={styles.socialButtonsContainer}>
+      <SocialButton
+        imageSource={require('../../image/facebook.png')}
+        onPress={() => alert('facebook')}
+      />
+      <SocialButton
+        imageSource={require('../../image/google.png')}
+        onPress={() => alert('gmail')}
+      />
+    </View>
+  </>
+);
+
+// Component nút mạng xã hội
+const SocialButton = ({imageSource, onPress}) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Image source={imageSource} style={styles.icon} />
+  </TouchableOpacity>
+);
+
+// Component đường link đến màn hình đăng nhập
+const SignInLink = ({onPress}) => (
+  <View style={styles.signUpLinkContainer}>
+    <Text style={styles.signUpLinkText}>Already have an account? </Text>
+    <Text style={styles.signUpLink} onPress={onPress}>
+      Sign In
+    </Text>
+  </View>
+);
+
+// StyleSheet
 const styles = StyleSheet.create({
-  continer: {
+  container: {
     backgroundColor: '#ffffff',
     flex: 1,
+    alignItems: 'center',
   },
-  formlogin: {
-    height: 280,
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 45,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  inputField: {
+    padding: 10,
+    alignSelf: 'center',
+    backgroundColor: '#EAEAEA',
+    borderRadius: 12,
+    height: 64,
+    width: 365,
+    justifyContent: 'center',
+    marginBottom: 25,
+    flexDirection: 'row',
+    marginHorizontal: '5%',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: 30,
+    alignItems: 'center',
+  },
+  inputFieldText: {
+    flex: 1,
+    marginLeft: 10,
+    color: '#000000',
+    fontSize: 18,
+  },
+  eyeIconContainer: {
+    width: 30,
+    alignItems: 'center',
+  },
+  error: {
+    color: 'red',
+    marginLeft: 40,
+  },
+  signUpButton: {
+    backgroundColor: 'black',
+    height: 60,
+    width: 350,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
     marginTop: '5%',
   },
-  nhapemail: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EAEAEA',
-    justifyContent: 'center',
-    borderRadius: 10,
-    height: 60,
-    width: 360,
+  signUpButtonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 25,
   },
-  nhappass: {
-    alignSelf: 'center',
-    backgroundColor: '#EAEAEA',
+  orContinueWith: {
+    marginTop: '5%',
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
-    height: 60,
-    width: 360,
-    marginTop: '3%',
+  },
+  separator: {
+    borderWidth: 0.2,
+    width: 100,
+    height: 1,
+    color: '#D9D9D9',
+    marginHorizontal: '2%',
+  },
+  orContinueWithText: {
+    color: '#585555',
+    fontSize: 18,
+  },
+  socialButtonsContainer: {
+    marginTop: '5%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   button: {
-    width: 70,
-    height: 60,
-    borderRadius: 10,
+    width: 82,
+    height: 64,
+    borderRadius: 12,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -336,4 +273,23 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  signUpLinkContainer: {
+    marginTop: '10%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  signUpLinkText: {
+    fontSize: 18,
+    color: '#7B7070',
+    alignSelf: 'center',
+  },
+  signUpLink: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
 });
+
+export default SignUp;

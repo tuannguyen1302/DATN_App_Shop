@@ -1,41 +1,31 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  Text,
-  ActivityIndicator,
-  StatusBar,
-} from 'react-native';
+import {View, Image, StyleSheet, Text, ActivityIndicator} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-const WelcomeScreen = ({navigation}) => {
+const WelcomeScreen = () => {
+  const navigation = useNavigation();
+
+  // Sử dụng useEffect để chuyển màn hình sau khoảng 3 giây
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       navigation.replace('GetStart2');
     }, 3000);
+
+    // Hủy bỏ timer khi component unmount
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent />
-      <View>
-        <Text style={styles.text}> Welcome Welcome </Text>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 90,
-          }}>
-          <Text style={styles.text}> Welcome </Text>
-        </View>
+      <View style={styles.welcomeTextContainer}>
+        <Text style={styles.welcomeText}>Chào mừng</Text>
+        <Text style={styles.welcomeText}>Chào mừng</Text>
       </View>
       <Image source={require('../../image/Logo1.png')} style={styles.logo} />
       <ActivityIndicator size={45} color={'white'} />
     </View>
   );
 };
-
-export default WelcomeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -44,15 +34,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  welcomeTextContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 90,
+  },
   logo: {
     width: 400,
     height: 400,
     resizeMode: 'contain',
     marginBottom: 100,
   },
-  text: {
+  welcomeText: {
     color: '#ffff',
     fontSize: 32,
     fontWeight: 'bold',
   },
 });
+
+export default WelcomeScreen;

@@ -1,87 +1,88 @@
+import React, {useState} from 'react';
 import {
-  FlatList,
-  Image,
-  Pressable,
+  View,
+  Text,
   ScrollView,
   StyleSheet,
-  Text,
-  View,
+  Pressable,
+  Image,
+  FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
-import {Picker} from '@react-native-picker/picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {Picker} from '@react-native-picker/picker';
+import Modal from 'react-native-modal';
 
-// List Tab
-const listTab = [
-  {
-    status: 'All',
-  },
-  {
-    status: 'Còn hàng',
-  },
-  {
-    status: 'Hết hàng',
-  },
-  {
-    status: 'Bị ẩn',
-  },
+// Mảng chứa các tab
+export const TAB_ITEMS = [
+  {status: 'All'},
+  {status: 'Còn hàng'},
+  {status: 'Hết hàng'},
+  {status: 'Bị ẩn'},
 ];
 
-// Cho phep cac componet khac được sử dụng lại nó
-export const ProductList = ({arrays}) => {
-  return (
-    <FlatList
-      scrollEnabled={false}
-      data={arrays}
-      renderItem={({item}) => (
-        <View style={styles.itemProduct}>
-          <View style={styles.item1}>
-            <Image style={styles.imageItem} source={{uri: item.image}} />
-            <View style={{left: '10%'}}>
-              <Text style={styles.txtName}>{item.nameProduct}</Text>
-              <Text style={styles.txtPrice}>
-                đ {item.price.toLocaleString().replace(/,/g, '.')}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.item2}>
-            <View style={styles.icon}>
-              <FontAwesome5 name="boxes" size={15} color={'#222222'} />
-              <Text style={styles.txt}>Kho hàng: {item.quantity}</Text>
-            </View>
-            <View style={styles.icon}>
-              <Feather name="list" size={15} color={'#222222'} />
-              <Text style={styles.txt}>Đã bán: {item.quantity}</Text>
-            </View>
-          </View>
-          <View style={styles.item3}>
-            <Pressable style={styles.btn}>
-              <Text style={styles.txt}>Sửa</Text>
-            </Pressable>
-            <Pressable style={styles.btn}>
-              <Text style={styles.txt}>Ẩn</Text>
-            </Pressable>
+// Component danh sách sản phẩm
+export const ProductList = ({productList, onToggleHide}) => (
+  <FlatList
+    scrollEnabled={false}
+    data={productList}
+    renderItem={({item}) => (
+      <View style={styles.productItem}>
+        {/* Phần Header của sản phẩm */}
+        <View style={styles.itemHeader}>
+          <Image style={styles.productImage} source={{uri: item.image}} />
+          <View style={{marginLeft: '2%'}}>
+            <Text style={styles.productName} numberOfLines={1}>
+              {item.nameProduct}
+            </Text>
+            <Text style={styles.productPrice}>
+              đ {item.price.toLocaleString().replace(/,/g, '.')}
+            </Text>
           </View>
         </View>
-      )}
-    />
-  );
-};
 
-const ProductScreen = props => {
-  // Nhận từ componer chính
-  const {id, navigation} = props;
-  // Kiem tra khi an chuyen tab
+        {/* Phần chi tiết và hành động của sản phẩm */}
+        <View style={styles.itemDetails}>
+          {['boxes', 'list'].map((icon, index) => (
+            <View style={styles.icon} key={index}>
+              {index === 0 ? (
+                <FontAwesome5 name={icon} size={15} color={'#222222'} />
+              ) : (
+                <Feather name={icon} size={15} color={'#222222'} />
+              )}
+              <Text style={styles.tabText}>
+                {index === 0 ? 'Kho hàng' : 'Đã bán'}: {item.quantity}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Phần hành động với sản phẩm */}
+        <View style={styles.itemActions}>
+          <Pressable style={styles.actionButton}>
+            <Text style={styles.buttonText}>Sửa</Text>
+          </Pressable>
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => onToggleHide(item)}>
+            <Text style={styles.buttonText}>Ẩn</Text>
+          </Pressable>
+        </View>
+      </View>
+    )}
+  />
+);
+
+// Màn hình chính hiển thị danh sách sản phẩm
+const ProductScreen = ({navigation}) => {
   const [status, setStatus] = useState('All');
-  // Dữ liệu dùng để render
-  const [array, setArray] = useState([
+  const [productList, setProductList] = useState([
     {
       nameProduct: 'Áo Hoodie Oversized Nữ Activated',
       image:
         'https://th.bing.com/th/id/OIP.sB9FPPG22oH-iy-QmN99IAHaLH?w=139&h=208&c=7&r=0&o=5&pid=1.7',
-      product_attributes: [
+      productAttributes: [
         {
           color: 'green',
           size: ['xl', 'l', 'xxl'],
@@ -91,56 +92,68 @@ const ProductScreen = props => {
       price: 350000,
       quantity: 5,
     },
-    {
-      nameProduct: 'Áo hoodie ngắn tay hình mặt mèo',
-      image:
-        'https://th.bing.com/th/id/R.8b7d5b399d740757411454b84783aff1?rik=SpcCP%2fi%2bsF1ktw&pid=ImgRaw&r=0',
-      product_attributes: [
-        {
-          color: 'yellow',
-          size: ['xl', 'l', 'xxl'],
-          quantity: 5,
-        },
-      ],
-      price: 250000,
-      quantity: 5,
-    },
   ]);
-  // Lựa chọn giá tăng giảm
   const [selectedValue, setSelectedValue] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // Hàm mở/đóng modal
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  // Hàm xác nhận ẩn sản phẩm
+  const confirmHideProduct = async () => {
+    // Thực hiện gọi API ẩn sản phẩm ở đây
+    try {
+      // Gọi API ẩn sản phẩm
+      // const response = await callHideProductAPI(selectedProduct.id);
+
+      // Nếu API gọi thành công, đóng modal và cập nhật danh sách sản phẩm
+      toggleModal();
+      const updatedProductList = productList.filter(
+        item => item !== selectedProduct,
+      );
+      setProductList(updatedProductList);
+    } catch (error) {
+      console.error('Lỗi khi gọi API ẩn sản phẩm:', error);
+      // Xử lý lỗi nếu cần
+    }
+  };
+
+  // Hàm mở modal và set sản phẩm được chọn
+  const toggleHideProduct = product => {
+    setSelectedProduct(product);
+    toggleModal();
+  };
 
   return (
     <View style={styles.container}>
-      {/* Danh sách tab */}
+      {/* Tab chọn trạng thái hiển thị sản phẩm */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {listTab.map((data, index) => (
+          {TAB_ITEMS.map((data, index) => (
             <Pressable
               key={index}
               style={[
                 styles.tabItem,
                 data.status === status ? {borderBottomWidth: 2} : null,
               ]}
-              onPress={() => {
-                setStatus(data.status), setArray(null);
-              }}>
-              <Text style={styles.txt}>{data.status}</Text>
+              onPress={() => setStatus(data.status)}>
+              <Text style={styles.tabText}>{data.status}</Text>
             </Pressable>
           ))}
         </ScrollView>
       </View>
 
-      {/* Giá tăng, giảm, tìm kiếm sản phẩm */}
+      {/* Phần lọc và tìm kiếm */}
       <View style={styles.filter}>
         <View style={styles.iconView}>
           <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
             <AntDesign name="bars" size={28} color={'black'} />
-            {/* Chọn tăng giảm product */}
             <Picker
               selectedValue={selectedValue}
-              style={{
-                width: 140,
-              }}
+              style={{width: 140}}
               onValueChange={itemValue => setSelectedValue(itemValue)}>
               <Picker.Item enabled={false} label="Sắp xếp" />
               <Picker.Item label="Tăng" value="+" />
@@ -153,27 +166,46 @@ const ProductScreen = props => {
         </View>
       </View>
 
-      {/* Hiển thị sản phẩm */}
+      {/* Danh sách sản phẩm */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {array ? (
-          <ProductList arrays={array} />
+        {productList ? (
+          <ProductList
+            productList={productList}
+            onToggleHide={toggleHideProduct}
+          />
         ) : (
-          <View style={styles.nav}>
+          <View style={styles.noResults}>
             <Image
-              style={styles.imgButton}
-              source={{
-                uri: 'https://cdn3.iconfinder.com/data/icons/zooloostrations/1000/shopping_e-commerce___shop_store_cart_lost_item_product_empty_animal-256.png',
-              }}
+              style={styles.noResultsImage}
+              source={require('../../../image/NoProduct.png')}
             />
-            <Text>Không tìm thấy sản phẩm nào</Text>
+            <Text style={styles.noResultsText}>
+              Không tìm thấy sản phẩm nào
+            </Text>
           </View>
         )}
       </ScrollView>
+
+      {/* Modal xác nhận ẩn sản phẩm */}
+      <Modal isVisible={isModalVisible}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Xác nhận ẩn sản phẩm</Text>
+          <Text style={styles.modalText}>
+            Bạn có chắc muốn ẩn sản phẩm "{selectedProduct?.nameProduct}" không?
+          </Text>
+          <View style={styles.modalButtons}>
+            <Pressable style={styles.modalButton} onPress={toggleModal}>
+              <Text style={styles.buttonText}>Hủy</Text>
+            </Pressable>
+            <Pressable style={styles.modalButton} onPress={confirmHideProduct}>
+              <Text style={styles.buttonText}>Xác nhận</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
-
-export default ProductScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -191,7 +223,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
-  txt: {
+  tabText: {
     color: 'black',
     fontWeight: '500',
   },
@@ -207,35 +239,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  itemProduct: {
+  productItem: {
     margin: '2%',
     height: 185,
     borderRadius: 10,
     borderWidth: 0.5,
     backgroundColor: 'white',
   },
-  item1: {
+  itemHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     margin: '4%',
   },
-  imageItem: {
+  productImage: {
     width: 80,
     height: 80,
     resizeMode: 'contain',
     borderRadius: 10,
   },
-  txtName: {
+  productName: {
     fontSize: 18,
     color: 'black',
-    fontWeight: '400',
+    width: '80%',
+    fontWeight: '500',
   },
-  txtPrice: {
+  productPrice: {
     marginTop: '5%',
     color: 'black',
     fontSize: 18,
   },
-  item2: {
+  itemDetails: {
     height: '18%',
     borderTopWidth: 1,
     flexDirection: 'row',
@@ -245,13 +278,13 @@ const styles = StyleSheet.create({
     borderColor: '#D9D9D9',
     marginHorizontal: '5%',
   },
-  item3: {
+  itemActions: {
     height: '22%',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
   },
-  btn: {
+  actionButton: {
     width: 80,
     height: 25,
     borderColor: 'black',
@@ -260,20 +293,64 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buttonText: {
+    color: 'black',
+    fontWeight: '500',
+  },
   icon: {
     width: '30%',
     alignItems: 'center',
     justifyContent: 'space-around',
     flexDirection: 'row',
   },
-  nav: {
+  noResults: {
     marginTop: '10%',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  imgButton: {
+  noResultsImage: {
     width: 200,
     height: 200,
     resizeMode: 'contain',
   },
+  noResultsText: {
+    marginTop: '2%',
+    color: 'black',
+  },
+  modalContainer: {
+    width: 320,
+    height: 200,
+    overflow: 'hidden',
+    alignSelf: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    padding: '5%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
+    marginBottom: '5%',
+  },
+  modalText: {
+    fontSize: 16,
+    color: 'black',
+    marginBottom: '10%',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    width: '48%',
+    height: 40,
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
+
+export default ProductScreen;

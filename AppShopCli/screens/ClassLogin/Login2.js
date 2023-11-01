@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -5,273 +6,191 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {CheckBox} from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
+
+// Hàm kiểm tra định dạng email
+const isValidEmail = email =>
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
+
+// Hàm kiểm tra định dạng mật khẩu
+const isValidPassword = password =>
+  /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
 const Login2 = () => {
   const navigation = useNavigation();
   const [isChecked, setIsChecked] = useState(false);
-  const [username, setusername] = useState('');
-  const [password, setpassword] = useState('');
-
-  const loginFacebook = () => {
-    // navigation.navigate('GetStart2');
-    alert('facebook');
-  };
-  const [getpassworsvisible, setgetpassworsvisible] = useState(false);
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
-  // kiểm tra validate email
-  const isValidEmail = email => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-  };
-  // kiểm tra validate password
-  const isValidpass = password => {
-    const passRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])/;
-    return passRegex.test(password);
-  };
-  // check đăng nhập
-  const checkLogin = () => {
-    setError(''); // Đặt lại thông báo lỗi
 
-    if (!username) {
+  // Hàm kiểm tra đăng nhập
+  const checkLogin = () => {
+    setError('');
+    if (!email) {
       setError('Email không được để trống');
-    } else if (!isValidEmail(username)) {
+    } else if (!isValidEmail(email)) {
       setError('Email không đúng định dạng');
     } else if (!password) {
       setError('Mật khẩu không được để trống');
     } else if (password.length < 6) {
-      setError('Mật khẩu trên 6 kí tự');
-    } else if (!isValidpass(password)) {
-      setError('Mật khẩu có in hoa , kí tự đặc biệt ');
+      setError('Mật khẩu phải có ít nhất 6 kí tự');
+    } else if (!isValidPassword(password)) {
+      setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
     } else {
       navigation.replace('BottomTab', {screen: 'MyProduct'});
     }
   };
 
-  const forgotpasswork = () => {
-    alert('forgot');
-  };
-  const loginGmail = () => {
-    alert('gmail');
-  };
-  const Signup = () => {
-    navigation.navigate('SignUp');
-  };
-
   return (
-    <View aView style={styles.continer}>
-      <View>
-        <Text
-          style={{
-            fontSize: 45,
-            fontWeight: 'bold',
-            marginTop: '8%',
-            textAlign: 'center',
-          }}>
-          Login to your Account
-        </Text>
-      </View>
-      <View style={styles.formlogin}>
-        <View style={styles.nhapemail}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginHorizontal: '5%',
-              alignItems: 'center',
-            }}>
-            <Fontisto name="email" size={25} color={'#999999'} />
-            <TextInput
-              style={{
-                marginLeft: 10,
-                color: '#000000',
-                fontSize: 18,
-                width: 290,
-              }}
-              defaultValue={username}
-              placeholder="Nhập Email"
-              keyboardType="email-address"
-              onChangeText={content => setusername(content)}
-            />
-          </View>
-        </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <Text style={styles.title}>Login to your Account</Text>
 
-        <View style={styles.nhappass}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginHorizontal: '5%',
-              alignItems: 'center',
-            }}>
-            <Entypo name="lock" size={25} color={'#999999'} />
-            <TextInput
-              style={{
-                marginLeft: 10,
-                color: '#000000',
-                fontSize: 18,
-                width: 250,
-              }}
-              defaultValue={password}
-              secureTextEntry={getpassworsvisible ? false : true}
-              placeholder="Nhập Password"
-              textContentType="password"
-              onChangeText={content => setpassword(content)}
-            />
-            <TouchableOpacity
-              style={{marginLeft: 3}}
-              onPress={() => setgetpassworsvisible(!getpassworsvisible)}>
-              {getpassworsvisible ? (
-                <Entypo name="eye" size={25} color={'#000000'} />
-              ) : (
-                <Feather name="eye-off" size={25} color={'#000000'} />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-        {error ? (
-          <Text style={{color: 'red', marginLeft: 40}}>{error}</Text>
-        ) : null}
-        <View style={{marginLeft: '5%'}}>
+        <View style={{marginTop: '10%'}}>
+          <InputField
+            icon={<Fontisto name="email" size={25} color={'#999999'} />}
+            value={email}
+            placeholder="Nhập Email"
+            keyboardType="email-address"
+            onChangeText={setEmail}
+          />
+
+          <InputField
+            icon={<Entypo name="lock" size={25} color={'#999999'} />}
+            value={password}
+            placeholder="Nhập Password"
+            textContentType="password"
+            onChangeText={setPassword}
+            isPassword
+            passwordVisible={passwordVisible}
+            setPasswordVisible={setPasswordVisible}
+          />
+
+          {error && <Text style={styles.error}>{error}</Text>}
+
           <CheckBox
-            title="Remember me "
+            title="Remember me"
             checked={isChecked}
-            checkedColor="#000000" // Màu cho trạng thái đã chọn
-            uncheckedColor="#000000" // Màu cho trạng thái chưa chọn
-            containerStyle={{backgroundColor: 'white', borderWidth: 0}} // Màu nền của container
+            checkedColor="#000000"
+            uncheckedColor="#000000"
+            containerStyle={styles.checkBox}
             onPress={() => setIsChecked(!isChecked)}
           />
-        </View>
-        <View style={{height: 146}}>
-          <TouchableOpacity
-            style={{
-              backgroundColor: 'black',
-              height: 60,
-              width: 350,
-              alignSelf: 'center',
-              justifyContent: 'center',
-              borderRadius: 30,
-              marginTop: '5%',
-            }}
-            onPress={checkLogin}>
-            <Text style={{textAlign: 'center', color: 'white', fontSize: 25}}>
-              Sign In
-            </Text>
+
+          <TouchableOpacity style={styles.signInButton} onPress={checkLogin}>
+            <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
-          <View
-            style={{
-              marginTop: '5%',
-            }}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: 'black',
-                alignSelf: 'center',
-                fontWeight: 'bold',
-                textDecorationLine: 'underline',
-              }}
-              onPress={forgotpasswork}>
-              Forgot the password ?
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          <View
-            style={{
-              borderWidth: 0.2,
-              width: 100,
-              height: 1,
-              marginLeft: 30,
-              marginTop: '8%',
-              color: '#D9D9D9',
-            }}
-          />
-          <Text
-            style={{
-              color: '#585555',
-              fontSize: 18,
-              alignSelf: 'center',
-              margin: '2%',
-            }}>
-            or continue with
+
+          <Text style={styles.forgotPassword} onPress={() => alert('forgot')}>
+            Forgot the password?
           </Text>
-          <View
-            style={{
-              borderWidth: 0.2,
-              width: 100,
-              height: 1,
-              marginTop: '8%',
-              color: '#D9D9D9',
-            }}
-          />
         </View>
-        <View
-          style={{
-            marginTop: '8%',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-          }}>
-          <TouchableOpacity style={styles.button} onPress={loginFacebook}>
-            <Image
-              source={require('../../image/facebook.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={loginGmail}>
-            <Image
-              source={require('../../image/google.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            marginTop: '10%',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <Text style={{fontSize: 18, color: '#7B7070', alignSelf: 'center'}}>
-            Don't have an account?{' '}
-          </Text>
-          <View style={{flexDirection: 'column', justifyContent: 'center'}}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: 'black',
-                alignSelf: 'center',
-                fontWeight: 'bold',
-                textDecorationLine: 'underline',
-              }}
-              onPress={Signup}>
-              Sign Up
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
+
+        <SocialLoginButtons />
+
+        <SignUpLink onPress={() => navigation.navigate('SignUp')} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-export default Login2;
+// Component ô nhập dữ liệu
+const InputField = ({
+  icon,
+  isPassword,
+  passwordVisible,
+  setPasswordVisible,
+  ...props
+}) => (
+  <View style={styles.inputField}>
+    <View style={styles.iconContainer}>{icon}</View>
+    <TextInput
+      style={styles.inputFieldText}
+      secureTextEntry={isPassword && !passwordVisible}
+      {...props}
+    />
+    {isPassword && (
+      <TouchableOpacity
+        style={styles.eyeIconContainer}
+        onPress={() => setPasswordVisible(!passwordVisible)}>
+        {passwordVisible ? (
+          <Entypo name="eye" size={25} color={'#000000'} />
+        ) : (
+          <Feather name="eye-off" size={25} color={'#000000'} />
+        )}
+      </TouchableOpacity>
+    )}
+  </View>
+);
 
+// Component nút đăng nhập bằng tài khoản mạng xã hội
+const SocialLoginButtons = () => (
+  <>
+    <View style={styles.orContinueWith}>
+      <View style={styles.separator} />
+      <Text style={styles.orContinueWithText}>or continue with</Text>
+      <View style={styles.separator} />
+    </View>
+
+    <View style={styles.socialButtonsContainer}>
+      <SocialButton
+        imageSource={require('../../image/facebook.png')}
+        onPress={() => alert('facebook')}
+      />
+      <SocialButton
+        imageSource={require('../../image/google.png')}
+        onPress={() => alert('gmail')}
+      />
+    </View>
+  </>
+);
+
+// Component nút đăng nhập bằng tài khoản mạng xã hội
+const SocialButton = ({imageSource, onPress}) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Image source={imageSource} style={styles.icon} />
+  </TouchableOpacity>
+);
+
+// Component đường link đến màn hình đăng ký
+const SignUpLink = ({onPress}) => (
+  <View style={styles.signUpLinkContainer}>
+    <Text style={styles.signUpLinkText}>Don't have an account? </Text>
+    <Text style={styles.signUpLink} onPress={onPress}>
+      Sign Up
+    </Text>
+  </View>
+);
+
+// Style của component
 const styles = StyleSheet.create({
-  continer: {
-    backgroundColor: '#ffffff',
+  container: {
     flex: 1,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
   },
-  formlogin: {
-    height: 286,
-    marginTop: 63,
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
-  nhapemail: {
+  title: {
+    fontSize: 45,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  inputField: {
+    padding: 10,
     alignSelf: 'center',
     backgroundColor: '#EAEAEA',
     borderRadius: 12,
@@ -279,22 +198,75 @@ const styles = StyleSheet.create({
     width: 365,
     justifyContent: 'center',
     marginBottom: 27,
-  },
-  nhappass: {
-    alignSelf: 'center',
+    flexDirection: 'row',
+    marginHorizontal: '5%',
     alignItems: 'center',
-    backgroundColor: '#EAEAEA',
-    justifyContent: 'center',
-    borderRadius: 10,
-    height: 64,
-    width: 365,
   },
-  buttonText: {
-    marginLeft: 24,
-    fontWeight: 'bold',
-    color: '#999999',
-    fontSize: 15,
+  iconContainer: {
+    width: 30,
+    alignItems: 'center',
+  },
+  inputFieldText: {
+    flex: 1,
+    marginLeft: 10,
+    color: '#000000',
+    fontSize: 18,
+  },
+  eyeIconContainer: {
+    width: 30,
+    alignItems: 'center',
+  },
+  error: {
+    color: 'red',
+    marginLeft: 40,
+  },
+  checkBox: {
+    backgroundColor: 'white',
+    borderWidth: 0,
+  },
+  signInButton: {
+    backgroundColor: 'black',
+    height: 60,
+    width: 350,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
+    marginTop: '5%',
+  },
+  signInButtonText: {
     textAlign: 'center',
+    color: 'white',
+    fontSize: 25,
+  },
+  forgotPassword: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    marginTop: '5%',
+  },
+  orContinueWith: {
+    marginTop: '5%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  separator: {
+    borderWidth: 0.2,
+    width: 100,
+    height: 1,
+    color: '#D9D9D9',
+    marginHorizontal: '2%',
+  },
+  orContinueWithText: {
+    color: '#585555',
+    fontSize: 18,
+  },
+  socialButtonsContainer: {
+    marginTop: '5%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   button: {
     width: 82,
@@ -308,4 +280,23 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  signUpLinkContainer: {
+    marginTop: '10%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  signUpLinkText: {
+    fontSize: 18,
+    color: '#7B7070',
+    alignSelf: 'center',
+  },
+  signUpLink: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
 });
+
+export default Login2;

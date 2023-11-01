@@ -1,65 +1,59 @@
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 const GetStart2 = () => {
   const navigation = useNavigation();
+
+  // Hàm xử lý khi nút được nhấn
   const handleButtonPress = () => {
-    navigation.navigate('Login1');
+    navigation.replace('Login1');
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.view1}>
-        <Image source={require('../../image/Icon1.jpg')} style={styles.anh1} />
+      {/* Container chứa biểu tượng */}
+      <View style={styles.iconContainer}>
+        <Image source={require('../../image/Icon1.jpg')} style={styles.icon} />
       </View>
-      <View>
-        <Image
-          source={{
-            uri: 'https://cdn1.iconfinder.com/data/icons/scenes-6/1000/e-commerce___online_store_shop_marketing_smartphone_device_building_shopping-256.png',
-          }}
-          style={styles.anh2}
-        />
+
+      {/* Hiển thị hình ảnh cửa hàng */}
+      <Image
+        source={require('../../image/Shop.png')}
+        style={styles.storeImage}
+      />
+
+      {/* Container chứa văn bản */}
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>Post what you want to sell</Text>
       </View>
-      <View style={styles.view3}>
-        <Text
-          style={{
-            fontSize: 40,
-            color: 'black',
-            fontWeight: 'bold',
-            textAlign: 'center',
-          }}>
-          Post what you want to sell
-        </Text>
-      </View>
-      <View>
-        <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
+
+      {/* Nút Next */}
+      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default GetStart2;
-
+// Style của component
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
     flex: 1,
+    backgroundColor: 'white',
   },
-  view1: {
+  iconContainer: {
     alignSelf: 'flex-end',
-    marginTop: '2%',
+    marginTop: '5%',
     marginRight: 20,
     marginBottom: 30,
   },
-  anh1: {
+  icon: {
     width: 70,
     height: 70,
     resizeMode: 'contain',
   },
-  anh2: {
+  storeImage: {
     width: 320,
     height: 320,
     resizeMode: 'contain',
@@ -67,12 +61,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 50,
   },
-  view3: {
+  textContainer: {
     justifyContent: 'center',
     alignSelf: 'center',
     width: 270,
     height: 105,
     marginBottom: 50,
+  },
+  text: {
+    fontSize: 40,
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   button: {
     alignSelf: 'center',
@@ -83,10 +83,12 @@ const styles = StyleSheet.create({
     width: 335,
   },
   buttonText: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
-    fontSize: 20,
     textAlign: 'center',
     marginTop: 5,
   },
 });
+
+export default GetStart2;

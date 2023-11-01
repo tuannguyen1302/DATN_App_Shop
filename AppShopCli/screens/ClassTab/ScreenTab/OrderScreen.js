@@ -10,9 +10,10 @@ import {
 import React, {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
+import {useNavigation} from '@react-navigation/native';
 
-// List Tab
-const listTab = [
+// Danh sách Tab
+const TAB_LIST = [
   {
     status: 'Đang giao',
   },
@@ -24,25 +25,24 @@ const listTab = [
   },
 ];
 
-// Khai bao anh
-const imgOrder = [
-  'https://cdn2.iconfinder.com/data/icons/customer-loyalty-6/4680/PMT_M358_05-256.png',
-  'https://cdn3.iconfinder.com/data/icons/order-food-online/3000/FOO-01-256.png',
-  'https://cdn0.iconfinder.com/data/icons/delivery-services-5/600/7-256.png',
-  'https://cdn1.iconfinder.com/data/icons/business-people-v/85/People-01-41-256.png',
+// Danh sách các ảnh cho từng trạng thái đơn hàng
+const TAB_IMAGES = [
+  require('../../../image/Order1.png'),
+  require('../../../image/Order2.png'),
+  require('../../../image/Order3.png'),
+  require('../../../image/Order4.png'),
 ];
 
-const OrderScreen = ({navigation}) => {
-  // Kiem tra khi an chuyen don hang
-  const [isCheck, setIsCheck] = useState(false);
-  // Kiem tra khi an chuyen tab
-  const [status, setStatus] = useState('Đang giao');
-  // Kiem tra ảnh khi an chuyen
-  const [imgBottom, setImgBottom] = useState(imgOrder[0]);
-  // Mảng đữ liệu render
-  const [array, setArray] = useState([
+const OrderScreen = () => {
+  const navigation = useNavigation();
+  const [isDeliveryMode, setIsDeliveryMode] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState('Đang giao');
+  const [bottomImage, setBottomImage] = useState(TAB_IMAGES[0]);
+
+  // Dữ liệu mẫu để hiển thị đơn hàng
+  const [orderData, setOrderData] = useState([
     {
-      userName: 'Sùng văn sính...',
+      userName: 'Sùng Văn Sinh...',
       nameProduct: 'Áo khoác nam...',
       avatar:
         'https://www.bing.com/th?id=OIP.lXMqjfaBPZm2xSzGyPs6swHaKX&w=150&h=210&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2',
@@ -53,59 +53,58 @@ const OrderScreen = ({navigation}) => {
     },
   ]);
 
-  // Khi an nut xoay man
-  const image = () => {
-    setIsCheck(!isCheck);
-    isCheck ? setImgBottom(imgOrder[0]) : tabItem(status);
+  // Hàm chuyển đổi giữa chế độ xác nhận và chế độ giao hàng
+  const toggleDeliveryMode = () => {
+    setIsDeliveryMode(!isDeliveryMode);
+    isDeliveryMode
+      ? setBottomImage(TAB_IMAGES[0])
+      : handleTabChange(currentStatus);
   };
 
-  // Kiem tra khi an tab
-  const tabItem = tab => {
-    setStatus(tab);
-    if (tab == 'Đang giao') setImgBottom(imgOrder[1]);
-    else if (tab == 'Đã giao') setImgBottom(imgOrder[2]);
-    else if (tab == 'Đã hủy') setImgBottom(imgOrder[3]);
+  // Hàm xử lý khi chuyển tab
+  const handleTabChange = tab => {
+    setCurrentStatus(tab);
+    if (tab === 'Đang giao') setBottomImage(TAB_IMAGES[1]);
+    else if (tab === 'Đã giao') setBottomImage(TAB_IMAGES[2]);
+    else if (tab === 'Đã hủy') setBottomImage(TAB_IMAGES[3]);
   };
 
-  // Su dung de duyệt từng item
-  const renderItem = array => {
+  // Hàm render từng item trong danh sách đơn hàng
+  const renderItem = item => {
     return (
       <FlatList
         scrollEnabled={false}
-        data={array}
+        data={item}
         renderItem={({item}) => (
-          <View style={styles.buttonItem}>
-            <View style={styles.rowItem1}>
-              {/* Ảnh sản phẩm */}
-              <Image style={styles.imgItem} source={{uri: item.avatar}} />
-              {/* Thông tin sản phẩm */}
-              <View style={{marginHorizontal: '1%'}}>
-                <Text style={styles.nameProductItem}>{item.nameProduct}</Text>
-                <View style={styles.iconHeader}>
-                  <View
-                    style={[styles.colorItem, {backgroundColor: item.color}]}
-                  />
-                  <Text style={styles.txtItem}>Màu | Size: {item.size}</Text>
-                </View>
-                <Text style={styles.txtItem}>Người mua: {item.userName}</Text>
-                <Pressable>
-                  <Text
-                    style={[styles.txtItem, {textDecorationLine: 'underline'}]}>
-                    Xem thêm
-                  </Text>
-                </Pressable>
+          <View style={styles.itemContainer}>
+            {/* Ảnh sản phẩm */}
+            <Image style={styles.productImage} source={{uri: item.avatar}} />
+            {/* Thông tin sản phẩm */}
+            <View style={styles.productInfo}>
+              <Text style={styles.productName}>{item.nameProduct}</Text>
+              {/* Màu sắc và kích thước */}
+              <View style={styles.colorInfo}>
+                <View
+                  style={[styles.colorBadge, {backgroundColor: item.color}]}
+                />
+                <Text style={styles.infoText}>Màu | Size: {item.size}</Text>
               </View>
-              {/* Số lượng, xác nhận */}
-              <View style={styles.rowItem2}>
-                <View style={styles.quantityItem}>
-                  <Text style={styles.txtItem}>{item.quantity}</Text>
-                </View>
-                <View style={styles.statusItem}>
-                  <Text
-                    style={[styles.txtItem, {color: 'white', fontSize: 10}]}>
-                    {item.status}
-                  </Text>
-                </View>
+              <Text style={styles.infoText}>Người mua: {item.userName}</Text>
+              <Pressable>
+                <Text style={[styles.infoText, styles.underline]}>
+                  Xem thêm
+                </Text>
+              </Pressable>
+            </View>
+            {/* Số lượng và trạng thái */}
+            <View style={styles.quantityAndStatus}>
+              <View style={styles.quantityBadge}>
+                <Text style={styles.infoText}>{item.quantity}</Text>
+              </View>
+              <View style={styles.statusBadge}>
+                <Text style={[styles.infoText, styles.statusText]}>
+                  {item.status}
+                </Text>
               </View>
             </View>
           </View>
@@ -116,62 +115,74 @@ const OrderScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* Icon back, Chuyen man */}
+      {/* Header */}
       <View style={styles.header}>
-        <View style={styles.iconHeader}>
+        <View style={styles.headerContent}>
+          {/* Nút quay lại và tiêu đề header */}
           <Pressable onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={30} color={'black'} />
           </Pressable>
-          <Text style={styles.txtHeader}>
-            Đơn hàng({isCheck ? 'giao hàng' : 'xác nhận'})
+          <Text style={styles.headerText}>
+            Đơn hàng({isDeliveryMode ? 'giao hàng' : 'xác nhận'})
           </Text>
         </View>
-        <Pressable onPress={image}>
+        {/* Nút chuyển chế độ */}
+        <Pressable onPress={toggleDeliveryMode}>
           <Octicons name="issue-reopened" size={30} color={'black'} />
         </Pressable>
       </View>
 
-      {isCheck ? (
-        // Màn hình giao hàng
-        // Tab chuyển màn
-        <View style={styles.nav}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {listTab.map((data, index) => (
-              <Pressable
-                key={index}
-                style={[
-                  styles.tabItem,
-                  data.status == status ? {backgroundColor: 'white'} : null,
-                ]}
-                onPress={() => tabItem(data.status)}>
-                <Text style={data.status == status ? styles.txtTab : null}>
-                  {data.status}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {renderItem(array)}
-          </ScrollView>
-        </View>
-      ) : (
-        // Man hinh xác nhận
-        <View style={styles.nav}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={styles.txtTitle}>Hôm nay({array.length})</Text>
-            {renderItem(array)}
-            <Text style={styles.txtTitle}>Trước đó({array.length})</Text>
-            {renderItem(array)}
-          </ScrollView>
-        </View>
-      )}
+      {/* Nội dung chính */}
+      <View style={styles.content}>
+        {isDeliveryMode && (
+          // Màn hình giao hàng - Tab chuyển màn hình
+          <View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {TAB_LIST.map((image, index) => (
+                <Pressable
+                  key={index}
+                  style={[
+                    styles.tabItem,
+                    {
+                      backgroundColor:
+                        currentStatus === TAB_LIST[index].status
+                          ? 'white'
+                          : null,
+                    },
+                  ]}
+                  onPress={() => handleTabChange(TAB_LIST[index].status)}>
+                  <Text
+                    style={
+                      currentStatus === TAB_LIST[index].status
+                        ? styles.selectedTabText
+                        : null
+                    }>
+                    {TAB_LIST[index].status}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        )}
 
-      <Image style={styles.imageBottom} source={{uri: imgBottom}} />
+        {/* Danh sách đơn hàng */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {!isDeliveryMode && (
+            <>
+              <Text style={styles.titleText}>Hôm nay({orderData.length})</Text>
+              {renderItem(orderData)}
+              <Text style={styles.titleText}>Trước đó({orderData.length})</Text>
+            </>
+          )}
+          {renderItem(orderData)}
+        </ScrollView>
+      </View>
+
+      {/* Ảnh phía dưới */}
+      <Image style={styles.bottomImage} source={bottomImage} />
     </View>
   );
 };
-
-export default OrderScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -179,27 +190,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
   },
   header: {
-    height: '10%',
+    height: 70,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#999999',
-    marginHorizontal: '7%',
+    marginHorizontal: '5%',
     borderBottomWidth: 1,
     justifyContent: 'space-between',
   },
-  iconHeader: {
+  headerContent: {
     alignItems: 'center',
     flexDirection: 'row',
   },
-  txtHeader: {
+  headerText: {
     left: '15%',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
-  nav: {
+  content: {
+    flex: 1,
     marginHorizontal: '5%',
-    alignItems: 'center',
   },
   tabItem: {
     width: 110,
@@ -210,58 +221,66 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
   },
-  txtTab: {
+  selectedTabText: {
     color: 'black',
     fontWeight: 'bold',
     fontSize: 16,
   },
-  txtTitle: {
+  titleText: {
     color: 'black',
     fontSize: 18,
     fontWeight: '700',
     marginTop: '5%',
   },
-  buttonItem: {
+  itemContainer: {
     height: 140,
     marginTop: '2%',
     borderRadius: 20,
+    padding: '5%',
+    flexDirection: 'row',
     justifyContent: 'center',
     backgroundColor: 'white',
   },
-  rowItem1: {
-    marginHorizontal: '3%',
-    flexDirection: 'row',
-  },
-  imgItem: {
+  productImage: {
     width: 100,
     height: 100,
     resizeMode: 'contain',
     borderRadius: 10,
   },
-  nameProductItem: {
+  productInfo: {
+    left: '1%',
+  },
+  productName: {
     fontSize: 19,
     margin: '2%',
     color: 'black',
     fontWeight: 'bold',
   },
-  colorItem: {
+  colorInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  colorBadge: {
     width: 10,
     height: 10,
     borderRadius: 10,
     marginHorizontal: '2%',
   },
-  txtItem: {
+  infoText: {
     margin: '2%',
     color: 'black',
     fontSize: 12,
     fontWeight: '700',
   },
-  rowItem2: {
-    marginHorizontal: '3%',
+  underline: {
+    textDecorationLine: 'underline',
+  },
+  quantityAndStatus: {
+    marginHorizontal: '1%',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  quantityItem: {
+  quantityBadge: {
     width: 25,
     height: 25,
     borderRadius: 20,
@@ -269,7 +288,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#D9D9D9',
   },
-  statusItem: {
+  statusBadge: {
     width: 70,
     height: 25,
     borderRadius: 10,
@@ -277,7 +296,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imageBottom: {
+  statusText: {
+    color: 'white',
+    fontSize: 10,
+  },
+  bottomImage: {
     width: 200,
     height: 200,
     resizeMode: 'contain',
@@ -287,3 +310,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
+export default OrderScreen;

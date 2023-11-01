@@ -1,111 +1,71 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-const Login1 = ({navigation}) => {
-  const loginFacebook = () => {
-    alert('facebook');
-  };
+const Login1 = () => {
+  const navigation = useNavigation();
 
-  const loginGmail = () => {
-    alert('gmail');
-  };
+  // Xử lý khi nhấn nút đăng nhập bằng Facebook
+  const handleLoginFacebook = () => alert('facebook');
 
-  const Signup = () => {
-    navigation.navigate('SignUp');
-  };
+  // Xử lý khi nhấn nút đăng nhập bằng Gmail
+  const handleLoginGmail = () => alert('gmail');
 
-  const LoginWithPassword = () => {
-    navigation.navigate('Login2');
-  };
+  // Chuyển hướng đến màn hình đăng ký
+  const handleSignup = () => navigation.navigate('SignUp');
+
+  // Chuyển hướng đến màn hình đăng nhập bằng mật khẩu
+  const handleLoginWithPassword = () => navigation.navigate('Login2');
 
   return (
     <View style={styles.container}>
-      {/* Logo */}
-      <View>
-        <Image source={require('../../image/Logo2.png')} style={styles.logo} />
-      </View>
-      <Text
-        style={{
-          color: '#000000',
-          fontSize: 40,
-          fontWeight: '500',
-          textAlign: 'center',
-          marginBottom: '5%',
-        }}>
-        Let's You In
-      </Text>
-      {/* Button */}
-      <TouchableOpacity style={styles.button} onPress={loginFacebook}>
+      {/* Hiển thị logo */}
+      <Image source={require('../../image/Logo2.png')} style={styles.logo} />
+
+      {/* Tiêu đề màn hình */}
+      <Text style={styles.title}>Let's You In</Text>
+
+      {/* Nút đăng nhập bằng Facebook */}
+      <TouchableOpacity style={styles.button} onPress={handleLoginFacebook}>
         <Image
           source={require('../../image/facebook.png')}
           style={styles.icon}
         />
         <Text style={styles.buttonText}>Continue with Facebook</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={loginGmail}>
+
+      {/* Nút đăng nhập bằng Gmail */}
+      <TouchableOpacity style={styles.button} onPress={handleLoginGmail}>
         <Image source={require('../../image/google.png')} style={styles.icon} />
-        <Text style={styles.buttonText}>Continue with Google </Text>
+        <Text style={styles.buttonText}>Continue with Google</Text>
       </TouchableOpacity>
-      {/* Line */}
-      <View>
-        <View
-          style={{
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            marginHorizontal: '5%',
-            flexDirection: 'row',
-          }}>
-          <View
-            style={{
-              borderWidth: 0.5,
-              width: 150,
-              height: 1,
-            }}
-          />
-          <Text
-            style={{
-              fontSize: 22,
-            }}>
-            Or
-          </Text>
-          <View
-            style={{
-              borderWidth: 0.5,
-              width: 150,
-              height: 1,
-            }}></View>
-        </View>
-        <TouchableOpacity
-          style={styles.buttonloginpassw}
-          onPress={LoginWithPassword}>
-          <Text style={styles.buttonText1}>Continue with Password </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            marginTop: '20%',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <Text style={{fontSize: 18, color: '#7B7070'}}>
-            Don't have an account?{' '}
-          </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              textDecorationLine: 'underline',
-              fontWeight: 'bold',
-            }}
-            onPress={Signup}>
-            Sign Up
-          </Text>
-        </View>
+
+      {/* Phân chia hoặc */}
+      <View style={styles.separatorContainer}>
+        <View style={styles.separator} />
+        <Text style={styles.separatorText}>Or</Text>
+        <View style={styles.separator} />
+      </View>
+
+      {/* Nút đăng nhập bằng mật khẩu */}
+      <TouchableOpacity
+        style={styles.passwordButton}
+        onPress={handleLoginWithPassword}>
+        <Text style={styles.passwordButtonText}>Continue with Password</Text>
+      </TouchableOpacity>
+
+      {/* Đường link đến màn hình đăng ký */}
+      <View style={styles.signupContainer}>
+        <Text style={styles.signupText}>Don't have an account?</Text>
+        <Text style={styles.signupLink} onPress={handleSignup}>
+          Sign Up
+        </Text>
       </View>
     </View>
   );
 };
 
-export default Login1;
-
+// Style của component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -116,6 +76,13 @@ const styles = StyleSheet.create({
     height: 300,
     resizeMode: 'contain',
     alignSelf: 'center',
+  },
+  title: {
+    color: '#000000',
+    fontSize: 40,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: '5%',
   },
   button: {
     flexDirection: 'row',
@@ -136,7 +103,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: 'center',
   },
-  buttonloginpassw: {
+  passwordButton: {
     alignSelf: 'center',
     backgroundColor: '#000000',
     justifyContent: 'center',
@@ -145,7 +112,7 @@ const styles = StyleSheet.create({
     width: 354,
     marginTop: '7%',
   },
-  buttonText1: {
+  passwordButtonText: {
     color: 'white',
     fontWeight: '500',
     textAlign: 'center',
@@ -155,4 +122,34 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  separatorContainer: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginHorizontal: '5%',
+    flexDirection: 'row',
+  },
+  separator: {
+    borderWidth: 0.5,
+    width: 150,
+    height: 1,
+  },
+  separatorText: {
+    fontSize: 22,
+  },
+  signupContainer: {
+    marginTop: '20%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  signupText: {
+    fontSize: 18,
+    color: '#7B7070',
+  },
+  signupLink: {
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
 });
+
+export default Login1;
