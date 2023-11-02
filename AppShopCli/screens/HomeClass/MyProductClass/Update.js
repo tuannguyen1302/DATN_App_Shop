@@ -175,6 +175,8 @@ const Update = () => {
                 <View>
                   <Text style={styles.inputLabel}>{item.label}</Text>
                   <TextInput
+                    multiline={true}
+                    textAlignVertical="top"
                     style={styles.inputField}
                     value={item.state}
                     onChangeText={item.setState}
@@ -303,7 +305,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   inputContainer: {
-    height: 70,
+    height: 'auto',
     marginVertical: '1%',
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -313,14 +315,18 @@ const styles = StyleSheet.create({
     marginHorizontal: '3%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+
   },
   inputLabel: {
     fontSize: 18,
     color: 'black',
     fontWeight: '600',
+
   },
   inputField: {
     width: 340,
+    flexWrap: 'nowrap',
+    fontSize: 18,
   },
   inputStatus: {
     justifyContent: 'space-around',
