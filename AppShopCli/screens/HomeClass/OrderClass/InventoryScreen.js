@@ -4,7 +4,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
 
-// Dữ liệu cố định về tháng và tình trạng hàng
+// Fixed data for months and product availability
 const MONTHS_DATA = [
   {_id: 1, name: 'Tháng 1'},
   {_id: 2, name: 'Tháng 2'},
@@ -29,7 +29,7 @@ const InventoryScreen = () => {
   const navigation = useNavigation();
   const [selectedMonth, setSelectedMonth] = useState(1);
 
-  // Dữ liệu mẫu về sản phẩm
+  // Sample product data
   const [productData, setProductData] = useState([
     {
       nameProduct: 'Áo khoác nam...',
@@ -41,7 +41,7 @@ const InventoryScreen = () => {
     },
   ]);
 
-  // Phần Header
+  // Header section
   const Header = () => (
     <View style={styles.header}>
       <Pressable onPress={() => navigation.goBack()}>
@@ -51,7 +51,7 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Phần thông tin tổng quan về kho
+  // Overview information about inventory
   const InventoryInfo = () => (
     <View style={styles.mainContainer}>
       <Image
@@ -64,7 +64,7 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Phần chi tiết về thông tin kho
+  // Details about inventory information
   const InfoDetails = () => (
     <View style={styles.infoContainer}>
       <View style={styles.rowContainer}>
@@ -87,7 +87,7 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Phần hiển thị giá trị
+  // Displaying value details
   const ValueDetails = ({label, value}) => (
     <View style={styles.valueContainer}>
       <Text style={styles.valueLabel}>{label}</Text>
@@ -95,15 +95,17 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Danh sách sản phẩm
+  // Product list section
   const ProductList = () => (
     <FlatList
       data={productData}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{marginTop: '2%'}}
       renderItem={({item}) => <ProductItem item={item} />}
     />
   );
 
-  // Phần hiển thị từng sản phẩm
+  // Displaying each product
   const ProductItem = ({item}) => (
     <View style={styles.itemContainer}>
       <Image style={styles.productImage} source={{uri: item.avatar}} />
@@ -112,7 +114,7 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Thông tin chi tiết sản phẩm
+  // Product details section
   const ProductInfo = ({item}) => (
     <View style={styles.productInfo}>
       <Text style={styles.productName}>{item.nameProduct}</Text>
@@ -126,14 +128,14 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Số lượng và tình trạng sản phẩm
+  // Quantity and status of the product
   const QuantityAndStatus = ({item}) => (
     <View style={styles.quantityAndStatus}>
       <Text style={styles.infoText}>Số lượng: {item.quantity}</Text>
     </View>
   );
 
-  // Phần chân trang
+  // Footer section
   const Footer = () => (
     <View style={styles.footerContainer}>
       <Text style={styles.footerText}>Sản phẩm</Text>
@@ -150,13 +152,13 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Render toàn bộ màn hình
+  // Rendering the entire screen
   return (
     <View style={styles.container}>
       <Header />
       <InventoryInfo />
-      <ProductList />
       <Footer />
+      <ProductList />
     </View>
   );
 };
@@ -185,8 +187,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#DCDCDC',
     borderRadius: 10,
-    padding: '2%',
-    marginHorizontal: '3%',
+    padding: '1%',
+    marginHorizontal: '5%',
     marginTop: '5%',
     elevation: 1,
     marginBottom: '2%',
@@ -194,6 +196,7 @@ const styles = StyleSheet.create({
   image: {
     width: 110,
     height: 110,
+    resizeMode: 'contain',
     borderRadius: 10,
   },
   infoContainer: {
@@ -216,7 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     borderRadius: 15,
     paddingHorizontal: '4%',
-    width: 80,
+    width: 85,
   },
   dropdownText: {
     color: 'white',
@@ -244,7 +247,8 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: '4%',
+    padding: '2%',
+    marginHorizontal: '4%',
     alignItems: 'center',
   },
   footerText: {
@@ -260,14 +264,14 @@ const styles = StyleSheet.create({
     width: 100,
   },
   itemContainer: {
-    height: 110,
+    height: 100,
     borderRadius: 20,
     padding: '5%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-    marginHorizontal: '4%',
+    marginHorizontal: '5%',
     marginBottom: '3%',
     elevation: 5,
   },

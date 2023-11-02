@@ -1,20 +1,20 @@
-import React, {useState} from 'react';
 import {
   View,
   Text,
+  Pressable,
   ScrollView,
   StyleSheet,
-  Pressable,
   Image,
   FlatList,
 } from 'react-native';
+import React, {useState} from 'react';
+import {Picker} from '@react-native-picker/picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Picker} from '@react-native-picker/picker';
 import Modal from 'react-native-modal';
 
-// Mảng chứa các tab
+// Array containing tab items
 export const TAB_ITEMS = [
   {status: 'All'},
   {status: 'Còn hàng'},
@@ -22,14 +22,14 @@ export const TAB_ITEMS = [
   {status: 'Bị ẩn'},
 ];
 
-// Component danh sách sản phẩm
-export const ProductList = ({productList, onToggleHide}) => (
+// Component for the product list
+export const ProductList = ({navigation, productList, onToggleHide}) => (
   <FlatList
     scrollEnabled={false}
     data={productList}
     renderItem={({item}) => (
       <View style={styles.productItem}>
-        {/* Phần Header của sản phẩm */}
+        {/* Header section of the product */}
         <View style={styles.itemHeader}>
           <Image style={styles.productImage} source={{uri: item.image}} />
           <View style={{marginLeft: '2%'}}>
@@ -42,7 +42,7 @@ export const ProductList = ({productList, onToggleHide}) => (
           </View>
         </View>
 
-        {/* Phần chi tiết và hành động của sản phẩm */}
+        {/* Details and actions section of the product */}
         <View style={styles.itemDetails}>
           {['boxes', 'list'].map((icon, index) => (
             <View style={styles.icon} key={index}>
@@ -58,9 +58,11 @@ export const ProductList = ({productList, onToggleHide}) => (
           ))}
         </View>
 
-        {/* Phần hành động với sản phẩm */}
+        {/* Actions with the product */}
         <View style={styles.itemActions}>
-          <Pressable style={styles.actionButton}>
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('UpdateProduct')}>
             <Text style={styles.buttonText}>Sửa</Text>
           </Pressable>
           <Pressable
@@ -74,12 +76,12 @@ export const ProductList = ({productList, onToggleHide}) => (
   />
 );
 
-// Màn hình chính hiển thị danh sách sản phẩm
+// Main screen displaying the product list
 const ProductScreen = ({navigation}) => {
   const [status, setStatus] = useState('All');
   const [productList, setProductList] = useState([
     {
-      nameProduct: 'Áo Hoodie Oversized Nữ Activated',
+      nameProduct: "Women's Oversized Hoodie Activated",
       image:
         'https://th.bing.com/th/id/OIP.sB9FPPG22oH-iy-QmN99IAHaLH?w=139&h=208&c=7&r=0&o=5&pid=1.7',
       productAttributes: [
@@ -97,31 +99,30 @@ const ProductScreen = ({navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Hàm mở/đóng modal
+  // Function to open/close the modal
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  // Hàm xác nhận ẩn sản phẩm
+  // Function to confirm hiding the product
   const confirmHideProduct = async () => {
-    // Thực hiện gọi API ẩn sản phẩm ở đây
     try {
-      // Gọi API ẩn sản phẩm
+      // Call API to hide the product
       // const response = await callHideProductAPI(selectedProduct.id);
 
-      // Nếu API gọi thành công, đóng modal và cập nhật danh sách sản phẩm
+      // If API call is successful, close the modal and update the product list
       toggleModal();
       const updatedProductList = productList.filter(
         item => item !== selectedProduct,
       );
       setProductList(updatedProductList);
     } catch (error) {
-      console.error('Lỗi khi gọi API ẩn sản phẩm:', error);
-      // Xử lý lỗi nếu cần
+      console.error('Error calling API to hide product:', error);
+      // Handle error if needed
     }
   };
 
-  // Hàm mở modal và set sản phẩm được chọn
+  // Function to open the modal and set the selected product
   const toggleHideProduct = product => {
     setSelectedProduct(product);
     toggleModal();
@@ -129,7 +130,7 @@ const ProductScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* Tab chọn trạng thái hiển thị sản phẩm */}
+      {/* Tab to select the product display status */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {TAB_ITEMS.map((data, index) => (
@@ -146,7 +147,7 @@ const ProductScreen = ({navigation}) => {
         </ScrollView>
       </View>
 
-      {/* Phần lọc và tìm kiếm */}
+      {/* Filter and search section */}
       <View style={styles.filter}>
         <View style={styles.iconView}>
           <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -156,20 +157,24 @@ const ProductScreen = ({navigation}) => {
               style={{width: 140}}
               onValueChange={itemValue => setSelectedValue(itemValue)}>
               <Picker.Item enabled={false} label="Sắp xếp" />
-              <Picker.Item label="Tăng" value="+" />
-              <Picker.Item label="Giảm" value="-" />
+              <Picker.Item label="Tăng dần ➕" value="+" />
+              <Picker.Item label="Giảm dần ➖" value="-" />
             </Picker>
           </Pressable>
-          <Pressable onPress={() => navigation.navigate('SearchScreen')}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('SearchScreen');
+            }}>
             <AntDesign name="search1" size={28} color={'black'} />
           </Pressable>
         </View>
       </View>
 
-      {/* Danh sách sản phẩm */}
+      {/* Product list */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {productList ? (
           <ProductList
+            navigation={navigation}
             productList={productList}
             onToggleHide={toggleHideProduct}
           />
@@ -177,7 +182,7 @@ const ProductScreen = ({navigation}) => {
           <View style={styles.noResults}>
             <Image
               style={styles.noResultsImage}
-              source={require('../../../image/NoProduct.png')}
+              source={require('../../../images/NoProduct.png')}
             />
             <Text style={styles.noResultsText}>
               Không tìm thấy sản phẩm nào
@@ -186,12 +191,12 @@ const ProductScreen = ({navigation}) => {
         )}
       </ScrollView>
 
-      {/* Modal xác nhận ẩn sản phẩm */}
+      {/* Modal to confirm hiding the product */}
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Xác nhận ẩn sản phẩm</Text>
+          <Text style={styles.modalTitle}>Xác nhận Ẩn sản phẩm</Text>
           <Text style={styles.modalText}>
-            Bạn có chắc muốn ẩn sản phẩm "{selectedProduct?.nameProduct}" không?
+            Bạn có chắc chắn muốn ẩn sản phẩm "{selectedProduct?.nameProduct}"?
           </Text>
           <View style={styles.modalButtons}>
             <Pressable style={styles.modalButton} onPress={toggleModal}>

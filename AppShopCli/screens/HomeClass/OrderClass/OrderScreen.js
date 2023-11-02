@@ -1,5 +1,4 @@
 import {
-  FlatList,
   Image,
   Pressable,
   ScrollView,
@@ -11,8 +10,7 @@ import React, {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {useNavigation} from '@react-navigation/native';
-
-// Danh sách Tab
+// List of Tabs and corresponding images
 const TAB_LIST = [
   {
     status: 'Đang giao',
@@ -25,25 +23,25 @@ const TAB_LIST = [
   },
 ];
 
-// Danh sách các ảnh cho từng trạng thái đơn hàng
 const TAB_IMAGES = [
-  require('../../../image/Order1.png'),
-  require('../../../image/Order2.png'),
-  require('../../../image/Order3.png'),
-  require('../../../image/Order4.png'),
+  require('../../../images/Order1.png'),
+  require('../../../images/Order2.png'),
+  require('../../../images/Order3.png'),
+  require('../../../images/Order4.png'),
 ];
 
 const OrderScreen = () => {
+  // Using hooks and state
   const navigation = useNavigation();
   const [isDeliveryMode, setIsDeliveryMode] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState('Đang giao');
+  const [currentStatus, setCurrentStatus] = useState('In delivery');
   const [bottomImage, setBottomImage] = useState(TAB_IMAGES[0]);
 
-  // Dữ liệu mẫu để hiển thị đơn hàng
+  // Sample data to display orders
   const [orderData, setOrderData] = useState([
     {
-      userName: 'Sùng Văn Sinh...',
-      nameProduct: 'Áo khoác nam...',
+      userName: 'Sùng Văn Sinh',
+      nameProduct: 'Áo khoác nam',
       avatar:
         'https://www.bing.com/th?id=OIP.lXMqjfaBPZm2xSzGyPs6swHaKX&w=150&h=210&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2',
       color: 'green',
@@ -53,7 +51,7 @@ const OrderScreen = () => {
     },
   ]);
 
-  // Hàm chuyển đổi giữa chế độ xác nhận và chế độ giao hàng
+  // Function to switch between confirmation and delivery mode
   const toggleDeliveryMode = () => {
     setIsDeliveryMode(!isDeliveryMode);
     isDeliveryMode
@@ -61,55 +59,51 @@ const OrderScreen = () => {
       : handleTabChange(currentStatus);
   };
 
-  // Hàm xử lý khi chuyển tab
+  // Function to handle tab change
   const handleTabChange = tab => {
     setCurrentStatus(tab);
-    if (tab === 'Đang giao') setBottomImage(TAB_IMAGES[1]);
-    else if (tab === 'Đã giao') setBottomImage(TAB_IMAGES[2]);
-    else if (tab === 'Đã hủy') setBottomImage(TAB_IMAGES[3]);
+    if (tab === 'In delivery') setBottomImage(TAB_IMAGES[1]);
+    else if (tab === 'Delivered') setBottomImage(TAB_IMAGES[2]);
+    else if (tab === 'Cancelled') setBottomImage(TAB_IMAGES[3]);
   };
 
-  // Hàm render từng item trong danh sách đơn hàng
-  const renderItem = item => {
+  // Function to render each item in the order list
+  const renderItem = orderItem => {
     return (
-      <FlatList
-        scrollEnabled={false}
-        data={item}
-        renderItem={({item}) => (
-          <View style={styles.itemContainer}>
-            {/* Ảnh sản phẩm */}
-            <Image style={styles.productImage} source={{uri: item.avatar}} />
-            {/* Thông tin sản phẩm */}
-            <View style={styles.productInfo}>
-              <Text style={styles.productName}>{item.nameProduct}</Text>
-              {/* Màu sắc và kích thước */}
-              <View style={styles.colorInfo}>
-                <View
-                  style={[styles.colorBadge, {backgroundColor: item.color}]}
-                />
-                <Text style={styles.infoText}>Màu | Size: {item.size}</Text>
-              </View>
-              <Text style={styles.infoText}>Người mua: {item.userName}</Text>
-              <Pressable>
-                <Text style={[styles.infoText, styles.underline]}>
-                  Xem thêm
-                </Text>
-              </Pressable>
-            </View>
-            {/* Số lượng và trạng thái */}
-            <View style={styles.quantityAndStatus}>
-              <View style={styles.quantityBadge}>
-                <Text style={styles.infoText}>{item.quantity}</Text>
-              </View>
-              <View style={styles.statusBadge}>
-                <Text style={[styles.infoText, styles.statusText]}>
-                  {item.status}
-                </Text>
-              </View>
-            </View>
+      <View style={styles.itemContainer}>
+        {/* Product image */}
+        <Image style={styles.productImage} source={{uri: orderItem.avatar}} />
+        {/* Product information */}
+        <View style={styles.productInfo}>
+          <Text style={styles.productName} numberOfLines={1}>
+            {orderItem.nameProduct}
+          </Text>
+          {/* Color and size */}
+          <View style={styles.colorInfo}>
+            <View
+              style={[styles.colorBadge, {backgroundColor: orderItem.color}]}
+            />
+            <Text style={styles.infoText}>Màu | Size: {orderItem.size}</Text>
           </View>
-        )}
-      />
+          <Text style={styles.infoText} numberOfLines={1}>
+            Người mua: {orderItem.userName}
+          </Text>
+          <Pressable>
+            <Text style={[styles.infoText, styles.underline]}>Xem thêm</Text>
+          </Pressable>
+        </View>
+        {/* Quantity and status */}
+        <View style={styles.quantityAndStatus}>
+          <View style={styles.quantityBadge}>
+            <Text style={styles.infoText}>{orderItem.quantity}</Text>
+          </View>
+          <View style={styles.statusBadge}>
+            <Text style={[styles.infoText, styles.statusText]}>
+              {orderItem.status}
+            </Text>
+          </View>
+        </View>
+      </View>
     );
   };
 
@@ -118,7 +112,7 @@ const OrderScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          {/* Nút quay lại và tiêu đề header */}
+          {/* Back button and header title */}
           <Pressable onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={30} color={'black'} />
           </Pressable>
@@ -126,38 +120,36 @@ const OrderScreen = () => {
             Đơn hàng({isDeliveryMode ? 'giao hàng' : 'xác nhận'})
           </Text>
         </View>
-        {/* Nút chuyển chế độ */}
+        {/* Switch mode button */}
         <Pressable onPress={toggleDeliveryMode}>
           <Octicons name="issue-reopened" size={30} color={'black'} />
         </Pressable>
       </View>
 
-      {/* Nội dung chính */}
+      {/* Main content */}
       <View style={styles.content}>
         {isDeliveryMode && (
-          // Màn hình giao hàng - Tab chuyển màn hình
+          // Delivery mode - Tab switch
           <View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {TAB_LIST.map((image, index) => (
+              {TAB_LIST.map((tab, index) => (
                 <Pressable
                   key={index}
                   style={[
                     styles.tabItem,
                     {
                       backgroundColor:
-                        currentStatus === TAB_LIST[index].status
-                          ? 'white'
-                          : null,
+                        currentStatus === tab.status ? 'white' : null,
                     },
                   ]}
-                  onPress={() => handleTabChange(TAB_LIST[index].status)}>
+                  onPress={() => handleTabChange(tab.status)}>
                   <Text
                     style={
-                      currentStatus === TAB_LIST[index].status
+                      currentStatus === tab.status
                         ? styles.selectedTabText
                         : null
                     }>
-                    {TAB_LIST[index].status}
+                    {tab.status}
                   </Text>
                 </Pressable>
               ))}
@@ -165,20 +157,24 @@ const OrderScreen = () => {
           </View>
         )}
 
-        {/* Danh sách đơn hàng */}
+        {/* Order list */}
         <ScrollView showsVerticalScrollIndicator={false}>
           {!isDeliveryMode && (
             <>
               <Text style={styles.titleText}>Hôm nay({orderData.length})</Text>
-              {renderItem(orderData)}
+              {orderData.map((item, index) => (
+                <React.Fragment key={index}>{renderItem(item)}</React.Fragment>
+              ))}
               <Text style={styles.titleText}>Trước đó({orderData.length})</Text>
             </>
           )}
-          {renderItem(orderData)}
+          {orderData.map((item, index) => (
+            <React.Fragment key={index}>{renderItem(item)}</React.Fragment>
+          ))}
         </ScrollView>
       </View>
 
-      {/* Ảnh phía dưới */}
+      {/* Bottom image */}
       <Image style={styles.bottomImage} source={bottomImage} />
     </View>
   );
@@ -249,6 +245,7 @@ const styles = StyleSheet.create({
   },
   productInfo: {
     left: '1%',
+    width: '50%',
   },
   productName: {
     fontSize: 19,

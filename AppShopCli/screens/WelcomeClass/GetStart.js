@@ -21,7 +21,7 @@ const WelcomeScreen = () => {
         <Text style={styles.welcomeText}>Chào mừng</Text>
         <Text style={styles.welcomeText}>Chào mừng</Text>
       </View>
-      <Image source={require('../../image/Logo1.png')} style={styles.logo} />
+      <Image source={require('../../images/Logo1.png')} style={styles.logo} />
       <ActivityIndicator size={45} color={'white'} />
     </View>
   );

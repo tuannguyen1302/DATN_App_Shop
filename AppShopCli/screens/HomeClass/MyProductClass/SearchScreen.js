@@ -16,7 +16,7 @@ import {ProductList, TAB_ITEMS} from './ProductScreen';
 import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 
-// Màn hình tìm kiếm
+// Search screen
 const SearchScreen = () => {
   const navigation = useNavigation();
   const [isSearching, setIsSearching] = useState(false);
@@ -24,17 +24,17 @@ const SearchScreen = () => {
   const [status, setStatus] = useState('All');
   const [productList, setProductList] = useState([
     {
-      nameProduct: 'Áo hoodie ngắn tay hình mặt mèo',
+      nameProduct: "Women's Oversized Hoodie Activated",
       image:
-        'https://th.bing.com/th/id/R.8b7d5b399d740757411454b84783aff1?rik=SpcCP%2fi%2bsF1ktw&pid=ImgRaw&r=0',
-      attributes: [
+        'https://th.bing.com/th/id/OIP.sB9FPPG22oH-iy-QmN99IAHaLH?w=139&h=208&c=7&r=0&o=5&pid=1.7',
+      productAttributes: [
         {
-          color: 'yellow',
+          color: 'green',
           size: ['xl', 'l', 'xxl'],
           quantity: 5,
         },
       ],
-      price: 250000,
+      price: 350000,
       quantity: 5,
     },
   ]);
@@ -42,36 +42,36 @@ const SearchScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Hàm mở/đóng modal
+  // Function to open/close the modal
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  // Hàm xác nhận ẩn sản phẩm
+  // Function to confirm hiding the product
   const confirmHideProduct = async () => {
-    // Gọi API ẩn sản phẩm
     try {
+      // Call API to hide the product
       // const response = await callHideProductAPI(selectedProduct.id);
 
-      // Nếu API gọi thành công, đóng modal và cập nhật danh sách sản phẩm
+      // If API call is successful, close the modal and update the product list
       toggleModal();
       const updatedProductList = productList.filter(
         item => item !== selectedProduct,
       );
       setProductList(updatedProductList);
     } catch (error) {
-      console.error('Lỗi khi gọi API ẩn sản phẩm:', error);
-      // Xử lý lỗi nếu cần
+      console.error('Error calling API to hide product:', error);
+      // Handle error if needed
     }
   };
 
-  // Hàm mở modal và set sản phẩm được chọn
+  // Function to open the modal and set the selected product
   const toggleHideProduct = product => {
     setSelectedProduct(product);
     toggleModal();
   };
 
-  // Hàm hiển thị ảnh với text tương ứng
+  // Function to render an image with corresponding text
   const renderImage = (img, text) => (
     <View style={styles.imageContainer}>
       <Image style={styles.productImage} source={img} />
@@ -82,7 +82,7 @@ const SearchScreen = () => {
   return (
     <View style={styles.container}>
       {isSearching ? (
-        // Màn hình tìm kiếm
+        // Search screen
         <View>
           <View style={styles.searchHeader}>
             <View style={styles.searchBox}>
@@ -105,7 +105,7 @@ const SearchScreen = () => {
               ) : null}
             </View>
             <Pressable onPress={() => navigation.goBack()}>
-              <Text style={styles.cancelText}>Hủy</Text>
+              <Text style={styles.cancelText}>Cancel</Text>
             </Pressable>
           </View>
 
@@ -127,7 +127,7 @@ const SearchScreen = () => {
             ))}
           </ScrollView>
 
-          {/* Danh sách sản phẩm */}
+          {/* Product list */}
           <ScrollView showsVerticalScrollIndicator={false}>
             {productList ? (
               <ProductList
@@ -135,16 +135,16 @@ const SearchScreen = () => {
                 onToggleHide={toggleHideProduct}
               />
             ) : (
-              // Hiển thị ảnh
+              // Display image
               renderImage(
-                require('../../../image/NoProduct.png'),
+                require('../../../images/NoProduct.png'),
                 'Không tìm thấy sản phẩm nào',
               )
             )}
           </ScrollView>
         </View>
       ) : (
-        // Màn hình tìm kiếm tượng trưng
+        // Symbolic search screen
         <View>
           <View style={styles.header}>
             <Pressable onPress={() => navigation.goBack()}>
@@ -155,23 +155,23 @@ const SearchScreen = () => {
               onPress={() => setIsSearching(true)}>
               <View style={styles.searchHeaderView}>
                 <AntDesign name="search1" size={30} />
-                <Text style={{left: '20%'}}>Nhập từ khóa</Text>
+                <Text style={{left: '20%'}}>Enter keyword</Text>
               </View>
             </Pressable>
           </View>
-          {/* Hiển thị ảnh */}
+          {/* Display image */}
           {renderImage(
-            require('../../../image/Search.png'),
-            'Tìm kiếm trong shop',
+            require('../../../images/Search.png'),
+            'Tìm kiếm trong cửa hàng',
           )}
         </View>
       )}
 
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Xác nhận ẩn sản phẩm</Text>
+          <Text style={styles.modalTitle}>Xác nhận Ẩn sản phẩm</Text>
           <Text style={styles.modalText}>
-            Bạn có chắc muốn ẩn sản phẩm "{selectedProduct?.nameProduct}" không?
+            Bạn có chắc chắn muốn ẩn sản phẩm "{selectedProduct?.nameProduct}"?
           </Text>
           <View style={styles.modalButtons}>
             <Pressable style={styles.modalButton} onPress={toggleModal}>
@@ -186,7 +186,6 @@ const SearchScreen = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

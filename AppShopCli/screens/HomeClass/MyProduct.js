@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import ProductScreen from './ScreenTab/ProductScreen';
+import ProductScreen from './MyProductClass/ProductScreen';
 import {useNavigation} from '@react-navigation/native';
 
 const MyProduct = () => {
   const navigation = useNavigation();
 
-  // Sử dụng hook state để quản lý thông tin tài khoản
+  // Initial user account information
   const [account, setAccount] = useState({
     id: 1,
     name: 'Trần Thị Tuấn',
@@ -24,7 +24,7 @@ const MyProduct = () => {
     nameShop: '❤️ shop yêu thích',
   });
 
-  // Component ShopInfo để hiển thị thông tin tài khoản
+  // Component to display user account information
   const ShopInfo = () => (
     <View style={{right: '10%'}}>
       <Text style={styles.name}>{account.name}</Text>
@@ -32,36 +32,40 @@ const MyProduct = () => {
     </View>
   );
 
-  // Component EditShopButton với TouchableOpacity để chuyển hướng đến ShopScreen
+  // Component with TouchableOpacity to navigate to ShopScreen
   const EditShopButton = () => (
     <TouchableOpacity onPress={() => navigation.navigate('ShopScreen')}>
       <AntDesign name="exclamationcircle" size={40} color={'black'} />
     </TouchableOpacity>
   );
 
-  // Component AddProductButton với Pressable để xử lý hành động thêm sản phẩm
+  // Component with Pressable to handle add product action
   const AddProductButton = () => (
-    <Pressable style={styles.btnAdd}>
+    <Pressable
+      style={styles.btnAdd}
+      onPress={() => {
+        navigation.navigate('addProduct');
+      }}>
       <Feather name="plus-square" size={20} color={'white'} />
       <Text style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
     </Pressable>
   );
 
-  // Phần render chính của component MyProduct
+  // Main rendering part of the MyProduct component
   return (
     <View style={styles.container}>
-      {/* Phần Header */}
+      {/* Header section */}
       <View style={styles.header}>
-        {/* Phần HeaderShop chứa thông tin người dùng, thông tin cửa hàng và nút chỉnh sửa cửa hàng */}
+        {/* HeaderShop section containing user information, shop information, and edit shop button */}
         <View style={styles.headerShop}>
           <Image style={styles.avatarShop} source={{uri: account.avatar}} />
           <ShopInfo />
           <EditShopButton />
         </View>
       </View>
-      {/* Component ProductScreen để hiển thị sản phẩm của người dùng */}
+      {/* ProductScreen component to display user's products */}
       <ProductScreen navigation={navigation} id={account.id} />
-      {/* Nút AddProductButton để thêm sản phẩm mới */}
+      {/* AddProductButton to add a new product */}
       <AddProductButton />
     </View>
   );

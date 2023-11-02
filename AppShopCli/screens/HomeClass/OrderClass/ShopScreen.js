@@ -18,7 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 const ShopScreen = () => {
   const navigation = useNavigation();
 
-  // Các state để theo dõi thông tin cửa hàng và ảnh đại diện
+  // States to track shop information and avatar image
   const [shopName, setShopName] = useState('');
   const [shopDescription, setShopDescription] = useState('');
   const [shopAddress, setShopAddress] = useState('');
@@ -26,20 +26,20 @@ const ShopScreen = () => {
   const [shopEmail, setShopEmail] = useState('');
   const [avatarSource, setAvatarSource] = useState(null);
 
-  // Hàm để xóa nội dung của trường thông tin
+  // Function to clear the content of an input field
   const clearField = (field, setField) => {
     setField('');
   };
 
-  // Hàm để chọn ảnh từ camera
+  // Function to select an image from the camera
   const selectImage = async () => {
     try {
-      // Yêu cầu quyền truy cập camera
+      // Request camera access permission
       const cameraPermission = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
 
-      // Nếu quyền được cấp, mở camera và cập nhật ảnh đại diện
+      // If permission is granted, open the camera and update the avatar image
       if (cameraPermission === PermissionsAndroid.RESULTS.GRANTED) {
         await launchCamera(
           {
@@ -60,30 +60,28 @@ const ShopScreen = () => {
     }
   };
 
-  // Phần render của component
+  // Component rendering
   return (
-    // Sử dụng KeyboardAvoidingView để tránh che phủ bởi bàn phím
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
-      {/* Sử dụng ScrollView để cuộn nội dung */}
       <ScrollView>
-        {/* Phần header */}
+        {/* Header */}
         <View style={styles.header}>
           <View style={styles.rowHeader}>
-            {/* Nút quay lại */}
+            {/* Back button */}
             <Pressable onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={30} color={'black'} />
             </Pressable>
-            <Text style={styles.titleText}>Edit Profile</Text>
-            {/* Nút lưu */}
+            <Text style={styles.titleText}>Sửa hồ sơ</Text>
+            {/* Save button */}
             <Pressable>
               <Text style={styles.saveText}>Save</Text>
             </Pressable>
           </View>
         </View>
 
-        {/* Phần hiển thị và chọn ảnh đại diện */}
+        {/* Display and select avatar image */}
         <View style={styles.avatarSection}>
           <Pressable onPress={selectImage}>
             {avatarSource ? (
@@ -96,22 +94,26 @@ const ShopScreen = () => {
                 }}
               />
             )}
-            <Text style={styles.editText}>Edit</Text>
+            <Text style={styles.editText}>Sửa</Text>
             <View style={styles.editButton} />
           </Pressable>
         </View>
 
-        {/* Phần nhập thông tin cửa hàng */}
+        {/* Input shop information */}
         <View style={styles.formSection}>
           {[
-            {label: 'Shop Name', state: shopName, setState: setShopName},
+            {label: 'Tên cửa hàng 🕸️', state: shopName, setState: setShopName},
             {
-              label: 'Description',
+              label: 'Mô tả cửa hàng 🕸️',
               state: shopDescription,
               setState: setShopDescription,
             },
-            {label: 'Address', state: shopAddress, setState: setShopAddress},
-            {label: 'Phone', state: shopPhone, setState: setShopPhone},
+            {
+              label: 'Địa chỉ cửa hàng 🕸️',
+              state: shopAddress,
+              setState: setShopAddress,
+            },
+            {label: 'Số điện thoại', state: shopPhone, setState: setShopPhone},
             {label: 'Email', state: shopEmail, setState: setShopEmail},
           ].map((item, index) => (
             <View key={index} style={styles.inputContainer}>
@@ -123,12 +125,12 @@ const ShopScreen = () => {
                     value={item.state}
                     onChangeText={item.setState}
                     maxLength={120}
-                    placeholder={`Enter ${item.label.toLowerCase()}`}
+                    placeholder={`Nhập ${item.label.toLowerCase()}`}
                   />
                 </View>
                 <View style={styles.inputStatus}>
                   <Text>{item.state.length}/120</Text>
-                  {/* Nút để xóa nội dung trường thông tin */}
+                  {/* Button to clear the input field content */}
                   <Pressable
                     onPress={() => clearField(item.state, item.setState)}>
                     <AntDesign
@@ -143,10 +145,10 @@ const ShopScreen = () => {
           ))}
         </View>
 
-        {/* Hình ảnh ở cuối trang */}
+        {/* Image at the bottom of the page */}
         <Image
           style={styles.bottomImage}
-          source={require('../../../image/ShopSea.png')}
+          source={require('../../../images/ShopSea.png')}
         />
       </ScrollView>
     </KeyboardAvoidingView>

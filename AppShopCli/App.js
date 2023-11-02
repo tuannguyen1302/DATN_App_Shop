@@ -4,33 +4,40 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import GetStart from './screens/ClassStart/GetStart';
-import GetStart2 from './screens/ClassStart/GetStart2';
-import Login1 from './screens/ClassLogin/Login1';
-import Login2 from './screens/ClassLogin/Login2';
-import SignUp from './screens/ClassLogin/SignUp';
-import MyProduct from './screens/ClassTab/MyProduct';
-import SearchScreen from './screens/ClassTab/ScreenTab/SearchScreen';
-import Order from './screens/ClassTab/Order';
-import OrderScreen from './screens/ClassTab/ScreenTab/OrderScreen';
-import ShopScreen from './screens/ClassTab/ScreenTab/ShopScreen';
-import StatisticalScreen from './screens/ClassTab/ScreenTab/StatisticalScreen';
-import InventoryScreen from './screens/ClassTab/ScreenTab/InventoryScreen';
+// Import screen components
+import GetStart from './screens/WelcomeClass/GetStart';
+import GetStart2 from './screens/WelcomeClass/GetStart2';
+import Login1 from './screens/LoginClass/Login1';
+import Login2 from './screens/LoginClass/Login2';
+import SignUp from './screens/LoginClass/SignUp';
+import MyProduct from './screens/HomeClass/MyProduct';
+import SearchScreen from './screens/HomeClass/MyProductClass/SearchScreen';
+import UpdateProduct from './screens/HomeClass/MyProductClass/Update';
+import ProductScreen from './screens/HomeClass/MyProductClass/ProductScreen';
+import Order from './screens/HomeClass/Order';
+import OrderScreen from './screens/HomeClass/OrderClass/OrderScreen';
+import ShopScreen from './screens/HomeClass/OrderClass/ShopScreen';
+import StatisticalScreen from './screens/HomeClass/OrderClass/StatisticalScreen';
+import InventoryScreen from './screens/HomeClass/OrderClass/InventoryScreen';
+import AddProduct from './screens/HomeClass/MyProductClass/AddProduct';
 
-// Khai báo Stack và Tab Navigation
+// Declare Stack and Tab Navigation
 const StackDemo = createNativeStackNavigator();
 const TabDemo = createBottomTabNavigator();
 
-// Component chính
+// Main component
 const App = () => {
   return (
     <NavigationContainer>
       <StackDemo.Navigator screenOptions={{headerShown: false}}>
+        {/* Authentication Screens */}
         <StackDemo.Screen name="GetStart" component={GetStart} />
         <StackDemo.Screen name="GetStart2" component={GetStart2} />
         <StackDemo.Screen name="Login1" component={Login1} />
         <StackDemo.Screen name="Login2" component={Login2} />
         <StackDemo.Screen name="SignUp" component={SignUp} />
+
+        {/* Main App Screens */}
         <StackDemo.Screen name="BottomTab" component={BottomTab} />
         <StackDemo.Screen name="SearchScreen" component={SearchScreen} />
         <StackDemo.Screen name="OrderScreen" component={OrderScreen} />
@@ -40,12 +47,16 @@ const App = () => {
           component={StatisticalScreen}
         />
         <StackDemo.Screen name="InventoryScreen" component={InventoryScreen} />
+        <StackDemo.Screen name="addProduct" component={AddProduct} />
+        <StackDemo.Screen name="UpdateProduct" component={UpdateProduct} />
+        <StackDemo.Screen name="MyProduct" component={MyProduct} />
+        <StackDemo.Screen name="Product" component={ProductScreen} />
       </StackDemo.Navigator>
     </NavigationContainer>
   );
 };
 
-// Component Tab Bar
+// Tab Bar component
 const BottomTab = () => {
   return (
     <TabDemo.Navigator
@@ -54,6 +65,7 @@ const BottomTab = () => {
         headerShown: false,
         tabBarActiveTintColor: '#000000',
       }}>
+      {/* Tab Screens */}
       <TabDemo.Screen
         name="MyProduct"
         component={MyProduct}
@@ -68,7 +80,7 @@ const BottomTab = () => {
   );
 };
 
-// Function để thiết lập Tab Options
+// Function to set Tab Options
 const tabOptions = (label, iconNameFocused, iconNameUnfocused) => ({
   tabBarLabel: label,
   tabBarIcon: ({focused, size, color}) => (
@@ -80,4 +92,5 @@ const tabOptions = (label, iconNameFocused, iconNameUnfocused) => ({
   ),
 });
 
+// Export the main App component
 export default App;
