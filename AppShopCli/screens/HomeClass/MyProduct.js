@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   Image,
   Pressable,
@@ -6,50 +7,69 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import ProductScreen from './ScreenTab/ProductScreen';
+import ProductScreen from './MyProductClass/ProductScreen';
+import {useNavigation} from '@react-navigation/native';
 
-const MyProduct = ({navigation}) => {
+const MyProduct = () => {
+  const navigation = useNavigation();
+
+  // Initial user account information
   const [account, setAccount] = useState({
     id: 1,
     name: 'Trần Thị Tuấn',
     avatar:
       'https://i.ytimg.com/vi/O8e-2JTo7wk/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCopE8gdgNPrSPgRLjpE8arOASMeQ',
-    nameShop: '❤️ shop yêu thích ',
+    nameShop: '❤️ shop yêu thích',
   });
 
+  // Component to display user account information
+  const ShopInfo = () => (
+    <View style={{right: '10%'}}>
+      <Text style={styles.name}>{account.name}</Text>
+      <Text style={styles.nameShop}>{account.nameShop}</Text>
+    </View>
+  );
+
+  // Component with TouchableOpacity to navigate to ShopScreen
+  const EditShopButton = () => (
+    <TouchableOpacity onPress={() => navigation.navigate('ShopScreen')}>
+      <AntDesign name="exclamationcircle" size={40} color={'black'} />
+    </TouchableOpacity>
+  );
+
+  // Component with Pressable to handle add product action
+  const AddProductButton = () => (
+    <Pressable
+      style={styles.btnAdd}
+      onPress={() => {
+        navigation.navigate('addProduct');
+      }}>
+      <Feather name="plus-square" size={20} color={'white'} />
+      <Text style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
+    </Pressable>
+  );
+
+  // Main rendering part of the MyProduct component
   return (
     <View style={styles.container}>
-      {/* Logout, Shop */}
+      {/* Header section */}
       <View style={styles.header}>
+        {/* HeaderShop section containing user information, shop information, and edit shop button */}
         <View style={styles.headerShop}>
-          {/* Ảnh đại diện shop */}
           <Image style={styles.avatarShop} source={{uri: account.avatar}} />
-          {/* Thông tin shop */}
-          <View style={{right: '10%'}}>
-            <Text style={styles.name}>{account.name}</Text>
-            <Text style={styles.nameShop}>{account.nameShop}</Text>
-          </View>
-          {/* Sửa shop */}
-          <TouchableOpacity onPress={() => navigation.navigate('ShopScreen')}>
-            <AntDesign name="exclamationcircle" size={40} color={'black'} />
-          </TouchableOpacity>
+          <ShopInfo />
+          <EditShopButton />
         </View>
       </View>
-      {/* Tab Product */}
+      {/* ProductScreen component to display user's products */}
       <ProductScreen navigation={navigation} id={account.id} />
-      {/* Button Add Product */}
-      <Pressable style={styles.btnAdd}>
-        <Feather name="plus-square" size={20} color={'white'} />
-        <Text style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
-      </Pressable>
+      {/* AddProductButton to add a new product */}
+      <AddProductButton />
     </View>
   );
 };
-
-export default MyProduct;
 
 const styles = StyleSheet.create({
   container: {
@@ -71,8 +91,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
   },
   avatarShop: {
-    width: '20%',
-    height: '80%',
+    width: 60,
+    height: 60,
     borderRadius: 100,
   },
   name: {
@@ -98,7 +118,9 @@ const styles = StyleSheet.create({
   },
   txtAdd: {
     color: 'white',
-    left: '10%',
+    marginLeft: 10,
     fontWeight: '600',
   },
 });
+
+export default MyProduct;
