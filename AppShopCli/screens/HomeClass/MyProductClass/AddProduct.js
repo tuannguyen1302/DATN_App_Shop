@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useNavigation} from '@react-navigation/native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { useNavigation } from '@react-navigation/native';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -41,12 +41,12 @@ const AddProduct = () => {
 
       if (cameraPermission === PermissionsAndroid.RESULTS.GRANTED) {
         const result = isFrontCamera
-          ? await launchCamera({mediaType: 'photo', cameraType: 'front'})
-          : await launchImageLibrary({mediaType: 'photo'});
+          ? await launchCamera({ mediaType: 'photo', cameraType: 'front' })
+          : await launchImageLibrary({ mediaType: 'photo' });
 
         setSelectedImages([
           ...selectedImages,
-          {id: Date.now().toString(), uri: result.assets[0].uri},
+          { id: Date.now().toString(), uri: result.assets[0].uri },
         ]);
 
         console.log(selectedImages);
@@ -80,7 +80,7 @@ const AddProduct = () => {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -103,14 +103,14 @@ const AddProduct = () => {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
   // Create a new data array with a button when images are less than 8
   const dataWithButton =
     selectedImages.length < 8
-      ? [{id: 'button', isButton: true}, ...selectedImages]
+      ? [{ id: 'button', isButton: true }, ...selectedImages]
       : selectedImages;
 
   return (
@@ -131,7 +131,7 @@ const AddProduct = () => {
               data={dataWithButton}
               scrollEnabled={false}
               keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <View style={styles.imageItem}>
                   {item.isButton ? (
                     <TouchableOpacity
@@ -141,7 +141,7 @@ const AddProduct = () => {
                     </TouchableOpacity>
                   ) : (
                     <>
-                      <Image style={styles.image} source={{uri: item.uri}} />
+                      <Image style={styles.image} source={{ uri: item.uri }} />
                       <TouchableOpacity
                         onPress={() => handleDeleteImage(item.id)}
                         style={styles.closeButton}>
@@ -218,13 +218,16 @@ const AddProduct = () => {
                 <MaterialIcons name={item.icon} size={25} />
                 <Text style={styles.inputLabel}>{item.label}</Text>
               </View>
-              <TextInput
-                style={styles.priceAndInventoryInput}
-                maxLength={10}
-                value={item.state}
-                onChangeText={item.setState}
-                placeholder={`Nhập ${item.label.toLowerCase()}`}
-              />
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TextInput
+                  style={styles.priceAndInventoryInput}
+                  maxLength={10}
+                  value={item.state}
+                  onChangeText={item.setState}
+                  placeholder={`0`}
+                />
+                {item.label === 'Giá sản phẩm 🕸️' && <Text style={{ fontSize: 18 }}>đ</Text>}
+              </View>
             </View>
           ))}
         </View>
@@ -234,8 +237,8 @@ const AddProduct = () => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, {backgroundColor: '#000000'}]}>
-          <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#000000' }]}>
+          <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -331,13 +334,17 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     alignItems: 'center',
     justifyContent: 'space-between',
+
   },
   iconAndLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+
   },
   priceAndInventoryInput: {
     fontSize: 15,
+
+
   },
   footer: {
     backgroundColor: '#ffffff',
