@@ -8,6 +8,9 @@ const WelcomeScreen = () => {
   // Sử dụng useEffect để chuyển màn hình sau khoảng 3 giây
   useEffect(() => {
 
+
+
+
     const checkLoginStatus = async () => {
       try {
         // Kiểm tra xem có thông tin đăng nhập trong AsyncStorage không
