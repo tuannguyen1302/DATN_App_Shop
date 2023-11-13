@@ -1,13 +1,16 @@
 import React from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
-
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Order = () => {
   const navigation = useNavigation();
-
+  const logout = () => {
+    AsyncStorage.clear();
+    navigation.replace('Login2');
+  }
   return (
     <View style={styles.container}>
       {/* Avatar image */}
@@ -49,7 +52,7 @@ const Order = () => {
           </View>
         </Pressable>
         {/* Header "Thông tin" */}
-        <Text style={[styles.headerText, {marginTop: '5%'}]}>Thông tin</Text>
+        <Text style={[styles.headerText, { marginTop: '5%' }]}>Thông tin</Text>
         {/* Button to navigate to StatisticalScreen */}
         <Pressable
           style={styles.buttonView}
@@ -81,11 +84,11 @@ const Order = () => {
           </View>
         </Pressable>
         {/* Header "Thông tin" */}
-        <Text style={[styles.headerText, {marginTop: '5%'}]}>Thông tin</Text>
+        <Text style={[styles.headerText, { marginTop: '5%' }]}>Thông tin</Text>
         {/* Logout button */}
         <Pressable
           style={styles.buttonView}
-          onPress={() => navigation.replace('Login2')}>
+          onPress={logout}>
           <View style={styles.rowButton}>
             <View style={styles.iconTextContainer}>
               {/* Logout icon */}

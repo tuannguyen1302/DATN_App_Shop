@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,8 +13,10 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {CheckBox} from 'react-native-elements';
-import {useNavigation} from '@react-navigation/native';
+import { CheckBox } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Hàm kiểm tra định dạng email
 const isValidEmail = email =>
@@ -32,8 +34,9 @@ const Login2 = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
 
-  // Hàm kiểm tra đăng nhập
-  const checkLogin = () => {
+  const login = async (email, password) => {
+
+    console.log(email, password);
     setError('');
     if (!email) {
       setError('Email không được để trống');
@@ -46,10 +49,38 @@ const Login2 = () => {
     } else if (!isValidPassword(password)) {
       setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
     } else {
-      navigation.replace('BottomTab', {screen: 'MyProduct'});
+      axios.post('https://00ee-116-96-44-232.ngrok-free.app/v1/api/access/login', {
+        email: email,
+        password: password,
+        role: "Shop",
+      })
+        .then(response => {
+          // Xử lý kết quả thành công
+          console.log(response.data); // Xem đối tượng kết quả
+
+
+          navigation.replace('BottomTab', { screen: 'MyProduct' });
+          // if (response.status === 200 && response.data.message) {
+          //   // Đăng nhập thành công
+          //   console.log(response.data.message.userId);
+
+
+          //   return response.data.message; // Trả về token hoặc thông tin đăng nhập khác
+          // } else {
+          //   return null;
+          // }
+          console.log("chay dang nhap");
+        })
+        .catch(error => {
+          if (error.response) {
+            // Đối tượng lỗi chứa response từ server
+            console.log(error.response.data.message);
+            alert(error.response.data.message)
+          }
+          return null;
+        });
     }
   };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -57,7 +88,7 @@ const Login2 = () => {
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Text style={styles.title}>Login to your Account</Text>
 
-        <View style={{marginTop: '10%'}}>
+        <View style={{ marginTop: '10%' }}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
             value={email}
@@ -76,29 +107,26 @@ const Login2 = () => {
             passwordVisible={passwordVisible}
             setPasswordVisible={setPasswordVisible}
           />
-
           {error && <Text style={styles.error}>{error}</Text>}
-
           <CheckBox
-            title="Remember me"
+            title="Lưu tài khoản "
             checked={isChecked}
             checkedColor="#000000"
             uncheckedColor="#000000"
             containerStyle={styles.checkBox}
-            onPress={() => setIsChecked(!isChecked)}
+            onPress={async () => {
+              setIsChecked(!isChecked)
+              await AsyncStorage.setItem('userEmail', email);
+            }}
           />
-
-          <TouchableOpacity style={styles.signInButton} onPress={checkLogin}>
+          <TouchableOpacity style={styles.signInButton} onPress={() => login(email, password)}>
             <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
-
           <Text style={styles.forgotPassword} onPress={() => alert('forgot')}>
             Forgot the password?
           </Text>
         </View>
-
         <SocialLoginButtons />
-
         <SignUpLink onPress={() => navigation.navigate('SignUp')} />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -157,14 +185,14 @@ const SocialLoginButtons = () => (
 );
 
 // Component nút đăng nhập bằng tài khoản mạng xã hội
-const SocialButton = ({imageSource, onPress}) => (
+const SocialButton = ({ imageSource, onPress }) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
     <Image source={imageSource} style={styles.icon} />
   </TouchableOpacity>
 );
 
 // Component đường link đến màn hình đăng ký
-const SignUpLink = ({onPress}) => (
+const SignUpLink = ({ onPress }) => (
   <View style={styles.signUpLinkContainer}>
     <Text style={styles.signUpLinkText}>Don't have an account? </Text>
     <Text style={styles.signUpLink} onPress={onPress}>

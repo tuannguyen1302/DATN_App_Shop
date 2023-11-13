@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.5",
     "@react-native-community/cli-doctor": "^11.3.9",
     "@react-native-masked-view/masked-view": "^0.3.0",
     "@react-native-picker/picker": "^2.5.1",
@@ -17,6 +18,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.15",
     "@react-navigation/stack": "^6.3.20",
+    "axios": "^1.6.1",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-chart-kit": "^6.12.0",

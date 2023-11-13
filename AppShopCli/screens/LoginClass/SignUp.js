@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,7 +12,9 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+
 
 // Hàm kiểm tra định dạng email
 const isValidEmail = email =>
@@ -32,7 +34,7 @@ const SignUp = () => {
   const [error, setError] = useState('');
 
   // Hàm kiểm tra thông tin đăng ký
-  const checkLogin = () => {
+  const checkLogin = async () => {
     setError('');
     if (!email) setError('Email không được để trống');
     else if (!isValidEmail(email)) setError('Email không đúng định dạng');
@@ -44,7 +46,27 @@ const SignUp = () => {
       setError('Mật khẩu có in hoa, kí tự đặc biệt');
     else if (password !== confirmPassword)
       setError('Mật khẩu không trùng khớp');
-    else alert('ok ok');
+    else {
+
+      console.log("đang chạy đăng kí ");
+      axios.post('https://00ee-116-96-44-232.ngrok-free.app/v1/api/access/signup', {
+        email: email,
+        password: password,
+        role: "Shop",
+      })
+        .then(response => {
+          // Xử lý kết quả thành công
+          alert(response.data.message);
+          navigation.navigate('Login2')
+        })
+        .catch(error => {
+          if (error.response) {
+            // Đối tượng lỗi chứa response từ server
+            //console.log(error.response.data.message);
+            alert(error.response.data.message)
+          }
+        });
+    };
   };
 
   return (
@@ -56,7 +78,7 @@ const SignUp = () => {
         <Text style={styles.title}>Create your Account</Text>
 
         {/* Ô nhập email */}
-        <View style={{marginTop: '10%'}}>
+        <View style={{ marginTop: '10%' }}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
             value={email}
@@ -102,7 +124,7 @@ const SignUp = () => {
         <SocialLoginButtons />
 
         {/* Đường link đến màn hình đăng nhập */}
-        <SignInLink onPress={() => navigation.navigate('Login1')} />
+        <SignInLink onPress={() => navigation.navigate('Login2')} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -162,14 +184,14 @@ const SocialLoginButtons = () => (
 );
 
 // Component nút mạng xã hội
-const SocialButton = ({imageSource, onPress}) => (
+const SocialButton = ({ imageSource, onPress }) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
     <Image source={imageSource} style={styles.icon} />
   </TouchableOpacity>
 );
 
 // Component đường link đến màn hình đăng nhập
-const SignInLink = ({onPress}) => (
+const SignInLink = ({ onPress }) => (
   <View style={styles.signUpLinkContainer}>
     <Text style={styles.signUpLinkText}>Already have an account? </Text>
     <Text style={styles.signUpLink} onPress={onPress}>
