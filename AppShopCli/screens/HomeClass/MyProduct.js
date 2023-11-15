@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Image,
   Pressable,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from './MyProductClass/ProductScreen';
 import {useNavigation} from '@react-navigation/native';
@@ -15,58 +15,51 @@ import {useNavigation} from '@react-navigation/native';
 const MyProduct = () => {
   const navigation = useNavigation();
 
-  // Initial user account information
-  const [account, setAccount] = useState({
+  const account = {
     id: 1,
-    name: 'Trần Thị Tuấn',
+    name: 'Shop thời trang',
     avatar:
-      'https://i.ytimg.com/vi/O8e-2JTo7wk/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCopE8gdgNPrSPgRLjpE8arOASMeQ',
+      'https://th.bing.com/th?id=ORMS.730f1690c9e478c37a9dace89225f259&pid=Wdp&w=300&h=156&qlt=90&c=1&rs=1&dpr=1&p=0',
     nameShop: '❤️ shop yêu thích',
-  });
+  };
 
-  // Component to display user account information
-  const ShopInfo = () => (
-    <View style={{right: '10%'}}>
-      <Text style={styles.name}>{account.name}</Text>
-      <Text style={styles.nameShop}>{account.nameShop}</Text>
-    </View>
-  );
-
-  // Component with TouchableOpacity to navigate to ShopScreen
-  const EditShopButton = () => (
-    <TouchableOpacity onPress={() => navigation.navigate('ShopScreen')}>
-      <AntDesign name="exclamationcircle" size={40} color={'black'} />
-    </TouchableOpacity>
-  );
-
-  // Component with Pressable to handle add product action
-  const AddProductButton = () => (
-    <Pressable
-      style={styles.btnAdd}
-      onPress={() => {
-        navigation.navigate('addProduct');
-      }}>
-      <Feather name="plus-square" size={20} color={'white'} />
-      <Text style={styles.txtAdd}>Thêm 1 sản phẩm mới</Text>
-    </Pressable>
-  );
-
-  // Main rendering part of the MyProduct component
   return (
     <View style={styles.container}>
-      {/* Header section */}
       <View style={styles.header}>
-        {/* HeaderShop section containing user information, shop information, and edit shop button */}
-        <View style={styles.headerShop}>
-          <Image style={styles.avatarShop} source={{uri: account.avatar}} />
-          <ShopInfo />
-          <EditShopButton />
+        <Image
+          style={[styles.avatarShop, styles.brightenAvatar]}
+          source={{uri: account.avatar}}
+        />
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.name} selectable>
+            {account.name}
+          </Text>
+          <Text style={styles.shopName}>{account.nameShop}</Text>
+        </View>
+        <View style={styles.headerIconsContainer}>
+          <TouchableOpacity>
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={30}
+              color={'#333333'}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name="notifications-outline" size={30} color="#333333" />
+          </TouchableOpacity>
         </View>
       </View>
-      {/* ProductScreen component to display user's products */}
+
       <ProductScreen navigation={navigation} id={account.id} />
-      {/* AddProductButton to add a new product */}
-      <AddProductButton />
+
+      <Pressable
+        style={styles.btnAdd}
+        onPress={() => {
+          navigation.navigate('AddProduct');
+        }}>
+        <Feather name="plus-square" size={20} color={'white'} />
+        <Text style={styles.txtAdd}>Thêm sản phẩm mới</Text>
+      </Pressable>
     </View>
   );
 };
@@ -74,52 +67,63 @@ const MyProduct = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
   },
   header: {
-    height: '15%',
-    marginTop: '3%',
-    marginHorizontal: '3%',
-  },
-  headerShop: {
-    height: '80%',
-    marginTop: '3%',
-    borderRadius: 10,
+    height: '10%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: '#F8F8F8',
+    paddingLeft: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
   },
   avatarShop: {
     width: 60,
     height: 60,
-    borderRadius: 100,
+    resizeMode: 'cover',
+    borderRadius: 30,
+  },
+  brightenAvatar: {
+    backgroundColor: 'rgba(255,255,255,0.3)', // Một màu trắng nhẹ làm sáng hình ảnh
+  },
+  headerTextContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  headerIconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '20%',
   },
   name: {
-    color: 'black',
     fontSize: 24,
-    fontWeight: '500',
+    fontWeight: '600',
+    color: '#333333',
   },
-  nameShop: {
-    color: 'black',
+  shopName: {
     fontSize: 16,
     fontWeight: '400',
+    color: '#757575',
   },
   btnAdd: {
-    width: 200,
-    height: 45,
+    width: '80%',
+    height: 50,
     borderRadius: 10,
     alignSelf: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    marginVertical: '2%',
+    marginVertical: 10,
     justifyContent: 'center',
     backgroundColor: 'black',
   },
   txtAdd: {
-    color: 'white',
     marginLeft: 10,
+    fontSize: 16,
     fontWeight: '600',
+    color: 'white',
   },
 });
 

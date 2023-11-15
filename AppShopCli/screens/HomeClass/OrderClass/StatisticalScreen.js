@@ -3,79 +3,55 @@ import {
   Dimensions,
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
-import {LineChart} from 'react-native-chart-kit';
+import {BarChart, LineChart} from 'react-native-chart-kit';
 
-// Fixed data for categories and product availability
-const CATEGORIES_DATA = [
-  {_id: 1, name: 'Đơn hàng'},
-  {_id: 2, name: 'Sản phẩm'},
+const CHART_CATEGORIES = [
+  {id: 1, name: 'Đơn hàng'},
+  {id: 2, name: 'Sản phẩm'},
 ];
 
-const AVAILABILITY_DATA = [
-  {_id: 1, name: 'Tất cả'},
-  {_id: 2, name: 'Hôm nay'},
-  {_id: 3, name: 'Tuần này'},
-  {_id: 4, name: 'Tháng này'},
-  {_id: 5, name: 'Quý này'},
-  {_id: 6, name: 'Năm nay'},
+const AVAILABILITY_OPTIONS = [
+  {id: 1, name: 'Tất cả'},
+  {id: 2, name: 'Hôm nay'},
+  {id: 3, name: 'Tuần này'},
+  {id: 4, name: 'Tháng này'},
+  {id: 5, name: 'Quý này'},
+  {id: 6, name: 'Năm nay'},
 ];
 
 const StatisticalScreen = () => {
-  const navigation = useNavigation();
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES_DATA[0]);
+  const [selectedCategory, setSelectedCategory] = useState(CHART_CATEGORIES[0]);
   const [selectedAvailability, setSelectedAvailability] = useState(
-    AVAILABILITY_DATA[0],
+    AVAILABILITY_OPTIONS[0],
   );
 
-  // Sample product data
-  const [productData, setProductData] = useState([
+  const productData = [
     {
-      productName: 'Áo khoác nam',
-      imageUri:
+      name: 'Áo khoác nam',
+      image:
         'https://www.bing.com/th?id=OIP.lXMqjfaBPZm2xSzGyPs6swHaKX&w=150&h=210&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2',
       purchasePrice: 1000,
       sellingPrice: 2000,
       quantity: 2,
     },
-  ]);
+  ];
 
-  // Header Section
-  const Header = () => (
-    <View style={styles.header}>
-      <Pressable onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={30} color={'black'} />
-      </Pressable>
-      <Text style={styles.headerText}>Thống kê</Text>
-    </View>
-  );
-
-  // Inventory Overview Section
   const InventoryInfo = () => (
     <View style={styles.mainContainer}>
-      <InfoDetails />
-    </View>
-  );
-
-  // Inventory Details Section
-  const InfoDetails = () => (
-    <View style={styles.infoContainer}>
       <View style={styles.rowContainer}>
         <Text style={styles.titleText}>Tổng quan</Text>
         <Dropdown
           selectedTextStyle={styles.dropdownText}
           style={styles.dropdown}
-          data={CATEGORIES_DATA}
+          data={CHART_CATEGORIES}
           labelField="name"
-          valueField="_id"
-          value={selectedCategory._id}
+          valueField="id"
+          value={selectedCategory.id}
           maxHeight={120}
           onChange={setSelectedCategory}
         />
@@ -83,18 +59,17 @@ const StatisticalScreen = () => {
       <View style={styles.rowContainer}>
         <ValueDetails label={selectedCategory.name} value="10" />
         <ValueDetails
-          label={selectedCategory._id == 1 ? 'Doanh thu' : 'Đã bán'}
-          value={selectedCategory._id}
+          label={selectedCategory.id === 1 ? 'Doanh thu' : 'Đã bán'}
+          value={selectedCategory.id}
         />
         <ValueDetails
-          label={selectedCategory._id == 1 ? 'Lợi nhuận' : 'Hết hàng'}
-          value={selectedCategory._id}
+          label={selectedCategory.id === 1 ? 'Lợi nhuận' : 'Hết hàng'}
+          value={selectedCategory.id}
         />
       </View>
     </View>
   );
 
-  // Display Value Details
   const ValueDetails = ({label, value}) => (
     <View style={styles.valueContainer}>
       <Text style={styles.valueLabel}>{label}</Text>
@@ -102,69 +77,37 @@ const StatisticalScreen = () => {
     </View>
   );
 
-  // Product List Section
-  const ProductList = () => (
-    <FlatList
-      data={productData}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{marginTop: '2%'}}
-      renderItem={({item}) => <ProductItem item={item} />}
-    />
-  );
-
-  // Display Each Product
   const ProductItem = ({item}) => (
     <View style={styles.itemContainer}>
-      <Image style={styles.productImage} source={{uri: item.imageUri}} />
-      <ProductInfo item={item} />
-      <QuantityAndStatus item={item} />
+      <Image style={styles.productImage} source={{uri: item.image}} />
+      <View style={styles.productInfo}>
+        <Text style={styles.productName} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={styles.infoText} numberOfLines={1}>
+          Giá bán:{' '}
+          <Text style={styles.priceText}>
+            {item.sellingPrice.toLocaleString().replace(/,/g, '.')}đ
+          </Text>
+        </Text>
+        <Text style={styles.infoText} numberOfLines={1}>
+          Giá nhập:{' '}
+          <Text style={styles.priceText}>
+            {item.purchasePrice.toLocaleString().replace(/,/g, '.')}đ
+          </Text>
+        </Text>
+      </View>
+      <View style={styles.quantityContainer}>
+        <Text style={styles.infoText}>Số lượng: {item.quantity}</Text>
+      </View>
     </View>
   );
 
-  // Product Details Section
-  const ProductInfo = ({item}) => (
-    <View style={styles.productInfo}>
-      <Text style={styles.productName}>{item.productName}</Text>
-
-      <Text style={styles.infoText}>
-        Giá nhập: <Text style={{color: 'red'}}>{item.purchasePrice}</Text>
-      </Text>
-      <Text style={styles.infoText}>
-        Giá bán: <Text style={{color: 'red'}}>{item.sellingPrice}</Text>
-      </Text>
-    </View>
-  );
-
-  // Quantity and Status of the Product
-  const QuantityAndStatus = ({item}) => (
-    <View style={styles.quantityAndStatus}>
-      <Text style={styles.infoText}>Số lượng: {item.quantity}</Text>
-    </View>
-  );
-
-  // Footer Section
-  const Footer = () => (
-    <View style={styles.footerContainer}>
-      <Text style={styles.footerText}>Thống kê</Text>
-      <Dropdown
-        selectedTextStyle={styles.dropdownText}
-        style={styles.availabilityDropdown}
-        data={AVAILABILITY_DATA}
-        labelField="name"
-        valueField="_id"
-        value={selectedAvailability._id}
-        maxHeight={120}
-        onChange={setSelectedAvailability}
-      />
-    </View>
-  );
-
-  // Chart Section
   const ChartSection = () => (
-    <View style={{alignItems: 'center'}}>
-      <LineChart
+    <View style={styles.chartContainer}>
+      <BarChart
         data={{
-          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+          labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
           datasets: [
             {
               data: [
@@ -178,55 +121,51 @@ const StatisticalScreen = () => {
             },
           ],
         }}
-        width={Dimensions.get('window').width - 16}
-        height={200}
+        width={Dimensions.get('window').width / 1.05}
+        height={Dimensions.get('window').height / 4}
         yAxisLabel="$"
         yAxisSuffix="k"
-        yAxisInterval={1}
-        chartConfig={chartConfig}
-        bezier
-        style={chartStyle}
+        chartConfig={{
+          backgroundGradientFrom: '#fb8c00',
+          backgroundGradientTo: '#ffa726',
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+        }}
+        style={styles.chartStyle}
       />
       <Text style={styles.footerText}>Biểu đồ</Text>
-      <View style={styles.separator} />
     </View>
   );
 
-  // Configuration for the Chart
-  const chartConfig = {
-    backgroundColor: '#e26a00',
-    backgroundGradientFrom: '#fb8c00',
-    backgroundGradientTo: '#ffa726',
-    decimalPlaces: 2,
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-    propsForDots: {
-      r: '6',
-      strokeWidth: '2',
-      stroke: '#ffa726',
-    },
-  };
-
-  const chartStyle = {
-    marginVertical: 8,
-    borderRadius: 16,
-  };
-
-  // Display the entire screen
   return (
     <View style={styles.container}>
-      <Header />
       <InventoryInfo />
-      <Footer />
+
+      <View style={styles.footerContainer}>
+        <Text style={styles.footerText}>Thống kê</Text>
+        <Dropdown
+          selectedTextStyle={styles.dropdownText}
+          style={styles.availabilityDropdown}
+          data={AVAILABILITY_OPTIONS}
+          labelField="name"
+          valueField="id"
+          value={selectedAvailability.id}
+          maxHeight={120}
+          onChange={setSelectedAvailability}
+        />
+      </View>
+
       <ChartSection />
 
-      {selectedCategory._id == 2 && (
-        <View style={{marginHorizontal: '6%', flex: 1, marginTop: '2%'}}>
-          <Text style={styles.footerText}>Sản Phẩm Bán Chạy Nhất</Text>
-          <ProductList />
+      {selectedCategory.id === 2 && (
+        <View style={styles.productListContainer}>
+          <Text style={styles.footerText}>Sản Phẩm Bán Chạy</Text>
+          <FlatList
+            data={productData}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.productList}
+            renderItem={({item}) => <ProductItem item={item} />}
+          />
         </View>
       )}
     </View>
@@ -236,43 +175,18 @@ const StatisticalScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: '10%',
     backgroundColor: '#F6F6F6',
-  },
-  header: {
-    height: 70,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#999999',
-    marginHorizontal: '5%',
-    borderBottomWidth: 1,
-  },
-  headerText: {
-    marginLeft: 16,
-    fontSize: 23,
-    color: 'black',
-    fontWeight: 'bold',
   },
   mainContainer: {
     height: 120,
-    flexDirection: 'row',
-    alignSelf: 'center',
     backgroundColor: '#D9E1FF',
     borderRadius: 10,
-    padding: '1%',
-    marginHorizontal: '5%',
+    marginHorizontal: '3%',
     marginTop: '5%',
-    elevation: 1,
+    padding: '2%',
+    elevation: 2,
     marginBottom: '2%',
-  },
-  image: {
-    width: 110,
-    height: 110,
-    resizeMode: 'contain',
-    borderRadius: 10,
-  },
-  infoContainer: {
-    flex: 1,
-    marginLeft: '1%',
     justifyContent: 'space-around',
   },
   rowContainer: {
@@ -286,15 +200,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   dropdown: {
-    height: 25,
-    backgroundColor: 'black',
+    height: 28,
+    backgroundColor: '#262626',
     borderRadius: 15,
     paddingHorizontal: '4%',
-    width: 95,
+    width: 105,
   },
   dropdownText: {
     color: 'white',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
   },
   valueContainer: {
@@ -318,57 +232,76 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: '2%',
     marginHorizontal: '4%',
+    marginVertical: '2%',
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 23,
+    fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
   availabilityDropdown: {
-    height: 35,
-    backgroundColor: 'black',
+    height: 30,
+    backgroundColor: '#262626',
     borderRadius: 15,
     paddingHorizontal: '4%',
     width: 100,
   },
   itemContainer: {
     height: 100,
-    borderRadius: 20,
-    padding: '5%',
-    flexDirection: 'row',
+    marginVertical: '2%',
+    padding: '2%',
+    borderRadius: 10,
+    elevation: 2,
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginBottom: '3%',
-    elevation: 5,
   },
   productImage: {
-    width: 85,
-    height: 85,
+    width: '25%',
+    height: '100%',
     resizeMode: 'contain',
     borderRadius: 10,
   },
   productInfo: {
     left: '1%',
+    width: '50%',
   },
   productName: {
-    fontSize: 20,
-    padding: '2%',
+    fontSize: 18,
+    margin: '2%',
     color: 'black',
     fontWeight: 'bold',
   },
   infoText: {
-    padding: '3%',
+    margin: '2%',
     color: 'black',
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '700',
   },
-  quantityAndStatus: {
-    marginHorizontal: '1%',
+  quantityContainer: {
+    height: '100%',
     alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  chartContainer: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    marginHorizontal: '5%',
+  },
+  chartStyle: {
+    marginVertical: 8,
+    borderRadius: 10,
+  },
+  productListContainer: {
+    marginHorizontal: '5%',
+    flex: 1,
+    marginTop: '2%',
+  },
+  productList: {
+    marginTop: '2%',
   },
 });
 

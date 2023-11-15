@@ -1,93 +1,73 @@
 import React, {useState} from 'react';
-import {FlatList, Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
+import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 
-// Fixed data for months and product availability
-const MONTHS_DATA = [
-  {_id: 1, name: 'Tháng 1'},
-  {_id: 2, name: 'Tháng 2'},
-  {_id: 3, name: 'Tháng 3'},
-  {_id: 4, name: 'Tháng 4'},
-  {_id: 5, name: 'Tháng 5'},
-  {_id: 6, name: 'Tháng 6'},
-  {_id: 7, name: 'Tháng 7'},
-  {_id: 8, name: 'Tháng 8'},
-  {_id: 9, name: 'Tháng 9'},
-  {_id: 10, name: 'Tháng 10'},
-  {_id: 11, name: 'Tháng 11'},
-  {_id: 12, name: 'Tháng 12'},
+const MONTHS = [
+  {id: 1, name: 'Tháng 1'},
+  {id: 2, name: 'Tháng 2'},
+  {id: 3, name: 'Tháng 3'},
+  {id: 4, name: 'Tháng 4'},
+  {id: 5, name: 'Tháng 5'},
+  {id: 6, name: 'Tháng 6'},
+  {id: 7, name: 'Tháng 7'},
+  {id: 8, name: 'Tháng 8'},
+  {id: 9, name: 'Tháng 9'},
+  {id: 10, name: 'Tháng 10'},
+  {id: 11, name: 'Tháng 11'},
+  {id: 12, name: 'Tháng 12'},
 ];
 
-const AVAILABILITY_DATA = [
-  {_id: 1, name: 'Còn hàng'},
-  {_id: 2, name: 'Hết hàng'},
+const AVAILABILITY_OPTIONS = [
+  {id: 1, name: 'Còn hàng'},
+  {id: 2, name: 'Hết hàng'},
 ];
 
 const InventoryScreen = () => {
-  const navigation = useNavigation();
   const [selectedMonth, setSelectedMonth] = useState(1);
+  const [selectedAvailability, setSelectedAvailability] = useState(1);
 
-  // Sample product data
-  const [productData, setProductData] = useState([
+  const products = [
     {
-      nameProduct: 'Áo khoác nam...',
-      avatar:
+      name: 'Áo khoác nam...',
+      image:
         'https://www.bing.com/th?id=OIP.lXMqjfaBPZm2xSzGyPs6swHaKX&w=150&h=210&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2',
       giaNhap: 1000,
       giaBan: 2000,
       quantity: 2,
     },
-  ]);
+  ];
 
-  // Header section
-  const Header = () => (
-    <View style={styles.header}>
-      <Pressable onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={30} color={'black'} />
-      </Pressable>
-      <Text style={styles.headerText}>Tồn kho</Text>
-    </View>
-  );
-
-  // Overview information about inventory
   const InventoryInfo = () => (
-    <View style={styles.mainContainer}>
+    <View style={styles.inventoryContainer}>
       <Image
-        style={styles.image}
+        style={styles.inventoryImage}
         source={{
           uri: 'https://i.pinimg.com/236x/19/24/c6/1924c6c35edbe90f175b019eee657c37.jpg',
         }}
       />
-      <InfoDetails />
-    </View>
-  );
-
-  // Details about inventory information
-  const InfoDetails = () => (
-    <View style={styles.infoContainer}>
-      <View style={styles.rowContainer}>
-        <Text style={styles.titleText}>Giá trị kho hàng</Text>
-        <Dropdown
-          selectedTextStyle={styles.dropdownText}
-          style={styles.dropdown}
-          data={MONTHS_DATA}
-          labelField="name"
-          valueField="_id"
-          value={selectedMonth}
-          maxHeight={120}
-          onChange={setSelectedMonth}
-        />
-      </View>
-      <View style={styles.rowContainer}>
-        <ValueDetails label="Value" value="1.000.000" />
-        <ValueDetails label="Quantity" value="10" />
+      <View style={styles.infoContainer}>
+        <View style={styles.rowContainer}>
+          <Text style={styles.titleText}>Giá trị kho hàng</Text>
+          <Dropdown
+            selectedTextStyle={styles.dropdownText}
+            style={styles.dropdown}
+            data={MONTHS}
+            labelField="name"
+            valueField="id"
+            value={selectedMonth}
+            maxHeight={120}
+            containerStyle={{flex: 1, marginRight: 10}}
+            onChange={setSelectedMonth}
+          />
+        </View>
+        <View style={styles.rowContainer}>
+          <ValueDetails label="Value" value="1.000.000" />
+          <ValueDetails label="Quantity" value="10" />
+        </View>
       </View>
     </View>
   );
 
-  // Displaying value details
   const ValueDetails = ({label, value}) => (
     <View style={styles.valueContainer}>
       <Text style={styles.valueLabel}>{label}</Text>
@@ -95,70 +75,48 @@ const InventoryScreen = () => {
     </View>
   );
 
-  // Product list section
-  const ProductList = () => (
-    <FlatList
-      data={productData}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{marginTop: '2%'}}
-      renderItem={({item}) => <ProductItem item={item} />}
-    />
-  );
-
-  // Displaying each product
   const ProductItem = ({item}) => (
-    <View style={styles.itemContainer}>
-      <Image style={styles.productImage} source={{uri: item.avatar}} />
-      <ProductInfo item={item} />
-      <QuantityAndStatus item={item} />
+    <View style={styles.productContainer}>
+      <Image style={styles.productImage} source={{uri: item.image}} />
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.infoText}>
+          Giá nhập: <Text style={styles.priceText}>{item.giaNhap}</Text>
+        </Text>
+        <Text style={styles.infoText}>
+          Giá bán: <Text style={styles.priceText}>{item.giaBan}</Text>
+        </Text>
+      </View>
+      <View style={styles.quantityContainer}>
+        <Text style={styles.infoText}>Số lượng: {item.quantity}</Text>
+      </View>
     </View>
   );
 
-  // Product details section
-  const ProductInfo = ({item}) => (
-    <View style={styles.productInfo}>
-      <Text style={styles.productName}>{item.nameProduct}</Text>
-
-      <Text style={styles.infoText}>
-        Giá nhập: <Text style={{color: 'red'}}>{item.giaNhap}</Text>
-      </Text>
-      <Text style={styles.infoText}>
-        Giá bán: <Text style={{color: 'red'}}>{item.giaBan}</Text>
-      </Text>
-    </View>
-  );
-
-  // Quantity and status of the product
-  const QuantityAndStatus = ({item}) => (
-    <View style={styles.quantityAndStatus}>
-      <Text style={styles.infoText}>Số lượng: {item.quantity}</Text>
-    </View>
-  );
-
-  // Footer section
-  const Footer = () => (
-    <View style={styles.footerContainer}>
-      <Text style={styles.footerText}>Sản phẩm</Text>
-      <Dropdown
-        selectedTextStyle={styles.dropdownText}
-        style={styles.availabilityDropdown}
-        data={AVAILABILITY_DATA}
-        labelField="name"
-        valueField="_id"
-        value={selectedMonth}
-        maxHeight={120}
-        onChange={setSelectedMonth}
-      />
-    </View>
-  );
-
-  // Rendering the entire screen
   return (
     <View style={styles.container}>
-      <Header />
       <InventoryInfo />
-      <Footer />
-      <ProductList />
+
+      <View style={styles.footerContainer}>
+        <Text style={styles.footerText}>Sản phẩm</Text>
+        <Dropdown
+          selectedTextStyle={styles.dropdownText}
+          style={styles.availabilityDropdown}
+          data={AVAILABILITY_OPTIONS}
+          labelField="name"
+          valueField="id"
+          value={selectedAvailability}
+          maxHeight={120}
+          onChange={setSelectedAvailability}
+        />
+      </View>
+
+      <FlatList
+        data={products}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{marginTop: '2%'}}
+        renderItem={({item}) => <ProductItem item={item} />}
+      />
     </View>
   );
 };
@@ -166,42 +124,28 @@ const InventoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: '10%',
     backgroundColor: '#F6F6F6',
   },
-  header: {
-    height: 70,
+  inventoryContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#999999',
-    marginHorizontal: '5%',
-    borderBottomWidth: 1,
-  },
-  headerText: {
-    marginLeft: 16,
-    fontSize: 23,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  mainContainer: {
-    flexDirection: 'row',
-    alignSelf: 'center',
     backgroundColor: '#DCDCDC',
     borderRadius: 10,
-    padding: '1%',
-    marginHorizontal: '5%',
+    padding: '2%',
+    marginHorizontal: '4%',
     marginTop: '5%',
-    elevation: 1,
+    elevation: 2,
     marginBottom: '2%',
   },
-  image: {
-    width: 110,
-    height: 110,
-    resizeMode: 'contain',
+  inventoryImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
     borderRadius: 10,
   },
   infoContainer: {
     flex: 1,
-    marginLeft: '1%',
+    marginLeft: '2%',
     justifyContent: 'space-around',
   },
   rowContainer: {
@@ -210,7 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleText: {
-    fontSize: 22,
+    fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
@@ -219,11 +163,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     borderRadius: 15,
     paddingHorizontal: '4%',
-    width: 85,
+    width: 92,
   },
   dropdownText: {
     color: 'white',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
   },
   valueContainer: {
@@ -247,56 +191,59 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: '2%',
     marginHorizontal: '4%',
+    marginVertical: '1%',
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 23,
+    fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
   availabilityDropdown: {
-    height: 35,
+    height: 30,
     backgroundColor: 'black',
     borderRadius: 15,
-    paddingHorizontal: '4%',
+    paddingHorizontal: '3%',
     width: 100,
   },
-  itemContainer: {
+  productContainer: {
     height: 100,
-    borderRadius: 20,
-    padding: '5%',
-    flexDirection: 'row',
+    marginVertical: '2%',
+    marginHorizontal: '4%',
+    padding: '2%',
+    borderRadius: 10,
+    elevation: 2,
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginHorizontal: '5%',
-    marginBottom: '3%',
-    elevation: 5,
   },
   productImage: {
     width: 85,
     height: 85,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     borderRadius: 10,
   },
   productInfo: {
-    left: '1%',
+    marginLeft: '2%',
   },
   productName: {
-    fontSize: 20,
-    padding: '2%',
+    fontSize: 18,
+    margin: '2%',
     color: 'black',
     fontWeight: 'bold',
   },
   infoText: {
-    padding: '3%',
+    margin: '2%',
     color: 'black',
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '700',
   },
-  quantityAndStatus: {
+  priceText: {
+    color: 'red',
+  },
+  quantityContainer: {
     marginHorizontal: '1%',
     alignItems: 'center',
   },

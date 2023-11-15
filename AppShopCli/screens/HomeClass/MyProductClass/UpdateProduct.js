@@ -17,17 +17,20 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import {SOCKET_URL} from '../../utils/socketService';
+import axios from 'axios';
 
-const AddProduct = () => {
+const UpdateProduct = ({route}) => {
   const navigation = useNavigation();
+  const {item} = route.params;
 
   const [selectedImages, setSelectedImages] = useState([]);
-  const [productName, setProductName] = useState('');
-  const [productDescription, setProductDescription] = useState('');
-  const [productPrice, setProductPrice] = useState('');
-  const [productInventory, setProductInventory] = useState('');
+  const [productName, setProductName] = useState(item?.product_name);
+  const [productDescription, setProductDescription] = useState(
+    item?.product_description,
+  );
+  const [productPrice, setProductPrice] = useState(item?.product_price);
+  const [productInventory, setProductInventory] = useState(item?.product_price);
 
   const getHeaders = () => ({
     headers: {
@@ -45,12 +48,12 @@ const AddProduct = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const result = isFrontCamera
-        ? await launchCamera({mediaType: 'photo'})
+        ? await launchCamera({mediaType: 'photo', cameraType: 'front'})
         : await launchImageLibrary({mediaType: 'photo'});
 
       setSelectedImages([
         ...selectedImages,
-        {id: Date.now().toString(), uri: result.assets[0]},
+        {id: Date.now().toString(), uri: result.assets[0].uri},
       ]);
     } catch (error) {
       console.log(error);
@@ -65,10 +68,11 @@ const AddProduct = () => {
         {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
         {
           text: 'Xóa',
-          onPress: () =>
+          onPress: () => {
             setSelectedImages(images =>
               images.filter(image => image.id !== id),
-            ),
+            );
+          },
         },
       ],
       {cancelable: true},
@@ -133,20 +137,19 @@ const AddProduct = () => {
       formData.append('category', '654e4dccab5f7e26f673b45f');
       formData.append('product_attributes', JSON.stringify(productAttributes));
       selectedImages.forEach(image => {
-        formData.append('thumbs', {
-          uri: image.uri.uri,
-          type: image.uri.type,
-          name: image.uri.fileName,
-        });
+        let localUri = image?.uri;
+        let filename = localUri.split('/').pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+        formData.append('thumbs', {uri: localUri, name: filename, type});
       });
 
-      const res = await axios.post(
-        `${SOCKET_URL}v1/api/product/createProduct`,
+      await axios.put(
+        `${SOCKET_URL}v1/api/product/editProduct/${item._id}`,
         formData,
         getHeaders(),
       );
-
-      console.log(res.data);
+      navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -169,7 +172,7 @@ const AddProduct = () => {
           <Text>
             {state.length}/{maxLength}
           </Text>
-          <Pressable onPress={() => clearField(setState)}>
+          <Pressable onPress={() => clearField(state, setState)}>
             <AntDesign
               name="closesquareo"
               size={20}
@@ -201,6 +204,15 @@ const AddProduct = () => {
     </View>
   );
 
+  let idCounter = 0;
+  useEffect(() => {
+    const newImages = item?.product_thumb.map(uri => ({
+      id: (idCounter++).toString(),
+      uri: `${SOCKET_URL}uploads/${uri}`,
+    }));
+    setSelectedImages(prevImages => [...prevImages, ...newImages]);
+  }, []);
+
   const dataWithButton =
     selectedImages.length < 8
       ? [{id: 'button', isButton: true}, ...selectedImages]
@@ -213,7 +225,7 @@ const AddProduct = () => {
           <Pressable onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={30} color={'black'} />
           </Pressable>
-          <Text style={styles.headerText}>Thêm Sản Phẩm</Text>
+          <Text style={styles.headerText}>Sửa Sản Phẩm</Text>
         </View>
       </View>
       <ScrollView>
@@ -233,9 +245,9 @@ const AddProduct = () => {
                   </TouchableOpacity>
                 ) : (
                   <>
-                    <Image style={styles.image} source={{uri: item.uri.uri}} />
+                    <Image style={styles.image} source={{uri: item?.uri}} />
                     <TouchableOpacity
-                      onPress={() => handleDeleteImage(item.id)}
+                      onPress={() => handleDeleteImage(item?.id)}
                       style={styles.closeButton}>
                       <AntDesign name="closecircleo" size={20} />
                     </TouchableOpacity>
@@ -363,7 +375,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputField: {
-    width: '100%',
+    width: 340,
   },
   inputStatus: {
     justifyContent: 'space-around',
@@ -406,4 +418,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddProduct;
+export default UpdateProduct;
