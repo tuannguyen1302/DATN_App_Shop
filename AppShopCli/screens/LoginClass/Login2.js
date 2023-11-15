@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,8 @@ import { CheckBox } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 // Hàm kiểm tra định dạng email
 const isValidEmail = email =>

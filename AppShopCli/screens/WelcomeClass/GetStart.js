@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     color: '#ffff',
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
   },
 });

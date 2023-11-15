@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   FlatList,
@@ -12,23 +12,25 @@ import {
   ToastAndroid,
   TouchableOpacity,
   View,
-
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useNavigation } from '@react-navigation/native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
+import {SOCKET_URL} from '../../utils/socketService';
 import axios from 'axios';
-import { SOCKET_URL } from '../../utils/socketService';
 
-const AddProduct = () => {
+const UpdateProduct = ({route}) => {
   const navigation = useNavigation();
+  const {item} = route.params;
 
   const [selectedImages, setSelectedImages] = useState([]);
-  const [productName, setProductName] = useState('');
-  const [productDescription, setProductDescription] = useState('');
-  const [productPrice, setProductPrice] = useState('');
-  const [productInventory, setProductInventory] = useState('');
+  const [productName, setProductName] = useState(item?.product_name);
+  const [productDescription, setProductDescription] = useState(
+    item?.product_description,
+  );
+  const [productPrice, setProductPrice] = useState(item?.product_price);
+  const [productInventory, setProductInventory] = useState(item?.product_price);
 
   const getHeaders = () => ({
     headers: {
@@ -46,12 +48,12 @@ const AddProduct = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const result = isFrontCamera
-        ? await launchCamera({ mediaType: 'photo' })
-        : await launchImageLibrary({ mediaType: 'photo' });
+        ? await launchCamera({mediaType: 'photo', cameraType: 'front'})
+        : await launchImageLibrary({mediaType: 'photo'});
 
       setSelectedImages([
         ...selectedImages,
-        { id: Date.now().toString(), uri: result.assets[0] },
+        {id: Date.now().toString(), uri: result.assets[0].uri},
       ]);
     } catch (error) {
       console.log(error);
@@ -63,16 +65,17 @@ const AddProduct = () => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn xóa ảnh này?',
       [
-        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
+        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
         {
           text: 'Xóa',
-          onPress: () =>
+          onPress: () => {
             setSelectedImages(images =>
               images.filter(image => image.id !== id),
-            ),
+            );
+          },
         },
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -81,10 +84,10 @@ const AddProduct = () => {
       'Thông báo',
       'Bạn muốn lấy ảnh từ?',
       [
-        { text: 'Chụp ảnh ', onPress: () => openCamera(true) },
-        { text: 'Thư viện ', onPress: () => openCamera(false) },
+        {text: 'Chụp ảnh ', onPress: () => openCamera(true)},
+        {text: 'Thư viện ', onPress: () => openCamera(false)},
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -134,26 +137,25 @@ const AddProduct = () => {
       formData.append('category', '654e4dccab5f7e26f673b45f');
       formData.append('product_attributes', JSON.stringify(productAttributes));
       selectedImages.forEach(image => {
-        formData.append('thumbs', {
-          uri: image.uri.uri,
-          type: image.uri.type,
-          name: image.uri.fileName,
-        });
+        let localUri = image?.uri;
+        let filename = localUri.split('/').pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+        formData.append('thumbs', {uri: localUri, name: filename, type});
       });
 
-      const res = await axios.post(
-        `${SOCKET_URL}v1/api/product/createProduct`,
+      await axios.put(
+        `${SOCKET_URL}v1/api/product/editProduct/${item._id}`,
         formData,
         getHeaders(),
       );
-
-      console.log(res.data);
+      navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.message);
     }
   };
 
-  const renderInputField = ({ label, state, setState, maxLength }, index) => (
+  const renderInputField = ({label, state, setState, maxLength}, index) => (
     <View key={index} style={styles.inputContainer}>
       <View style={styles.inputRow}>
         <View>
@@ -170,7 +172,7 @@ const AddProduct = () => {
           <Text>
             {state.length}/{maxLength}
           </Text>
-          <Pressable onPress={() => clearField(setState)}>
+          <Pressable onPress={() => clearField(state, setState)}>
             <AntDesign
               name="closesquareo"
               size={20}
@@ -183,7 +185,7 @@ const AddProduct = () => {
   );
 
   const renderPriceAndInventoryField = (
-    { icon, label, state, setState },
+    {icon, label, state, setState},
     index,
   ) => (
     <View key={index} style={styles.priceAndInventoryContainer}>
@@ -202,9 +204,18 @@ const AddProduct = () => {
     </View>
   );
 
+  let idCounter = 0;
+  useEffect(() => {
+    const newImages = item?.product_thumb.map(uri => ({
+      id: (idCounter++).toString(),
+      uri: `${SOCKET_URL}uploads/${uri}`,
+    }));
+    setSelectedImages(prevImages => [...prevImages, ...newImages]);
+  }, []);
+
   const dataWithButton =
     selectedImages.length < 8
-      ? [{ id: 'button', isButton: true }, ...selectedImages]
+      ? [{id: 'button', isButton: true}, ...selectedImages]
       : selectedImages;
 
   return (
@@ -214,17 +225,17 @@ const AddProduct = () => {
           <Pressable onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={30} color={'black'} />
           </Pressable>
-          <Text style={styles.headerText}>Thêm Sản Phẩm</Text>
+          <Text style={styles.headerText}>Sửa Sản Phẩm</Text>
         </View>
       </View>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView>
         <View style={styles.imageContainer}>
           <FlatList
             numColumns={4}
             data={dataWithButton}
             scrollEnabled={false}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <View style={styles.imageItem}>
                 {item.isButton ? (
                   <TouchableOpacity
@@ -234,9 +245,9 @@ const AddProduct = () => {
                   </TouchableOpacity>
                 ) : (
                   <>
-                    <Image style={styles.image} source={{ uri: item.uri.uri }} />
+                    <Image style={styles.image} source={{uri: item?.uri}} />
                     <TouchableOpacity
-                      onPress={() => handleDeleteImage(item.id)}
+                      onPress={() => handleDeleteImage(item?.id)}
                       style={styles.closeButton}>
                       <AntDesign name="closecircleo" size={20} />
                     </TouchableOpacity>
@@ -260,37 +271,7 @@ const AddProduct = () => {
               setState: setProductDescription,
               maxLength: 3000,
             },
-          ].map((item, index) => (
-            <View key={index} style={styles.inputContainer}>
-              <View style={styles.inputRow}>
-                <View>
-                  <Text style={styles.inputLabel}>{item.label}</Text>
-                  <TextInput
-                    style={styles.inputField}
-                    value={item.state}
-                    multiline={true}
-                    onChangeText={item.setState}
-                    maxLength={item.maxLength}
-                    placeholder={`Nhập ${item.label.toLowerCase()}`}
-                  />
-                </View>
-                <View style={styles.inputStatus}>
-                  <Text>
-                    {item.state.length}/{item.maxLength}
-                  </Text>
-                  <Pressable
-                    onPress={() => clearField(item.state, item.setState)}>
-                    <AntDesign
-                      name="closesquareo"
-                      size={20}
-                      color={item.state ? 'red' : 'gray'}
-                    />
-                  </Pressable>
-                </View>
-              </View>
-            </View>
-          ))}
-          {/* Input fields for product price and inventory */}
+          ].map((item, index) => renderInputField(item, index))}
           {[
             {
               icon: 'price-change',
@@ -304,44 +285,15 @@ const AddProduct = () => {
               state: productInventory.toString(),
               setState: setProductInventory,
             },
-          ].map((item, index) => (
-            <View key={index} style={styles.priceAndInventoryContainer}>
-              <View style={styles.iconAndLabelContainer}>
-                <MaterialIcons name={item.icon} size={25} />
-                <Text style={styles.inputLabel}>{item.label}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TextInput
-                  style={styles.priceAndInventoryInput}
-                  maxLength={10}
-                  value={item.state}
-                  onChangeText={item.setState}
-                  placeholder={`0`}
-                />
-                {item.label === 'Giá sản phẩm 🕸️' && <Text style={{ fontSize: 18 }}>đ</Text>}
-              </View>
-
-            </View >
-
-          ))}
-
-
-        </View>
-        <View style={styles.nganhsp}  >
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>Ngành sản phẩm </Text>
-          <AntDesign name='right' size={20} onPress={() => { navigation.navigate('Nganhsp') }} />
-        </View>
-        <View style={styles.nganhsp} >
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>Phân loại sản phẩm </Text>
-          <AntDesign name='right' size={20} onPress={() => { navigation.navigate('Phanloaisp') }} />
+          ].map((item, index) => renderPriceAndInventoryField(item, index))}
         </View>
       </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={postApi}>
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#000000' }]}>
-          <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
+        <TouchableOpacity style={[styles.button, {backgroundColor: '#000000'}]}>
+          <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -351,7 +303,7 @@ const AddProduct = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginBottom: 6,
+    marginBottom: 6,
     backgroundColor: '#eeeeee',
   },
   header: {
@@ -406,7 +358,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   inputContainer: {
-    height: 'auto',
+    height: 70,
     marginVertical: '1%',
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -416,19 +368,14 @@ const styles = StyleSheet.create({
     marginHorizontal: '3%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-
-
   },
   inputLabel: {
     fontSize: 18,
     color: 'black',
     fontWeight: '600',
-
   },
   inputField: {
     width: 340,
-    flexWrap: 'nowrap',
-    fontSize: 18
   },
   inputStatus: {
     justifyContent: 'space-around',
@@ -442,17 +389,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     alignItems: 'center',
     justifyContent: 'space-between',
-
   },
   iconAndLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   priceAndInventoryInput: {
     fontSize: 15,
-
-
   },
   footer: {
     backgroundColor: '#ffffff',
@@ -472,16 +415,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     color: '#000000',
-  }, nganhsp: {
-    backgroundColor: '#ffffff',
-    height: 45,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center', // Để căn chỉnh theo chiều dọc
-    paddingHorizontal: 26, // Khoảng cách đều 2 bên
-    borderWidth: 1,
-    marginBottom: 1
-  }
+  },
 });
 
-export default AddProduct;
+export default UpdateProduct;
