@@ -32,41 +32,51 @@ const SignUp = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [error, setError] = useState('');
-
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
   // Hàm kiểm tra thông tin đăng ký
   const checkLogin = async () => {
-    setError('');
-    if (!email) setError('Email không được để trống');
-    else if (!isValidEmail(email)) setError('Email không đúng định dạng');
-    else if (!password || !confirmPassword)
-      setError('Mật khẩu không được để trống');
-    else if (password.length < 6 || confirmPassword.length < 6)
-      setError('Mật khẩu trên 6 kí tự');
-    else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
-      setError('Mật khẩu có in hoa, kí tự đặc biệt');
-    else if (password !== confirmPassword)
-      setError('Mật khẩu không trùng khớp');
-    else {
 
-      console.log("đang chạy đăng kí ");
-      axios.post('https://00ee-116-96-44-232.ngrok-free.app/v1/api/access/signup', {
-        email: email,
-        password: password,
-        role: "Shop",
-      })
-        .then(response => {
-          // Xử lý kết quả thành công
-          alert(response.data.message);
-          navigation.navigate('Login2')
+    setError('');
+    if (!isButtonDisabled) {
+      setButtonDisabled(true);
+
+      if (!email) setError('Email không được để trống');
+      else if (!isValidEmail(email)) setError('Email không đúng định dạng');
+      else if (!password || !confirmPassword)
+        setError('Mật khẩu không được để trống');
+      else if (password.length < 6 || confirmPassword.length < 6)
+        setError('Mật khẩu trên 6 kí tự');
+      else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
+        setError('Mật khẩu có in hoa, kí tự đặc biệt');
+      else if (password !== confirmPassword)
+        setError('Mật khẩu không trùng khớp');
+      else {
+
+        console.log("đang chạy đăng kí ");
+        axios.post('https://812f-116-96-44-232.ngrok-free.app/v1/api/access/signup', {
+          email: email,
+          password: password,
+          role: "Shop",
         })
-        .catch(error => {
-          if (error.response) {
-            // Đối tượng lỗi chứa response từ server
-            //console.log(error.response.data.message);
-            alert(error.response.data.message)
-          }
-        });
-    };
+          .then(response => {
+            // Xử lý kết quả thành công
+            alert(response.data.message);
+            navigation.navigate('Login2')
+          })
+          .catch(error => {
+            if (error.response) {
+              // Đối tượng lỗi chứa response từ server
+              //console.log(error.response.data.message);
+              //alert(error.response.data.message)
+              setError(error.response.data.message)
+            }
+          });
+      };
+      setTimeout(() => {
+        setButtonDisabled(false);
+      }, 2000); // Thời gian chờ 1 giây
+    }
+
   };
 
   return (

@@ -11,11 +11,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { Icon } from 'react-native-elements';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -123,7 +125,7 @@ const AddProduct = () => {
           <Text style={styles.headerText}>Thêm Sản Phẩm</Text>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
           {dataWithButton && (
             <FlatList
@@ -154,7 +156,7 @@ const AddProduct = () => {
             />
           )}
         </View>
-        <View>
+        <View style={{ flex: 1 }}>
           {/* Input fields for product name and description */}
           {[
             {
@@ -229,8 +231,20 @@ const AddProduct = () => {
                 />
                 {item.label === 'Giá sản phẩm 🕸️' && <Text style={{ fontSize: 18 }}>đ</Text>}
               </View>
-            </View>
+
+            </View >
+
           ))}
+
+
+        </View>
+        <View style={styles.nganhsp}  >
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>Ngành sản phẩm </Text>
+          <AntDesign name='right' size={20} onPress={() => { navigation.navigate('Nganhsp') }} />
+        </View>
+        <View style={styles.nganhsp} >
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>Phân loại sản phẩm </Text>
+          <AntDesign name='right' size={20} onPress={() => { navigation.navigate('Phanloaisp') }} />
         </View>
       </ScrollView>
       <View style={styles.footer}>
@@ -249,7 +263,7 @@ const AddProduct = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 6,
+    // marginBottom: 6,
     backgroundColor: '#eeeeee',
   },
   header: {
@@ -370,7 +384,16 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     color: '#000000',
-  },
+  }, nganhsp: {
+    backgroundColor: '#ffffff',
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Để căn chỉnh theo chiều dọc
+    paddingHorizontal: 26, // Khoảng cách đều 2 bên
+    borderWidth: 1,
+    marginBottom: 1
+  }
 });
 
 export default AddProduct;

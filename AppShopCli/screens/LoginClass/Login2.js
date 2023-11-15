@@ -33,53 +33,65 @@ const Login2 = () => {
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
+
 
   const login = async (email, password) => {
 
     console.log(email, password);
     setError('');
-    if (!email) {
-      setError('Email không được để trống');
-    } else if (!isValidEmail(email)) {
-      setError('Email không đúng định dạng');
-    } else if (!password) {
-      setError('Mật khẩu không được để trống');
-    } else if (password.length < 6) {
-      setError('Mật khẩu phải có ít nhất 6 kí tự');
-    } else if (!isValidPassword(password)) {
-      setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
-    } else {
-      axios.post('https://00ee-116-96-44-232.ngrok-free.app/v1/api/access/login', {
-        email: email,
-        password: password,
-        role: "Shop",
-      })
-        .then(response => {
-          // Xử lý kết quả thành công
-          console.log(response.data); // Xem đối tượng kết quả
 
+    if (!isButtonDisabled) {
+      setButtonDisabled(true);
 
-          navigation.replace('BottomTab', { screen: 'MyProduct' });
-          // if (response.status === 200 && response.data.message) {
-          //   // Đăng nhập thành công
-          //   console.log(response.data.message.userId);
-
-
-          //   return response.data.message; // Trả về token hoặc thông tin đăng nhập khác
-          // } else {
-          //   return null;
-          // }
-          console.log("chay dang nhap");
+      if (!email) {
+        setError('Email không được để trống');
+      } else if (!isValidEmail(email)) {
+        setError('Email không đúng định dạng');
+      } else if (!password) {
+        setError('Mật khẩu không được để trống');
+      } else if (password.length < 6) {
+        setError('Mật khẩu phải có ít nhất 6 kí tự');
+      } else if (!isValidPassword(password)) {
+        setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
+      } else {
+        axios.post('https://e7d0-116-96-44-232.ngrok-free.app/v1/api/access/login', {
+          email: email,
+          password: password,
+          role: "Shop",
         })
-        .catch(error => {
-          if (error.response) {
-            // Đối tượng lỗi chứa response từ server
-            console.log(error.response.data.message);
-            alert(error.response.data.message)
-          }
-          return null;
-        });
+          .then(response => {
+            // Xử lý kết quả thành công
+            console.log(response.data); // Xem đối tượng kết quả
+
+
+            navigation.replace('BottomTab', { screen: 'MyProduct' });
+
+            console.log("chay dang nhap");
+          })
+          .catch(error => {
+            if (error.response) {
+              // Server trả về lỗi
+              console.log(error.response.data.message);
+              // alert(error.response.data.message);
+              setError(error.response.data.message);
+            } else if (error.request) {
+              // Lỗi kết nối đến server
+              console.log("Kết nối đến server không thành công.");
+              alert("Kết nối đến server không thành công.");
+            } else {
+              // Lỗi khác
+              console.log("Đã xảy ra lỗi khi gửi yêu cầu.");
+              alert("Đã xảy ra lỗi khi gửi yêu cầu.");
+            }
+
+          });
+      }
+      setTimeout(() => {
+        setButtonDisabled(false);
+      }, 2000); // Thời gian chờ 2 giây
     }
+
   };
   return (
     <KeyboardAvoidingView

@@ -1,7 +1,7 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 // Import screen components
@@ -21,6 +21,9 @@ import StatisticalScreen from './screens/HomeClass/OrderClass/StatisticalScreen'
 import InventoryScreen from './screens/HomeClass/OrderClass/InventoryScreen';
 import AddProduct from './screens/HomeClass/MyProductClass/AddProduct';
 
+import PhanLoaiSP from './screens/HomeClass/MyProductClass/PhanLoaiSP';
+import Nganhsp from './screens/HomeClass/MyProductClass/Nganhsp';
+
 // Declare Stack and Tab Navigation
 const StackDemo = createNativeStackNavigator();
 const TabDemo = createBottomTabNavigator();
@@ -29,7 +32,7 @@ const TabDemo = createBottomTabNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <StackDemo.Navigator screenOptions={{headerShown: false}}>
+      <StackDemo.Navigator screenOptions={{ headerShown: false }}>
         {/* Authentication Screens */}
         <StackDemo.Screen name="GetStart" component={GetStart} />
         <StackDemo.Screen name="GetStart2" component={GetStart2} />
@@ -51,6 +54,9 @@ const App = () => {
         <StackDemo.Screen name="UpdateProduct" component={UpdateProduct} />
         <StackDemo.Screen name="MyProduct" component={MyProduct} />
         <StackDemo.Screen name="Product" component={ProductScreen} />
+        <StackDemo.Screen name="Nganhsp" component={Nganhsp} />
+        <StackDemo.Screen name="Phanloaisp" component={PhanLoaiSP} />
+
       </StackDemo.Navigator>
     </NavigationContainer>
   );
@@ -61,7 +67,7 @@ const BottomTab = () => {
   return (
     <TabDemo.Navigator
       screenOptions={{
-        tabBarStyle: {height: 55},
+        tabBarStyle: { height: 55 },
         headerShown: false,
         tabBarActiveTintColor: '#000000',
       }}>
@@ -83,7 +89,7 @@ const BottomTab = () => {
 // Function to set Tab Options
 const tabOptions = (label, iconNameFocused, iconNameUnfocused) => ({
   tabBarLabel: label,
-  tabBarIcon: ({focused, size, color}) => (
+  tabBarIcon: ({ focused, size, color }) => (
     <FontAwesome5
       name={focused ? iconNameFocused : iconNameUnfocused}
       size={size}
