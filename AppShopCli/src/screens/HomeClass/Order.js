@@ -13,15 +13,15 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const Order = () => {
   const navigation = useNavigation();
 
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
-
   return (
     <ScrollView style={styles.container}>
-      <Image style={styles.image} source={require('../../images/Box.png')} />
+      <Image style={styles.image} source={require('../../../images/Box.png')} />
       <View style={styles.horizontalLine} />
       <View style={styles.content}>
         <Text style={styles.headerText}>Quản lý</Text>
@@ -32,7 +32,7 @@ const Order = () => {
             <View style={styles.iconTextContainer}>
               <AntDesign
                 name="profile"
-                size={windowWidth * 0.1}
+                size={windowWidth * 0.08}
                 color={'#333333'}
               />
               <Text style={styles.text}>Đơn hàng</Text>
@@ -45,7 +45,7 @@ const Order = () => {
           onPress={() => navigation.navigate('ShopScreen')}>
           <View style={styles.rowButton}>
             <View style={styles.iconTextContainer}>
-              <Entypo name="shop" size={windowWidth * 0.1} color={'#333333'} />
+              <Entypo name="shop" size={windowWidth * 0.08} color={'#333333'} />
               <Text style={styles.text}>Cửa hàng</Text>
             </View>
             <AntDesign name="right" size={windowWidth * 0.03} />
@@ -53,12 +53,12 @@ const Order = () => {
         </Pressable>
         <Pressable
           style={styles.buttonView}
-          onPress={() => navigation.navigate('ShopScreen')}>
+          onPress={() => navigation.navigate('PromotionScreen')}>
           <View style={styles.rowButton}>
             <View style={styles.iconTextContainer}>
               <AntDesign
                 name="gift"
-                size={windowWidth * 0.1}
+                size={windowWidth * 0.08}
                 color={'#333333'}
               />
               <Text style={styles.text}>Ưu đãi</Text>
@@ -76,7 +76,7 @@ const Order = () => {
             <View style={styles.iconTextContainer}>
               <AntDesign
                 name="barchart"
-                size={windowWidth * 0.1}
+                size={windowWidth * 0.08}
                 color={'#333333'}
               />
               <Text style={styles.text}>Thống kê</Text>
@@ -91,7 +91,7 @@ const Order = () => {
             <View style={styles.iconTextContainer}>
               <MaterialIcons
                 name="warehouse"
-                size={windowWidth * 0.1}
+                size={windowWidth * 0.08}
                 color={'#333333'}
               />
               <Text style={styles.text}>Tồn kho</Text>
@@ -100,7 +100,7 @@ const Order = () => {
           </View>
         </Pressable>
         <Text style={[styles.headerText, {marginTop: windowHeight * 0.02}]}>
-          Thông tin
+          Khác
         </Text>
         <Pressable
           style={styles.buttonView}
@@ -109,7 +109,7 @@ const Order = () => {
             <View style={styles.iconTextContainer}>
               <MaterialIcons
                 name="logout"
-                size={windowWidth * 0.1}
+                size={windowWidth * 0.08}
                 color={'#333333'}
               />
               <Text style={styles.text}>Đăng xuất</Text>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     marginTop: windowHeight * 0.01,
   },
   content: {
-    marginVertical: windowHeight * 0.05,
+    marginVertical: windowHeight * 0.01,
     marginHorizontal: windowWidth * 0.05,
   },
   headerText: {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   buttonView: {
-    marginTop: windowHeight * 0.03,
+    marginTop: windowHeight * 0.02,
     height: windowHeight * 0.06,
     borderRadius: 10,
     borderWidth: 1,

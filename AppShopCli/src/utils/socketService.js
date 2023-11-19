@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-export const SOCKET_URL = 'https://e7d0-116-96-44-232.ngrok-free.app/';
+export const SOCKET_URL = 'https://f9c2-116-96-44-199.ngrok-free.app/';
 
 class WSService {
   initializeSocket = async () => {

@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import {BarChart, LineChart} from 'react-native-chart-kit';
+import {BarChart} from 'react-native-chart-kit';
 
 const CHART_CATEGORIES = [
   {id: 1, name: 'Đơn hàng'},

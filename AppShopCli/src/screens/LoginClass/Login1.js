@@ -20,7 +20,10 @@ const Login1 = () => {
   return (
     <View style={styles.container}>
       {/* Hiển thị logo */}
-      <Image source={require('../../images/Logo2.png')} style={styles.logo} />
+      <Image
+        source={require('../../../images/Logo2.png')}
+        style={styles.logo}
+      />
 
       {/* Tiêu đề màn hình */}
       <Text style={styles.title}>Let's You In</Text>
@@ -28,7 +31,7 @@ const Login1 = () => {
       {/* Nút đăng nhập bằng Facebook */}
       <TouchableOpacity style={styles.button} onPress={handleLoginFacebook}>
         <Image
-          source={require('../../images/facebook.png')}
+          source={require('../../../images/facebook.png')}
           style={styles.icon}
         />
         <Text style={styles.buttonText}>Continue with Facebook</Text>
@@ -37,7 +40,7 @@ const Login1 = () => {
       {/* Nút đăng nhập bằng Gmail */}
       <TouchableOpacity style={styles.button} onPress={handleLoginGmail}>
         <Image
-          source={require('../../images/google.png')}
+          source={require('../../../images/google.png')}
           style={styles.icon}
         />
         <Text style={styles.buttonText}>Continue with Google</Text>

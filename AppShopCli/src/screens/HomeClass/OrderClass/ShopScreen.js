@@ -15,7 +15,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import {SOCKET_URL} from '../../utils/socketService';
+import {SOCKET_URL} from '../../../utils/socketService';
 
 const ShopScreen = () => {
   const navigation = useNavigation();
@@ -71,9 +71,9 @@ const ShopScreen = () => {
       formData.append('address', shopAddress);
 
       formData.append('avatar', {
-        uri: avatarSource.uri,
-        type: avatarSource.type,
-        name: avatarSource.fileName,
+        uri: avatarSource?.uri,
+        type: avatarSource?.type,
+        name: avatarSource?.fileName,
       });
 
       const res = await axios.put(
@@ -83,8 +83,8 @@ const ShopScreen = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
             'x-xclient-id': '654c895786644a5c7ac507df',
-            ahthorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNjk5OTY0MjY3LCJleHAiOjE3MDA4MjgyNjd9.ZKxsuIMf2uBt0vBPt4pkDgWuEEsF3GG91dRMb6DHkwE',
+            authorization:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
           },
         },
       );
@@ -100,17 +100,17 @@ const ShopScreen = () => {
       const res = await axios.get(`${SOCKET_URL}v1/api/shop/getShopForShop`, {
         headers: {
           'x-xclient-id': '654c895786644a5c7ac507df',
-          ahthorization:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNjk5OTY0MjY3LCJleHAiOjE3MDA4MjgyNjd9.ZKxsuIMf2uBt0vBPt4pkDgWuEEsF3GG91dRMb6DHkwE',
+          authorization:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
         },
       });
-      setShopName(res.data.message.nameShop);
-      setShopDescription(res.data.message.des);
-      setShopAddress(res.data.message.address);
-      setShopPhone(res.data.message.phoneNumberShop.toString());
-      setShopEmail(res.data.message.emailShop);
+      setShopName(res.data.message?.nameShop);
+      setShopDescription(res.data.message?.des);
+      setShopAddress(res.data.message?.address);
+      setShopPhone(res.data.message?.phoneNumberShop.toString());
+      setShopEmail(res.data.message?.emailShop);
       setAvatarSource({
-        uri: `${SOCKET_URL}${res.data.message.avatarShop}`,
+        uri: `${SOCKET_URL}${res.data.message?.avatarShop}`,
       });
     } catch (error) {
       console.log('Post api: ', error.message);
@@ -208,7 +208,7 @@ const ShopScreen = () => {
         {/* Image at the bottom of the page */}
         <Image
           style={styles.bottomImage}
-          source={require('../../../images/ShopSea.png')}
+          source={require('../../../../images/ShopSea.png')}
         />
       </ScrollView>
     </KeyboardAvoidingView>

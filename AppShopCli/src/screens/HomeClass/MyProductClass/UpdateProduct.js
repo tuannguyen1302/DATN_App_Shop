@@ -17,7 +17,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import {SOCKET_URL} from '../../utils/socketService';
+import {SOCKET_URL} from '../../../utils/socketService';
 import axios from 'axios';
 
 const UpdateProduct = ({route}) => {
@@ -36,8 +36,8 @@ const UpdateProduct = ({route}) => {
     headers: {
       'Content-Type': 'multipart/form-data',
       'x-xclient-id': '654c895786644a5c7ac507df',
-      ahthorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNjk5OTY0MjY3LCJleHAiOjE3MDA4MjgyNjd9.ZKxsuIMf2uBt0vBPt4pkDgWuEEsF3GG91dRMb6DHkwE',
+      authorization:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
     },
   });
 
@@ -145,7 +145,7 @@ const UpdateProduct = ({route}) => {
       });
 
       await axios.put(
-        `${SOCKET_URL}v1/api/product/editProduct/${item._id}`,
+        `${SOCKET_URL}v1/api/product/editProduct/${item?._id}`,
         formData,
         getHeaders(),
       );

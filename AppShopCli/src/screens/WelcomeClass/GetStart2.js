@@ -14,12 +14,15 @@ const GetStart2 = () => {
     <View style={styles.container}>
       {/* Container chứa biểu tượng */}
       <View style={styles.iconContainer}>
-        <Image source={require('../../images/Icon1.jpg')} style={styles.icon} />
+        <Image
+          source={require('../../../images/Icon1.jpg')}
+          style={styles.icon}
+        />
       </View>
 
       {/* Hiển thị hình ảnh cửa hàng */}
       <Image
-        source={require('../../images/Shop.png')}
+        source={require('../../../images/Shop.png')}
         style={styles.storeImage}
       />
 

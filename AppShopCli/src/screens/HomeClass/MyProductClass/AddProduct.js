@@ -18,7 +18,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import {SOCKET_URL} from '../../utils/socketService';
+import {SOCKET_URL} from '../../../utils/socketService';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -33,8 +33,8 @@ const AddProduct = () => {
     headers: {
       'Content-Type': 'multipart/form-data',
       'x-xclient-id': '654c895786644a5c7ac507df',
-      ahthorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNjk5OTY0MjY3LCJleHAiOjE3MDA4MjgyNjd9.ZKxsuIMf2uBt0vBPt4pkDgWuEEsF3GG91dRMb6DHkwE',
+      authorization:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
     },
   });
 
@@ -67,7 +67,7 @@ const AddProduct = () => {
           text: 'Xóa',
           onPress: () =>
             setSelectedImages(images =>
-              images.filter(image => image.id !== id),
+              images.filter(image => image?.id !== id),
             ),
         },
       ],
@@ -134,9 +134,9 @@ const AddProduct = () => {
       formData.append('product_attributes', JSON.stringify(productAttributes));
       selectedImages.forEach(image => {
         formData.append('thumbs', {
-          uri: image.uri.uri,
-          type: image.uri.type,
-          name: image.uri.fileName,
+          uri: image?.uri?.uri,
+          type: image?.uri?.type,
+          name: image?.uri?.fileName,
         });
       });
 

@@ -10,11 +10,8 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from './MyProductClass/ProductScreen';
-import {useNavigation} from '@react-navigation/native';
 
-const MyProduct = () => {
-  const navigation = useNavigation();
-
+const MyProduct = ({navigation}) => {
   const account = {
     id: 1,
     name: 'Shop thời trang',
@@ -37,7 +34,8 @@ const MyProduct = () => {
           <Text style={styles.shopName}>{account.nameShop}</Text>
         </View>
         <View style={styles.headerIconsContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('MessageScreen')}>
             <Ionicons
               name="chatbubble-ellipses-outline"
               size={30}

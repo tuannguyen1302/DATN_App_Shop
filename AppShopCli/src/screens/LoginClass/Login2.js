@@ -7,13 +7,14 @@ import {
   TextInput,
   Image,
   KeyboardAvoidingView,
+  Platform,
   ScrollView,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
+import {CheckBox} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
-
 // Hàm kiểm tra định dạng email
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
@@ -22,29 +23,30 @@ const isValidEmail = email =>
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
-const SignUp = () => {
+const Login2 = () => {
   const navigation = useNavigation();
+  const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [error, setError] = useState('');
 
-  // Hàm kiểm tra thông tin đăng ký
+  // Hàm kiểm tra đăng nhập
   const checkLogin = () => {
     setError('');
-    if (!email) setError('Email không được để trống');
-    else if (!isValidEmail(email)) setError('Email không đúng định dạng');
-    else if (!password || !confirmPassword)
+    if (!email) {
+      setError('Email không được để trống');
+    } else if (!isValidEmail(email)) {
+      setError('Email không đúng định dạng');
+    } else if (!password) {
       setError('Mật khẩu không được để trống');
-    else if (password.length < 6 || confirmPassword.length < 6)
-      setError('Mật khẩu trên 6 kí tự');
-    else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
-      setError('Mật khẩu có in hoa, kí tự đặc biệt');
-    else if (password !== confirmPassword)
-      setError('Mật khẩu không trùng khớp');
-    else alert('ok ok');
+    } else if (password.length < 6) {
+      setError('Mật khẩu phải có ít nhất 6 kí tự');
+    } else if (!isValidPassword(password)) {
+      setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
+    } else {
+      navigation.replace('BottomTab', {screen: 'MyProduct'});
+    }
   };
 
   return (
@@ -52,10 +54,8 @@ const SignUp = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        {/* Tiêu đề màn hình */}
-        <Text style={styles.title}>Create your Account</Text>
+        <Text style={styles.title}>Login to your Account</Text>
 
-        {/* Ô nhập email */}
         <View style={{marginTop: '10%'}}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
@@ -65,7 +65,6 @@ const SignUp = () => {
             onChangeText={setEmail}
           />
 
-          {/* Ô nhập mật khẩu */}
           <InputField
             icon={<Entypo name="lock" size={25} color={'#999999'} />}
             value={password}
@@ -77,32 +76,29 @@ const SignUp = () => {
             setPasswordVisible={setPasswordVisible}
           />
 
-          {/* Ô nhập xác nhận mật khẩu */}
-          <InputField
-            icon={<Entypo name="lock" size={25} color={'#999999'} />}
-            value={confirmPassword}
-            placeholder="Nhập lại Password"
-            textContentType="password"
-            onChangeText={setConfirmPassword}
-            isPassword
-            passwordVisible={confirmPasswordVisible}
-            setPasswordVisible={setConfirmPasswordVisible}
-          />
-
-          {/* Hiển thị lỗi nếu có */}
           {error && <Text style={styles.error}>{error}</Text>}
 
-          {/* Nút đăng ký */}
-          <TouchableOpacity style={styles.signUpButton} onPress={checkLogin}>
-            <Text style={styles.signUpButtonText}>Sign Up</Text>
+          <CheckBox
+            title="Remember me"
+            checked={isChecked}
+            checkedColor="#000000"
+            uncheckedColor="#000000"
+            containerStyle={styles.checkBox}
+            onPress={() => setIsChecked(!isChecked)}
+          />
+
+          <TouchableOpacity style={styles.signInButton} onPress={checkLogin}>
+            <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
+
+          <Text style={styles.forgotPassword} onPress={() => alert('forgot')}>
+            Forgot the password?
+          </Text>
         </View>
 
-        {/* Nút đăng ký bằng tài khoản mạng xã hội */}
         <SocialLoginButtons />
 
-        {/* Đường link đến màn hình đăng nhập */}
-        <SignInLink onPress={() => navigation.navigate('Login1')} />
+        <SignUpLink onPress={() => navigation.navigate('SignUp')} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -137,52 +133,50 @@ const InputField = ({
   </View>
 );
 
-// Component nút đăng ký bằng tài khoản mạng xã hội
+// Component nút đăng nhập bằng tài khoản mạng xã hội
 const SocialLoginButtons = () => (
   <>
-    {/* Dòng chữ "or continue with" */}
     <View style={styles.orContinueWith}>
       <View style={styles.separator} />
       <Text style={styles.orContinueWithText}>or continue with</Text>
       <View style={styles.separator} />
     </View>
 
-    {/* Nút đăng ký bằng Facebook và Google */}
     <View style={styles.socialButtonsContainer}>
       <SocialButton
-        imageSource={require('../../images/facebook.png')}
+        imageSource={require('../../../images/facebook.png')}
         onPress={() => alert('facebook')}
       />
       <SocialButton
-        imageSource={require('../../images/google.png')}
+        imageSource={require('../../../images/google.png')}
         onPress={() => alert('google')}
       />
     </View>
   </>
 );
 
-// Component nút mạng xã hội
+// Component nút đăng nhập bằng tài khoản mạng xã hội
 const SocialButton = ({imageSource, onPress}) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
     <Image source={imageSource} style={styles.icon} />
   </TouchableOpacity>
 );
 
-// Component đường link đến màn hình đăng nhập
-const SignInLink = ({onPress}) => (
+// Component đường link đến màn hình đăng ký
+const SignUpLink = ({onPress}) => (
   <View style={styles.signUpLinkContainer}>
-    <Text style={styles.signUpLinkText}>Already have an account? </Text>
+    <Text style={styles.signUpLinkText}>Don't have an account? </Text>
     <Text style={styles.signUpLink} onPress={onPress}>
-      Sign In
+      Sign Up
     </Text>
   </View>
 );
 
-// StyleSheet
+// Style của component
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
     flex: 1,
+    backgroundColor: '#ffffff',
     alignItems: 'center',
   },
   scrollViewContainer: {
@@ -202,7 +196,7 @@ const styles = StyleSheet.create({
     height: 64,
     width: 365,
     justifyContent: 'center',
-    marginBottom: 25,
+    marginBottom: 27,
     flexDirection: 'row',
     marginHorizontal: '5%',
     alignItems: 'center',
@@ -225,7 +219,11 @@ const styles = StyleSheet.create({
     color: 'red',
     marginLeft: 40,
   },
-  signUpButton: {
+  checkBox: {
+    backgroundColor: 'white',
+    borderWidth: 0,
+  },
+  signInButton: {
     backgroundColor: 'black',
     height: 60,
     width: 350,
@@ -234,10 +232,18 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: '5%',
   },
-  signUpButtonText: {
+  signInButtonText: {
     textAlign: 'center',
     color: 'white',
     fontSize: 25,
+  },
+  forgotPassword: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    marginTop: '5%',
   },
   orContinueWith: {
     marginTop: '5%',
@@ -292,4 +298,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUp;
+export default Login2;

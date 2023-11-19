@@ -1,9 +1,24 @@
-import React from 'react';
-import {View, Text, Image, Pressable, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {SOCKET_URL} from '../../utils/socketService';
+import {SOCKET_URL} from '../../../utils/socketService';
 import moment from 'moment';
+
+const statusTranslations = {
+  pending: 'Phê duyệt',
+  confirmed: 'Giao hàng',
+  shipped: 'Đang vận chuyển',
+  cancelled: 'Đã hủy',
+  delivered: 'Đã giao hàng',
+};
 
 const OrderHistory = ({route}) => {
   const navigation = useNavigation();
@@ -25,23 +40,24 @@ const OrderHistory = ({route}) => {
             uri: `${SOCKET_URL}uploads/${orderItem?.product_thumb[0]}`,
           }}
         />
-        <Text style={styles.shopName}>{orderItem?.product_name}</Text>
       </View>
 
-      <View style={styles.infoSection}>
+      <ScrollView style={styles.infoSection}>
         <View style={styles.infoItem}>
           <Text style={styles.infoLabel}>Thông tin khách hàng:</Text>
           <Text style={styles.infoText}>Họ tên: {orderItem?.user_name}</Text>
           <Text style={styles.infoText}>
             Số điện thoại: {orderItem?.phoneNumber}
           </Text>
-          <Text style={styles.infoText}>Địa chỉ: {orderItem?.address}</Text>
+          <Text style={styles.infoText}>
+            Địa chỉ: {orderItem?.order_shipping.City}
+          </Text>
         </View>
 
         <View style={styles.infoItem}>
           <Text style={styles.infoLabel}>Sản phẩm:</Text>
           <Text style={styles.infoText}>
-            Giá: {orderItem?.product_attributes?.quantity}
+            Tên sản phẩm: {orderItem?.product_name}
           </Text>
           <Text style={styles.infoText}>
             Số lượng: {orderItem?.product_attributes?.quantity}
@@ -53,21 +69,53 @@ const OrderHistory = ({route}) => {
         </View>
 
         <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Ngày tạo:</Text>
-
+          <Text style={styles.infoLabel}>Thành tiền:</Text>
           <Text style={styles.infoText}>
-            {moment(orderItem.crateDate).format('DD/MM/YYYY HH:mm:ss')}
+            Giá: {orderItem?.order_checkout?.totalPrice}
+          </Text>
+          <Text style={styles.infoText}>
+            Tiền ship: {orderItem?.order_checkout?.feeShip}
+          </Text>
+          <Text style={styles.infoText}>
+            Giảm giá: {orderItem?.order_checkout?.totalDiscount}
+          </Text>
+          <Text style={styles.infoText}>
+            Tổng thanh toán: {orderItem?.order_checkout?.totalCheckout}
           </Text>
         </View>
 
-        <Pressable
-          style={styles.actionButton}
-          onPress={() => {
-            /* Xử lý khi nhấn nút Duyệt Đơn */
-          }}>
-          <Text style={styles.buttonText}>Duyệt đơn</Text>
-        </Pressable>
-      </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoLabel}>Ngày tạo:</Text>
+
+          <Text style={styles.infoText}>
+            {moment(orderItem?.crateDate).format('DD/MM/YYYY HH:mm:ss')}
+          </Text>
+        </View>
+
+        {orderItem?.status === 'pending' && (
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => {
+              /* Xử lý khi nhấn nút Duyệt Đơn */
+            }}>
+            <Text style={styles.buttonText}>
+              {statusTranslations[orderItem?.status]}
+            </Text>
+          </Pressable>
+        )}
+
+        {orderItem?.status === 'confirmed' && (
+          <Pressable
+            style={[styles.actionButton, {backgroundColor: 'green'}]}
+            onPress={() => {
+              /* Xử lý khi nhấn nút Duyệt Đơn */
+            }}>
+            <Text style={styles.buttonText}>
+              {statusTranslations[orderItem?.status]}
+            </Text>
+          </Pressable>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -104,12 +152,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 100,
   },
-  shopName: {
-    marginTop: 10,
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
   infoSection: {
     backgroundColor: '#fff',
     paddingHorizontal: '5%',
@@ -135,11 +177,10 @@ const styles = StyleSheet.create({
     height: 50,
     width: '90%',
     alignSelf: 'center',
-    position: 'absolute',
-    bottom: '10%',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    marginVertical: '2%',
     backgroundColor: 'black', // Giữ màu đen cho nút Duyệt Đơn
   },
   buttonText: {
