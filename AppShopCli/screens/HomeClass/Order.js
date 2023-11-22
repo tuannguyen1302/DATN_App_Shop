@@ -59,7 +59,7 @@ const Order = () => {
         </Pressable>
         <Pressable
           style={styles.buttonView}
-          onPress={() => navigation.navigate('ShopScreen')}>
+          onPress={() => navigation.navigate('Discount')}>
           <View style={styles.rowButton}>
             <View style={styles.iconTextContainer}>
               <AntDesign

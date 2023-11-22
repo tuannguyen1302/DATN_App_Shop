@@ -14,7 +14,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-
+import { SOCKET_URL } from '../../utils/socketService';
 
 // Hàm kiểm tra định dạng email
 const isValidEmail = email =>
@@ -53,7 +53,7 @@ const SignUp = () => {
       else {
 
         console.log("đang chạy đăng kí ");
-        axios.post('https://812f-116-96-44-232.ngrok-free.app/v1/api/access/signup', {
+        axios.post('${SOCKET_URL}v1/api/access/signup', {
           email: email,
           password: password,
           role: "Shop",

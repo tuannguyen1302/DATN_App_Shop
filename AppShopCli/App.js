@@ -25,6 +25,10 @@ import socketServices from './screens/utils/socketService';
 
 import PhanLoaiSP from './screens/HomeClass/MyProductClass/PhanLoaiSP';
 import Nganhsp from './screens/HomeClass/MyProductClass/Nganhsp';
+import DiscountCodeScreen from './screens/HomeClass/discountclass/Discountscreens';
+import AddDiscount from './screens/HomeClass/discountclass/AddDiscount';
+
+
 
 // Declare Stack and Tab Navigation
 const StackDemo = createNativeStackNavigator();
@@ -83,6 +87,8 @@ const App = () => {
         <StackDemo.Screen name="Product" component={ProductScreen} />
         <StackDemo.Screen name="Nganhsp" component={Nganhsp} />
         <StackDemo.Screen name="Phanloaisp" component={PhanLoaiSP} />
+        <StackDemo.Screen name="Discount" component={DiscountCodeScreen} />
+        <StackDemo.Screen name="AddDiscount" component={AddDiscount} />
 
       </StackDemo.Navigator>
     </NavigationContainer>

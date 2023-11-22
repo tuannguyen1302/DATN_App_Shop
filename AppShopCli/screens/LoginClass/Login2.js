@@ -17,7 +17,7 @@ import { CheckBox } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { SOCKET_URL } from '../utils/socketService';
 
 
 // Hàm kiểm tra định dạng email
@@ -46,49 +46,52 @@ const Login2 = () => {
     if (!isButtonDisabled) {
       setButtonDisabled(true);
 
-      if (!email) {
-        setError('Email không được để trống');
-      } else if (!isValidEmail(email)) {
-        setError('Email không đúng định dạng');
-      } else if (!password) {
-        setError('Mật khẩu không được để trống');
-      } else if (password.length < 6) {
-        setError('Mật khẩu phải có ít nhất 6 kí tự');
-      } else if (!isValidPassword(password)) {
-        setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
-      } else {
-        axios.post('https://e7d0-116-96-44-232.ngrok-free.app/v1/api/access/login', {
-          email: email,
-          password: password,
-          role: "Shop",
-        })
-          .then(response => {
-            // Xử lý kết quả thành công
-            console.log(response.data); // Xem đối tượng kết quả
+      // if (!email) {
+      //   setError('Email không được để trống');
+      // } else if (!isValidEmail(email)) {
+      //   setError('Email không đúng định dạng');
+      // } else if (!password) {
+      //   setError('Mật khẩu không được để trống');
+      // } else if (password.length < 6) {
+      //   setError('Mật khẩu phải có ít nhất 6 kí tự');
+      // } else if (!isValidPassword(password)) {
+      //   setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
+      // } else {
+      //   axios.post('https://50ae-2a09-bac1-7ac0-50-00-17-25e.ngrok-free.app/v1/api/access/login'
+
+      //     , {
+      //       email: email,
+      //       password: password,
+      //       role: "Shop",
+      //     })
+      //     .then(response => {
+      //       // Xử lý kết quả thành công
+      //       console.log(response.data); // Xem đối tượng kết quả
 
 
-            navigation.replace('BottomTab', { screen: 'MyProduct' });
+      //       navigation.replace('BottomTab', { screen: 'MyProduct' });
 
-            console.log("chay dang nhap");
-          })
-          .catch(error => {
-            if (error.response) {
-              // Server trả về lỗi
-              console.log(error.response.data.message);
-              // alert(error.response.data.message);
-              setError(error.response.data.message);
-            } else if (error.request) {
-              // Lỗi kết nối đến server
-              console.log("Kết nối đến server không thành công.");
-              alert("Kết nối đến server không thành công.");
-            } else {
-              // Lỗi khác
-              console.log("Đã xảy ra lỗi khi gửi yêu cầu.");
-              alert("Đã xảy ra lỗi khi gửi yêu cầu.");
-            }
+      //       console.log("chay dang nhap");
+      //     })
+      //     .catch(error => {
+      //       if (error.response) {
+      //         // Server trả về lỗi
+      //         console.log(error.response.data.message);
+      //         // alert(error.response.data.message);
+      //         setError(error.response.data.message);
+      //       } else if (error.request) {
+      //         // Lỗi kết nối đến server
+      //         console.log("Kết nối đến server không thành công.");
+      //         alert("Kết nối đến server không thành công.");
+      //       } else {
+      //         // Lỗi khác
+      //         console.log("Đã xảy ra lỗi khi gửi yêu cầu.");
+      //         alert("Đã xảy ra lỗi khi gửi yêu cầu.");
+      //       }
 
-          });
-      }
+      //     });
+      // }
+      navigation.replace('BottomTab', { screen: 'MyProduct' });
       setTimeout(() => {
         setButtonDisabled(false);
       }, 2000); // Thời gian chờ 2 giây

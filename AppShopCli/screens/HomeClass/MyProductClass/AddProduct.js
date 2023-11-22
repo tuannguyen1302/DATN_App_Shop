@@ -25,6 +25,7 @@ const AddProduct = () => {
   const navigation = useNavigation();
 
   const [selectedImages, setSelectedImages] = useState([]);
+
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
