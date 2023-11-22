@@ -17,8 +17,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
-import {SOCKET_URL} from '../../../utils/socketService';
+import {PRODUCT_API} from '../../../config/urls';
+import {apiPost} from '../../../utils/utilus';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -27,16 +27,7 @@ const AddProduct = () => {
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
-  const [productInventory, setProductInventory] = useState('');
-
-  const getHeaders = () => ({
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      'x-xclient-id': '654c895786644a5c7ac507df',
-      authorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
-    },
-  });
+  // const [productInventory, setProductInventory] = useState('');
 
   const clearField = setField => setField('');
 
@@ -93,8 +84,7 @@ const AddProduct = () => {
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice ||
-        !productInventory
+        !productPrice
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -140,66 +130,12 @@ const AddProduct = () => {
         });
       });
 
-      const res = await axios.post(
-        `${SOCKET_URL}v1/api/product/createProduct`,
-        formData,
-        getHeaders(),
-      );
-
-      console.log(res.data);
+      await apiPost(`${PRODUCT_API}/createProduct`, formData);
+      navigation.goBack();
     } catch (error) {
       console.log('Post api: ', error.message);
     }
   };
-
-  const renderInputField = ({label, state, setState, maxLength}, index) => (
-    <View key={index} style={styles.inputContainer}>
-      <View style={styles.inputRow}>
-        <View>
-          <Text style={styles.inputLabel}>{label} 🕸️</Text>
-          <TextInput
-            style={styles.inputField}
-            value={state}
-            onChangeText={setState}
-            maxLength={maxLength}
-            placeholder={`Nhập ${label.toLowerCase()}`}
-          />
-        </View>
-        <View style={styles.inputStatus}>
-          <Text>
-            {state.length}/{maxLength}
-          </Text>
-          <Pressable onPress={() => clearField(setState)}>
-            <AntDesign
-              name="closesquareo"
-              size={20}
-              color={state ? 'red' : 'gray'}
-            />
-          </Pressable>
-        </View>
-      </View>
-    </View>
-  );
-
-  const renderPriceAndInventoryField = (
-    {icon, label, state, setState},
-    index,
-  ) => (
-    <View key={index} style={styles.priceAndInventoryContainer}>
-      <View style={styles.iconAndLabelContainer}>
-        <MaterialIcons name={icon} size={25} />
-        <Text style={styles.inputLabel}>{label} 🕸️</Text>
-      </View>
-      <TextInput
-        style={styles.priceAndInventoryInput}
-        maxLength={10}
-        value={state}
-        keyboardType="number-pad"
-        onChangeText={setState}
-        placeholder={`Nhập ${label.toLowerCase()}`}
-      />
-    </View>
-  );
 
   const dataWithButton =
     selectedImages.length < 8
@@ -216,7 +152,7 @@ const AddProduct = () => {
           <Text style={styles.headerText}>Thêm Sản Phẩm</Text>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={{flex: 1}}>
         <View style={styles.imageContainer}>
           <FlatList
             numColumns={4}
@@ -259,7 +195,37 @@ const AddProduct = () => {
               setState: setProductDescription,
               maxLength: 3000,
             },
-          ].map((item, index) => renderInputField(item, index))}
+          ].map((item, index) => (
+            <View key={index} style={styles.inputContainer}>
+              <View style={styles.inputRow}>
+                <View>
+                  <Text style={styles.inputLabel}>{item.label}</Text>
+                  <TextInput
+                    style={styles.inputField}
+                    value={item.state}
+                    multiline={true}
+                    onChangeText={item.setState}
+                    maxLength={item.maxLength}
+                    placeholder={`Nhập ${item.label.toLowerCase()}`}
+                  />
+                </View>
+                <View style={styles.inputStatus}>
+                  <Text>
+                    {item.state.length}/{item.maxLength}
+                  </Text>
+                  <Pressable
+                    onPress={() => clearField(item.state, item.setState)}>
+                    <AntDesign
+                      name="closesquareo"
+                      size={20}
+                      color={item.state ? 'red' : 'gray'}
+                    />
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          ))}
+          {/* Input fields for product price and inventory */}
           {[
             {
               icon: 'price-change',
@@ -267,13 +233,56 @@ const AddProduct = () => {
               state: productPrice.toString(),
               setState: setProductPrice,
             },
-            {
-              icon: 'warehouse',
-              label: 'Kho hàng',
-              state: productInventory.toString(),
-              setState: setProductInventory,
-            },
-          ].map((item, index) => renderPriceAndInventoryField(item, index))}
+            // {
+            //   icon: 'warehouse',
+            //   label: 'Kho hàng',
+            //   state: productInventory.toString(),
+            //   setState: setProductInventory,
+            // },
+          ].map((item, index) => (
+            <View key={index} style={styles.priceAndInventoryContainer}>
+              <View style={styles.iconAndLabelContainer}>
+                <MaterialIcons name={item.icon} size={25} />
+                <Text style={styles.inputLabel}>{item.label}</Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TextInput
+                  style={styles.priceAndInventoryInput}
+                  maxLength={10}
+                  value={item.state}
+                  onChangeText={item.setState}
+                  placeholder={`0`}
+                />
+                {item.label === 'Giá sản phẩm 🕸️' && (
+                  <Text style={{fontSize: 18}}>đ</Text>
+                )}
+              </View>
+            </View>
+          ))}
+        </View>
+        <View style={styles.nganhsp}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
+            Ngành sản phẩm{' '}
+          </Text>
+          <AntDesign
+            name="right"
+            size={20}
+            onPress={() => {
+              navigation.navigate('Nganhsp');
+            }}
+          />
+        </View>
+        <View style={styles.nganhsp}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
+            Phân loại sản phẩm{' '}
+          </Text>
+          <AntDesign
+            name="right"
+            size={20}
+            onPress={() => {
+              navigation.navigate('Phanloaisp');
+            }}
+          />
         </View>
       </ScrollView>
       <View style={styles.footer}>
@@ -291,7 +300,7 @@ const AddProduct = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 6,
+    // marginBottom: 6,
     backgroundColor: '#eeeeee',
   },
   header: {
@@ -346,7 +355,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   inputContainer: {
-    height: 70,
+    height: 'auto',
     marginVertical: '1%',
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -363,7 +372,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputField: {
-    width: '100%',
+    width: 340,
+    flexWrap: 'nowrap',
+    fontSize: 18,
   },
   inputStatus: {
     justifyContent: 'space-around',
@@ -403,6 +414,16 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     color: '#000000',
+  },
+  nganhsp: {
+    backgroundColor: '#ffffff',
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Để căn chỉnh theo chiều dọc
+    paddingHorizontal: 26, // Khoảng cách đều 2 bên
+    borderWidth: 1,
+    marginBottom: 1,
   },
 });
 

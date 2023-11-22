@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,13 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {SOCKET_URL} from '../../../utils/socketService';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
+import {API_BASE_URL} from '../../../config/urls';
 
 const statusTranslations = {
   pending: 'Phê duyệt',
@@ -24,164 +26,169 @@ const OrderHistory = ({route}) => {
   const navigation = useNavigation();
   const {orderItem} = route.params;
 
+  const handleApproval = () => {
+    /* Xử lý khi nhấn nút Duyệt Đơn */
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={30} color={'black'} />
+          <AntDesign name="arrowleft" size={30} color={'white'} />
         </Pressable>
         <Text style={styles.titleText}>Thông tin đơn hàng</Text>
+        <View style={{width: 30}}></View>
       </View>
 
-      <View style={styles.avatarSection}>
-        <Image
-          style={styles.avatar}
-          source={{
-            uri: `${SOCKET_URL}uploads/${orderItem?.product_thumb[0]}`,
-          }}
-        />
+      <Image
+        style={styles.avatar}
+        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
+      />
+
+      <View style={styles.row}>
+        <View style={styles.column}>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="person" size={25} color={'black'} />
+            <Text style={styles.info}>{orderItem?.user_name}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="phone" size={25} color={'black'} />
+            <Text style={styles.info}>{orderItem?.phoneNumber}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="location-on" size={25} color={'black'} />
+            <Text style={styles.info}>{orderItem?.order_shipping.City}</Text>
+          </View>
+        </View>
+
+        <View style={styles.column}>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="shopping-cart" size={25} color={'black'} />
+            <Text style={styles.info}>{orderItem?.product_name}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="local-mall" size={25} color={'black'} />
+            <Text style={styles.info}>
+              Số lượng: {orderItem?.product_attributes?.quantity}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="color-lens" size={25} color={'black'} />
+            <Text style={styles.info}>
+              Màu: {orderItem?.product_attributes?.color} | Size:{' '}
+              {orderItem?.product_attributes?.size}
+            </Text>
+          </View>
+        </View>
       </View>
 
-      <ScrollView style={styles.infoSection}>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Thông tin khách hàng:</Text>
-          <Text style={styles.infoText}>Họ tên: {orderItem?.user_name}</Text>
-          <Text style={styles.infoText}>
-            Số điện thoại: {orderItem?.phoneNumber}
-          </Text>
-          <Text style={styles.infoText}>
-            Địa chỉ: {orderItem?.order_shipping.City}
-          </Text>
-        </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Sản phẩm:</Text>
-          <Text style={styles.infoText}>
-            Tên sản phẩm: {orderItem?.product_name}
-          </Text>
-          <Text style={styles.infoText}>
-            Số lượng: {orderItem?.product_attributes?.quantity}
-          </Text>
-          <Text style={styles.infoText}>
-            Màu: {orderItem?.product_attributes?.color} | Size:{' '}
-            {orderItem?.product_attributes?.size}
-          </Text>
-        </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Thành tiền:</Text>
-          <Text style={styles.infoText}>
-            Giá: {orderItem?.order_checkout?.totalPrice}
-          </Text>
-          <Text style={styles.infoText}>
-            Tiền ship: {orderItem?.order_checkout?.feeShip}
-          </Text>
-          <Text style={styles.infoText}>
-            Giảm giá: {orderItem?.order_checkout?.totalDiscount}
-          </Text>
-          <Text style={styles.infoText}>
-            Tổng thanh toán: {orderItem?.order_checkout?.totalCheckout}
-          </Text>
-        </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Ngày tạo:</Text>
-
-          <Text style={styles.infoText}>
-            {moment(orderItem?.crateDate).format('DD/MM/YYYY HH:mm:ss')}
-          </Text>
-        </View>
-
-        {orderItem?.status === 'pending' && (
-          <Pressable
-            style={styles.actionButton}
-            onPress={() => {
-              /* Xử lý khi nhấn nút Duyệt Đơn */
-            }}>
-            <Text style={styles.buttonText}>
-              {statusTranslations[orderItem?.status]}
+      <View style={styles.row}>
+        <View style={styles.infoSection}>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="attach-money" size={25} color={'black'} />
+            <Text style={styles.info}>
+              Giá: {orderItem?.order_checkout?.totalPrice}
             </Text>
-          </Pressable>
-        )}
-
-        {orderItem?.status === 'confirmed' && (
-          <Pressable
-            style={[styles.actionButton, {backgroundColor: 'green'}]}
-            onPress={() => {
-              /* Xử lý khi nhấn nút Duyệt Đơn */
-            }}>
-            <Text style={styles.buttonText}>
-              {statusTranslations[orderItem?.status]}
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="local-shipping" size={25} color={'black'} />
+            <Text style={styles.info}>
+              Ship: {orderItem?.order_checkout?.feeShip}
             </Text>
-          </Pressable>
-        )}
-      </ScrollView>
-    </View>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="local-offer" size={25} color={'black'} />
+            <Text style={styles.info}>
+              Giảm giá: {orderItem?.order_checkout?.totalDiscount}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="payment" size={25} color={'black'} />
+            <Text style={styles.info}>
+              Tổng: {orderItem?.order_checkout?.totalCheckout}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.infoSection}>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="event" size={25} color={'black'} />
+            <Text style={styles.info}>
+              {moment(orderItem?.crateDate).format('DD/MM/YYYY HH:mm')}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {orderItem?.status === 'pending' && (
+        <TouchableOpacity style={styles.button} onPress={handleApproval}>
+          <Text style={styles.buttonText}>
+            {statusTranslations[orderItem?.status]}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A4D3EE',
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
-    marginHorizontal: '5%',
+    justifyContent: 'space-between',
+    padding: 15,
+    backgroundColor: '#A4D3EE',
   },
   titleText: {
-    fontSize: 24,
-    color: '#333333',
-    marginLeft: 20,
-    fontWeight: '500',
-  },
-  avatarSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(169, 156, 156, 0.8)',
-    borderBottomWidth: 2,
-    borderColor: '#fff',
-    paddingBottom: 20,
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
   },
   avatar: {
-    width: 190,
-    height: 190,
-    marginTop: '2%',
+    width: '100%',
+    height: 200,
     resizeMode: 'cover',
-    borderRadius: 100,
   },
-  infoSection: {
-    backgroundColor: '#fff',
-    paddingHorizontal: '5%',
-    marginTop: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    flex: 1,
-  },
-  infoItem: {
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
-  infoLabel: {
-    fontSize: 18,
-    color: '#3498db',
-    fontWeight: '600',
-    marginTop: 10,
+  column: {
+    flex: 1,
+    padding: 10,
   },
-  infoText: {
+  infoSection: {
+    padding: 20,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  info: {
     fontSize: 16,
     color: 'black',
+    marginLeft: 10,
   },
-  actionButton: {
+  buttonContainer: {
+    // flexDirection: 'row',
+    // justifyContent: 'space-around',
+    // marginTop: 20,
+  },
+  button: {
     height: 50,
-    width: '90%',
+    width: '60%',
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    marginVertical: '2%',
-    backgroundColor: 'black', // Giữ màu đen cho nút Duyệt Đơn
+    marginVertical: 20,
+    backgroundColor: 'black',
   },
   buttonText: {
     color: 'white',

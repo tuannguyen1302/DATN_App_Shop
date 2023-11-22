@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -15,9 +15,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
 import FastImage from 'react-native-fast-image';
-import {SOCKET_URL} from '../../../utils/socketService';
+import imagePath from '../../../constatns/imagePath';
+import {apiGet, apiPut} from '../../../utils/utilus';
+import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
 
 const TAB_ITEMS = [
   {status: 'All'},
@@ -31,7 +32,7 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
     <View style={styles.itemHeader}>
       <FastImage
         style={styles.productImage}
-        source={{uri: `${SOCKET_URL}uploads/${item?.product_thumb[0]}`}}
+        source={{uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`}}
         resizeMode={FastImage.resizeMode.cover}
       />
       <View style={{marginLeft: '2%', flex: 1}}>
@@ -53,7 +54,8 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
             <Feather name={icon} size={15} color={'#222222'} />
           )}
           <Text style={[styles.tabText, {left: '15%'}]}>
-            {index === 0 ? 'Kho hàng' : 'Đã bán'}: {item?.product_quantity}
+            {index === 0 ? 'Kho hàng' : 'Đã bán'}:{' '}
+            {index === 0 ? item?.product_quantity : 0}
           </Text>
         </View>
       ))}
@@ -82,15 +84,7 @@ const ProductScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const flatListRef = useRef();
 
-  const getHeaders = () => ({
-    headers: {
-      'x-xclient-id': '654c895786644a5c7ac507df',
-      authorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
-    },
-  });
-
-  const toggleHideProduct = product => {
+  const toggleHideProduct = async product => {
     const action = product?.isDraft ? 'hiện' : 'ẩn';
     const message = `Bạn muốn ${action} sản phẩm "${product?.product_name}"?`;
 
@@ -103,19 +97,11 @@ const ProductScreen = ({navigation}) => {
       {
         text: 'Xác nhận',
         onPress: async () => {
-          const endpoint = `${SOCKET_URL}v1/api/product/${
-            product?.isDraft ? 'unpublishById' : 'publishById'
+          const endpoint = `${PRODUCT_API}${
+            product?.isDraft ? '/unpublishById' : '/publishById'
           }/${product?._id}`;
-          await axios.put(endpoint, {}, getHeaders());
-          getApi(
-            status === 'All'
-              ? 'all'
-              : status === 'Còn hàng'
-              ? 'con_hang'
-              : status === 'Hết hàng'
-              ? 'het_hang'
-              : 'private',
-          );
+          await apiPut(endpoint);
+          getTabStatus();
           ToastAndroid.show(
             `Thay đổi trạng thái ${action} thành công`,
             ToastAndroid.show,
@@ -125,17 +111,27 @@ const ProductScreen = ({navigation}) => {
     ]);
   };
 
+  const getTabStatus = () => {
+    switch (status) {
+      case 'All':
+        return getApi('all');
+      case 'Còn hàng':
+        return getApi('con_hang');
+      case 'Hết hàng':
+        return getApi('het_hang');
+      case 'Bị ẩn':
+        return getApi('private');
+    }
+  };
+
   const getApi = async tab => {
     try {
-      const res = await axios.get(
-        `${SOCKET_URL}v1/api/product/getAllProductByShop/${tab}`,
-        getHeaders(),
-      );
-      setProductList(res.data.message);
+      const res = await apiGet(`${PRODUCT_API}/getAllProductByShop/${tab}`);
       setLoading(false);
+      setProductList(res?.message);
     } catch (error) {
-      console.log('Call api: ', error.message);
       setLoading(false);
+      console.log('Call api: ', error.response.data);
     }
   };
 
@@ -152,8 +148,8 @@ const ProductScreen = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      getApi('all');
-    }, []),
+      getTabStatus();
+    }, [status]),
   );
 
   const onEndReached = () => {
@@ -164,17 +160,8 @@ const ProductScreen = ({navigation}) => {
     <Pressable
       style={[styles.tabItem, item?.status === status && styles.selectedTab]}
       onPress={() => {
-        setStatus(item?.status);
         setLoading(true);
-        getApi(
-          item?.status === 'All'
-            ? 'all'
-            : item?.status === 'Còn hàng'
-            ? 'con_hang'
-            : item?.status === 'Hết hàng'
-            ? 'het_hang'
-            : 'private',
-        );
+        setStatus(item?.status);
         flatListRef.current.scrollToIndex({index});
       }}>
       <Text style={styles.tabText}>{item?.status}</Text>
@@ -183,16 +170,6 @@ const ProductScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <FlatList
-          ref={flatListRef}
-          data={TAB_ITEMS}
-          renderItem={renderTabItem}
-          keyExtractor={(item, index) => index.toString()}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
       <View style={styles.filter}>
         <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
           <AntDesign name="bars" size={24} color={'black'} />
@@ -210,6 +187,16 @@ const ProductScreen = ({navigation}) => {
         <Pressable onPress={() => navigation.navigate('SearchScreen')}>
           <AntDesign name="search1" size={24} color={'black'} />
         </Pressable>
+      </View>
+      <View>
+        <FlatList
+          ref={flatListRef}
+          data={TAB_ITEMS}
+          renderItem={renderTabItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
 
       {loading ? (
@@ -229,10 +216,7 @@ const ProductScreen = ({navigation}) => {
         />
       ) : (
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.productImage2}
-            source={require('../../../../images/NoProduct.png')}
-          />
+          <Image style={styles.productImage2} source={imagePath.noProduct} />
           <Text style={styles.imageText}>Tab không có sản phẩm nào</Text>
         </View>
       )}
@@ -243,7 +227,7 @@ const ProductScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: 'white',
   },
   loadingContainer: {
     flex: 1,
@@ -251,7 +235,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabItem: {
-    width: 100,
+    width: 95,
     height: 40,
     marginTop: '2%',
     alignItems: 'center',
@@ -262,8 +246,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   selectedTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: 'black',
+    borderBottomWidth: 3,
+    borderBottomColor: '#536EFF',
   },
   tabText: {
     color: 'black',
@@ -272,7 +256,6 @@ const styles = StyleSheet.create({
   filter: {
     marginTop: '2%',
     height: 40,
-    backgroundColor: '#F6F6F6',
     flexDirection: 'row',
     marginHorizontal: '5%',
     alignItems: 'center',
@@ -282,7 +265,7 @@ const styles = StyleSheet.create({
     margin: '2%',
     height: 185,
     borderRadius: 10,
-    borderWidth: 0.5,
+    elevation: 10,
     backgroundColor: 'white',
     padding: '4%',
   },
@@ -304,7 +287,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     marginTop: '2%',
-    color: 'black',
+    color: 'red',
     fontSize: 18,
   },
   itemDetails: {

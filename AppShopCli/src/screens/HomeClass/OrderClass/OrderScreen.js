@@ -1,9 +1,18 @@
 import React, {useCallback, useState} from 'react';
-import {FlatList, Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useFocusEffect} from '@react-navigation/native';
-import {SOCKET_URL} from '../../../utils/socketService';
-import axios from 'axios';
+import imagePath from '../../../constatns/imagePath';
+import {apiGet, apiPatch} from '../../../utils/utilus';
+import {API_BASE_URL, ORDER_API} from '../../../config/urls';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -14,29 +23,17 @@ const STATUS_TRANSLATIONS = {
   cancelled: 'Đã hủy',
 };
 
-const getHeaders = () => ({
-  headers: {
-    'x-xclient-id': '654c895786644a5c7ac507df',
-    authorization:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
+const tabNavigatorOptions = route => ({
+  tabBarStyle: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginHorizontal: '2%',
+    marginTop: '14%',
   },
+  tabBarLabel: ({focused}) => (
+    <Text style={{color: focused ? 'black' : 'grey'}}>{route.name}</Text>
+  ),
 });
-
-const fetchOrdersByStatus = async (setArray, text) => {
-  try {
-    const res = await axios.get(
-      `${SOCKET_URL}v1/api/checkout/getAllOrderForShop/${text}`,
-      getHeaders(),
-    );
-    setArray(res.data?.message?.orderRes?.user);
-  } catch (error) {
-    console.log('Call api: ', error.response.data);
-  }
-};
-
-const ImageComponent = ({source}) => (
-  <Image style={styles.image} source={source} />
-);
 
 const OrderScreen = () => {
   return (
@@ -51,17 +48,18 @@ const OrderScreen = () => {
   );
 };
 
-const tabNavigatorOptions = route => ({
-  tabBarStyle: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    marginHorizontal: '2%',
-    marginTop: '14%',
-  },
-  tabBarLabel: ({focused}) => (
-    <Text style={{color: focused ? 'black' : 'grey'}}>{route.name}</Text>
-  ),
-});
+const fetchOrdersByStatus = async (setArray, text) => {
+  try {
+    const res = await apiGet(`${ORDER_API}/getAllOrderForShop/${text}`);
+    setArray(res?.message?.orderRes?.user);
+  } catch (error) {
+    console.log('Call api: ', error.response.data);
+  }
+};
+
+const ImageComponent = ({source}) => (
+  <Image style={styles.image} source={source} />
+);
 
 const OrderListScreen = ({navigation}) => {
   const [array, setArray] = useState([]);
@@ -79,7 +77,7 @@ const OrderListScreen = ({navigation}) => {
         keyExtractor={item => item?.oderId}
         renderItem={({item}) => renderItem(item, navigation)}
       />
-      <ImageComponent source={require('../../../../images/Order1.png')} />
+      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
@@ -100,7 +98,7 @@ const InDeliveryScreen = ({navigation}) => {
         keyExtractor={item => item?.oderId}
         renderItem={({item}) => renderItem(item, navigation)}
       />
-      <ImageComponent source={require('../../../../images/Order2.png')} />
+      <ImageComponent source={imagePath.order2} />
     </View>
   );
 };
@@ -121,7 +119,7 @@ const DeliveredScreen = ({navigation}) => {
         keyExtractor={item => item?.oderId}
         renderItem={({item}) => renderItem(item, navigation)}
       />
-      <ImageComponent source={require('../../../../images/Order3.png')} />
+      <ImageComponent source={imagePath.order3} />
     </View>
   );
 };
@@ -142,21 +140,21 @@ const CanceledScreen = ({navigation}) => {
         keyExtractor={item => item?.oderId}
         renderItem={({item}) => renderItem(item, navigation)}
       />
-      <ImageComponent source={require('../../../../images/Order4.png')} />
+      <ImageComponent source={imagePath.order4} />
     </View>
   );
 };
 
-const patchApi = async oderId => {
+const patchApi = async (oderId, navigation) => {
   try {
-    const res = await axios.patch(
-      `${SOCKET_URL}v1/api/checkout/changeStatus`,
-      {order_id: oderId, status: 'shipped'},
-      getHeaders(),
-    );
-    console.log(res.data);
+    await apiPatch(`${ORDER_API}/changeStatus`, {
+      order_id: oderId,
+      status: 'shipped',
+    });
+    navigation.navigate('OrderScreen', {screen: 'Đang giao'});
+    ToastAndroid.show('Duyệt thành công', ToastAndroid.show);
   } catch (error) {
-    console.log('Patch api: ', error.response.data);
+    console.log('Patch api: ', error.message);
   }
 };
 
@@ -167,7 +165,7 @@ const renderItem = (orderItem, navigation) => (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <Image
         style={styles.productImage}
-        source={{uri: `${SOCKET_URL}uploads/${orderItem?.product_thumb[0]}`}}
+        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={1}>
@@ -193,7 +191,7 @@ const renderItem = (orderItem, navigation) => (
       {orderItem?.order_status === 'pending' && (
         <Pressable
           style={styles.statusBadge}
-          onPress={() => patchApi(orderItem?.oderId)}>
+          onPress={() => patchApi(orderItem?.oderId, navigation)}>
           <Text style={[styles.infoText, styles.statusText]}>
             {STATUS_TRANSLATIONS[orderItem?.status]}
           </Text>

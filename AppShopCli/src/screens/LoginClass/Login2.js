@@ -14,38 +14,51 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {CheckBox} from 'react-native-elements';
-import {useNavigation} from '@react-navigation/native';
-// Hàm kiểm tra định dạng email
+import {SIGNIN_API} from '../../config/urls';
+import imagePath from '../../constatns/imagePath';
+import {apiPost, setItem} from '../../utils/utilus';
+
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
 
-// Hàm kiểm tra định dạng mật khẩu
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
-const Login2 = () => {
-  const navigation = useNavigation();
+const Login2 = ({navigation}) => {
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  // Hàm kiểm tra đăng nhập
-  const checkLogin = () => {
-    setError('');
-    if (!email) {
-      setError('Email không được để trống');
-    } else if (!isValidEmail(email)) {
-      setError('Email không đúng định dạng');
-    } else if (!password) {
-      setError('Mật khẩu không được để trống');
-    } else if (password.length < 6) {
-      setError('Mật khẩu phải có ít nhất 6 kí tự');
-    } else if (!isValidPassword(password)) {
-      setError('Mật khẩu phải có chữ in hoa và kí tự đặc biệt');
-    } else {
-      navigation.replace('BottomTab', {screen: 'MyProduct'});
+  const login = async (email, password) => {
+    if (!isButtonDisabled) {
+      setError('');
+      setButtonDisabled(true);
+
+      if (!email) {
+        setError('Email không được để trống');
+      } else if (!isValidEmail(email)) {
+        setError('Email không đúng định dạng');
+      } else if (!password) {
+        setError('Mật khẩu không được để trống');
+      } else if (password.length < 6) {
+        setError('Mật khẩu phải có ít nhất 6 kí tự');
+      } else {
+        const res = await apiPost(SIGNIN_API, {
+          email: email,
+          password: password,
+          role: 'Shop',
+        });
+
+        setItem('LoginUser', res.message);
+        console.log('Đăng nhập thành công');
+        navigation.replace('BottomTab');
+      }
+      setTimeout(() => {
+        setButtonDisabled(false);
+      }, 2000);
     }
   };
 
@@ -75,36 +88,33 @@ const Login2 = () => {
             passwordVisible={passwordVisible}
             setPasswordVisible={setPasswordVisible}
           />
-
           {error && <Text style={styles.error}>{error}</Text>}
-
           <CheckBox
-            title="Remember me"
+            title="Lưu tài khoản "
             checked={isChecked}
             checkedColor="#000000"
             uncheckedColor="#000000"
             containerStyle={styles.checkBox}
-            onPress={() => setIsChecked(!isChecked)}
+            onPress={async () => {
+              setIsChecked(!isChecked);
+            }}
           />
-
-          <TouchableOpacity style={styles.signInButton} onPress={checkLogin}>
+          <TouchableOpacity
+            style={styles.signInButton}
+            onPress={() => login(email, password)}>
             <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
-
           <Text style={styles.forgotPassword} onPress={() => alert('forgot')}>
             Forgot the password?
           </Text>
         </View>
-
         <SocialLoginButtons />
-
         <SignUpLink onPress={() => navigation.navigate('SignUp')} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-// Component ô nhập dữ liệu
 const InputField = ({
   icon,
   isPassword,
@@ -144,11 +154,11 @@ const SocialLoginButtons = () => (
 
     <View style={styles.socialButtonsContainer}>
       <SocialButton
-        imageSource={require('../../../images/facebook.png')}
+        imageSource={imagePath.facebook}
         onPress={() => alert('facebook')}
       />
       <SocialButton
-        imageSource={require('../../../images/google.png')}
+        imageSource={imagePath.google}
         onPress={() => alert('google')}
       />
     </View>

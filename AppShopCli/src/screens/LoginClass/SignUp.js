@@ -13,12 +13,14 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import {SIGNUP_API} from '../../config/urls';
+import imagePath from '../../constatns/imagePath';
+import {apiPost} from '../../utils/utilus';
 
-// Hàm kiểm tra định dạng email
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
 
-// Hàm kiểm tra định dạng mật khẩu
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
@@ -30,21 +32,36 @@ const SignUp = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [error, setError] = useState('');
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  // Hàm kiểm tra thông tin đăng ký
-  const checkLogin = () => {
-    setError('');
-    if (!email) setError('Email không được để trống');
-    else if (!isValidEmail(email)) setError('Email không đúng định dạng');
-    else if (!password || !confirmPassword)
-      setError('Mật khẩu không được để trống');
-    else if (password.length < 6 || confirmPassword.length < 6)
-      setError('Mật khẩu trên 6 kí tự');
-    else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
-      setError('Mật khẩu có in hoa, kí tự đặc biệt');
-    else if (password !== confirmPassword)
-      setError('Mật khẩu không trùng khớp');
-    else alert('ok ok');
+  const checkLogin = async () => {
+    if (!isButtonDisabled) {
+      setError('');
+      setButtonDisabled(true);
+      if (!email) setError('Email không được để trống');
+      else if (!isValidEmail(email)) setError('Email không đúng định dạng');
+      else if (!password || !confirmPassword)
+        setError('Mật khẩu không được để trống');
+      else if (password.length < 6 || confirmPassword.length < 6)
+        setError('Mật khẩu trên 6 kí tự');
+      else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
+        setError('Mật khẩu có in hoa, kí tự đặc biệt');
+      else if (password !== confirmPassword)
+        setError('Mật khẩu không trùng khớp');
+      else {
+        await apiPost(SIGNUP_API, {
+          email: email,
+          password: password,
+          role: 'Shop',
+        });
+
+        console.log('Đăng ký thành công');
+        navigation.navigate('Login2');
+      }
+      setTimeout(() => {
+        setButtonDisabled(false);
+      }, 2000);
+    }
   };
 
   return (
@@ -102,7 +119,7 @@ const SignUp = () => {
         <SocialLoginButtons />
 
         {/* Đường link đến màn hình đăng nhập */}
-        <SignInLink onPress={() => navigation.navigate('Login1')} />
+        <SignInLink onPress={() => navigation.navigate('Login2')} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -150,11 +167,11 @@ const SocialLoginButtons = () => (
     {/* Nút đăng ký bằng Facebook và Google */}
     <View style={styles.socialButtonsContainer}>
       <SocialButton
-        imageSource={require('../../../images/facebook.png')}
+        imageSource={imagePath.facebook}
         onPress={() => alert('facebook')}
       />
       <SocialButton
-        imageSource={require('../../../images/google.png')}
+        imageSource={imagePath.google}
         onPress={() => alert('google')}
       />
     </View>

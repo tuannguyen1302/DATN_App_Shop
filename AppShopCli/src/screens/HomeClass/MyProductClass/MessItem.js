@@ -1,124 +1,130 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  SafeAreaView,
+} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import axios from 'axios';
-import socketServices, {SOCKET_URL} from '../../../utils/socketService';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import socketServices from '../../../utils/socketService';
 import {Pressable} from 'react-native';
+import {apiGet, getItem} from '../../../utils/utilus';
+import {CHAT_API} from '../../../config/urls';
 
 const MessageItem = ({route}) => {
-  const [messages, setMessages] = useState([]);
-  const [chatItem, setChatItem] = useState('');
+  const [data, setData] = useState([]);
+  const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState('');
   const {_id} = route.params;
-  const flatListRef = useRef(null);
 
-  const headers = {
-    'x-xclient-id': '654c895786644a5c7ac507df',
-    authorization:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
-  };
-
-  const apiUrl = `${SOCKET_URL}v1/api/chat/`;
-
-  const getApi = async () => {
+  const getApi = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}getMessages/${_id}`, {
-        headers,
-      });
-      setMessages(res.data.message?.messagers);
+      const token = await getItem('LoginUser');
+      const res = await apiGet(`${CHAT_API}/getMessages/${_id}`);
+      setUserId(token?.userId);
+      setData(res?.message?.messagers);
     } catch (error) {
-      console.log('API Error:', error.response.data);
+      console.log('API Error:', error);
     }
-  };
+  }, [_id]);
 
-  const senMessage = text => {
-    setChatItem('');
-
-    const mes = {
-      senderId: '654c895786644a5c7ac507df',
-      message: text,
-      conversationId: _id,
-    };
-    socketServices.emit('chat message', mes);
-
-    socketServices.on('send message', function (data) {
-      messages.push(data);
-      setMessages(messages);
-    });
+  // Hàm gửi tin nhắn
+  const senMessage = () => {
+    if (!!message) {
+      setMessage('');
+      socketServices.emit('chat message', {
+        senderId: userId,
+        message,
+        conversationId: _id,
+      });
+    } else {
+      alert('Tin nhắn trống');
+    }
   };
 
   useEffect(() => {
     getApi();
+    socketServices.emit('joinRoom', _id);
+  }, [getApi, _id]);
+
+  useEffect(() => {
+    socketServices.on('send message', msg => {
+      setData(prevData => [...prevData, msg]);
+    });
   }, []);
 
-  const scrollToBottom = () => {
-    flatListRef.current.scrollToEnd({animated: true});
-  };
+  const renderItem = useCallback(
+    ({item}) => {
+      const isSender0 = item.senderId === userId;
+      const createdAt = new Date(item.createdAt);
+      const formattedTime = createdAt.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+      });
 
-  const renderItem = ({item}) => {
-    const isSender0 = item.senderId === '654c895786644a5c7ac507df';
-
-    const createdAt = new Date(item.createdAt);
-    const formattedTime = createdAt.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-
-    return (
-      <View
-        style={[
-          styles.messageContainer,
-          isSender0 ? styles.sender1 : styles.sender0,
-        ]}>
-        <View style={[styles.messageBubble, isSender0 && styles.senderBubble]}>
-          <Text style={[styles.messageText, isSender0 && styles.senderText]}>
-            {item?.text}
-          </Text>
-          <Text style={[styles.messageTime, isSender0 && styles.senderText]}>
-            {formattedTime}
-          </Text>
+      return (
+        <View
+          style={[
+            styles.messageContainer,
+            isSender0 ? styles.sender1 : styles.sender0,
+          ]}>
+          <View
+            style={[
+              styles.messageBubble,
+              isSender0 && {
+                backgroundColor: '#19B9EC',
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 0,
+              },
+            ]}>
+            <Text style={[styles.messageText, isSender0 && {color: 'white'}]}>
+              {item?.text}
+            </Text>
+            <Text style={[styles.messageTime, isSender0 && {color: 'white'}]}>
+              {formattedTime}
+            </Text>
+          </View>
         </View>
-      </View>
-    );
-  };
+      );
+    },
+    [userId],
+  );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={item => item._id}
+        data={data}
+        keyExtractor={item => item?._id}
         renderItem={renderItem}
-        onContentSizeChange={() => scrollToBottom()}
-        onLayout={() => scrollToBottom()}
-        extraData={messages}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
       />
       <View style={styles.inputContainer}>
         <View style={styles.input}>
+          <MaterialIcons name="insert-emoticon" size={25} />
           <TextInput
-            value={chatItem}
-            onChangeText={setChatItem}
+            value={message}
+            onChangeText={setMessage}
             placeholder="Nhắn tin..."
-            style={{flex: 1}}
+            style={{width: '80%', fontSize: 16}}
           />
-          <Feather name="image" size={25} />
+          <Feather name="camera" size={25} color="#333" />
         </View>
 
         <Pressable
-          disabled={!chatItem}
-          onPress={() => {
-            senMessage(chatItem);
-          }}
-          style={({pressed}) => [
-            {opacity: pressed ? 0.5 : 1},
-            styles.sendButton,
-          ]}>
-          <Feather name="send" size={35} color={chatItem ? 'blue' : 'gray'} />
+          onPress={senMessage}
+          style={[styles.sendButton, !message && {backgroundColor: 'gray'}]}>
+          <MaterialIcons name="send" size={25} color={'white'} />
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
+// Style của component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -136,22 +142,19 @@ const styles = StyleSheet.create({
   sender1: {
     justifyContent: 'flex-end',
   },
-  senderBubble: {
-    backgroundColor: '#333',
-  },
-  senderText: {
-    color: 'white',
-  },
   messageBubble: {
     width: '55%',
     padding: '4%',
     borderRadius: 10,
     marginVertical: '1%',
-    backgroundColor: '#ECECEC',
+    borderTopLeftRadius: 0,
+    backgroundColor: '#f0f0f0',
   },
   messageText: {
     fontSize: 15,
     color: 'black',
+    fontWeight: '400',
+    width: '90%',
   },
   messageTime: {
     fontSize: 12,
@@ -166,25 +169,32 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 80,
     borderTopWidth: 1,
-    borderColor: '#eee',
-    backgroundColor: 'white',
+    borderColor: '#D9D9D9',
+    backgroundColor: '#fff',
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: '3%',
   },
   input: {
-    backgroundColor: '#ECECEC',
-    width: '70%',
-    height: 50,
-    padding: 5,
-    marginRight: '5%',
+    backgroundColor: '#f0f0f0',
+    width: '80%',
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 10,
+    justifyContent: 'space-between',
     borderRadius: 10,
   },
   sendButton: {
-    opacity: 0.5,
+    width: 55,
+    height: 55,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    backgroundColor: '#19B9EC',
   },
 });
 
+// Xuất component để sử dụng
 export default MessageItem;

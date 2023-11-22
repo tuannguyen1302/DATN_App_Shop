@@ -16,12 +16,10 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useNavigation} from '@react-navigation/native';
-import {SOCKET_URL} from '../../../utils/socketService';
-import axios from 'axios';
+import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
+import {apiPut} from '../../../utils/utilus';
 
-const UpdateProduct = ({route}) => {
-  const navigation = useNavigation();
+const UpdateProduct = ({navigation, route}) => {
   const {item} = route.params;
 
   const [selectedImages, setSelectedImages] = useState([]);
@@ -31,15 +29,6 @@ const UpdateProduct = ({route}) => {
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
   const [productInventory, setProductInventory] = useState(item?.product_price);
-
-  const getHeaders = () => ({
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      'x-xclient-id': '654c895786644a5c7ac507df',
-      authorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
-    },
-  });
 
   const clearField = setField => setField('');
 
@@ -144,12 +133,8 @@ const UpdateProduct = ({route}) => {
         formData.append('thumbs', {uri: localUri, name: filename, type});
       });
 
-      await axios.put(
-        `${SOCKET_URL}v1/api/product/editProduct/${item?._id}`,
-        formData,
-        getHeaders(),
-      );
-      navigation.replace('BottomTab');
+      await apiPut(`${PRODUCT_API}/editProduct/${item?._id}`, formData);
+      navigation.goBack();
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -208,7 +193,7 @@ const UpdateProduct = ({route}) => {
   useEffect(() => {
     const newImages = item?.product_thumb.map(uri => ({
       id: (idCounter++).toString(),
-      uri: `${SOCKET_URL}uploads/${uri}`,
+      uri: `${API_BASE_URL}uploads/${uri}`,
     }));
     setSelectedImages(prevImages => [...prevImages, ...newImages]);
   }, []);
@@ -234,7 +219,7 @@ const UpdateProduct = ({route}) => {
             numColumns={4}
             data={dataWithButton}
             scrollEnabled={false}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item?.id}
             renderItem={({item}) => (
               <View style={styles.imageItem}>
                 {item.isButton ? (
@@ -247,7 +232,9 @@ const UpdateProduct = ({route}) => {
                   <>
                     <Image style={styles.image} source={{uri: item?.uri}} />
                     <TouchableOpacity
-                      onPress={() => handleDeleteImage(item?.id)}
+                      onPress={() => {
+                        console.log(item), handleDeleteImage(item?.id);
+                      }}
                       style={styles.closeButton}>
                       <AntDesign name="closecircleo" size={20} />
                     </TouchableOpacity>

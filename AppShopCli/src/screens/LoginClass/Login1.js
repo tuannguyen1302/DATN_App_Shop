@@ -1,66 +1,49 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import imagePath from '../../constatns/imagePath';
+import {height, width} from '../../styles/responsiveSize';
+import fontFamily from '../../styles/fontFamily';
 
 const Login1 = () => {
   const navigation = useNavigation();
 
-  // Xử lý khi nhấn nút đăng nhập bằng Facebook
   const handleLoginFacebook = () => alert('facebook');
 
-  // Xử lý khi nhấn nút đăng nhập bằng Gmail
   const handleLoginGmail = () => alert('google');
 
-  // Chuyển hướng đến màn hình đăng ký
   const handleSignup = () => navigation.navigate('SignUp');
 
-  // Chuyển hướng đến màn hình đăng nhập bằng mật khẩu
   const handleLoginWithPassword = () => navigation.navigate('Login2');
 
   return (
     <View style={styles.container}>
-      {/* Hiển thị logo */}
-      <Image
-        source={require('../../../images/Logo2.png')}
-        style={styles.logo}
-      />
+      <Image source={imagePath.logo2} style={styles.logo} />
 
-      {/* Tiêu đề màn hình */}
       <Text style={styles.title}>Let's You In</Text>
 
-      {/* Nút đăng nhập bằng Facebook */}
       <TouchableOpacity style={styles.button} onPress={handleLoginFacebook}>
-        <Image
-          source={require('../../../images/facebook.png')}
-          style={styles.icon}
-        />
+        <Image source={imagePath.facebook} style={styles.icon} />
         <Text style={styles.buttonText}>Continue with Facebook</Text>
       </TouchableOpacity>
 
-      {/* Nút đăng nhập bằng Gmail */}
       <TouchableOpacity style={styles.button} onPress={handleLoginGmail}>
-        <Image
-          source={require('../../../images/google.png')}
-          style={styles.icon}
-        />
+        <Image source={imagePath.google} style={styles.icon} />
         <Text style={styles.buttonText}>Continue with Google</Text>
       </TouchableOpacity>
 
-      {/* Phân chia hoặc */}
       <View style={styles.separatorContainer}>
         <View style={styles.separator} />
         <Text style={styles.separatorText}>Or</Text>
         <View style={styles.separator} />
       </View>
 
-      {/* Nút đăng nhập bằng mật khẩu */}
       <TouchableOpacity
         style={styles.passwordButton}
         onPress={handleLoginWithPassword}>
         <Text style={styles.passwordButtonText}>Continue with Password</Text>
       </TouchableOpacity>
 
-      {/* Đường link đến màn hình đăng ký */}
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account?</Text>
         <Text style={styles.signupLink} onPress={handleSignup}>
@@ -78,14 +61,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: width,
+    height: height / 3.1,
     resizeMode: 'contain',
     alignSelf: 'center',
   },
   title: {
     color: '#000000',
     fontSize: 40,
+    fontFamily: fontFamily.blackFont,
     fontWeight: '500',
     textAlign: 'center',
     marginBottom: '5%',

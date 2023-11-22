@@ -48,15 +48,15 @@ const MyProduct = ({navigation}) => {
         </View>
       </View>
 
-      <ProductScreen navigation={navigation} id={account.id} />
+      <ProductScreen navigation={navigation} />
 
       <Pressable
         style={styles.btnAdd}
         onPress={() => {
           navigation.navigate('AddProduct');
         }}>
-        <Feather name="plus-square" size={20} color={'white'} />
-        <Text style={styles.txtAdd}>Thêm sản phẩm mới</Text>
+        <Feather name="plus-square" size={25} color={'white'} />
+        {/* <Text style={styles.txtAdd}>Thêm sản phẩm mới</Text> */}
       </Pressable>
     </View>
   );
@@ -65,14 +65,12 @@ const MyProduct = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   header: {
-    height: '10%',
+    height: 80,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
@@ -84,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   brightenAvatar: {
-    backgroundColor: 'rgba(255,255,255,0.3)', // Một màu trắng nhẹ làm sáng hình ảnh
+    backgroundColor: 'rgba(255,255,255,0.3)',
   },
   headerTextContainer: {
     marginLeft: 10,
@@ -107,15 +105,15 @@ const styles = StyleSheet.create({
     color: '#757575',
   },
   btnAdd: {
-    width: '80%',
-    height: 50,
-    borderRadius: 10,
-    alignSelf: 'center',
+    position: 'absolute',
+    width: 70,
+    height: 70,
+    borderRadius: 100,
     alignItems: 'center',
-    flexDirection: 'row',
-    marginVertical: 10,
     justifyContent: 'center',
-    backgroundColor: 'black',
+    bottom: '4%',
+    right: '8%',
+    backgroundColor: '#19B9EC',
   },
   txtAdd: {
     marginLeft: 10,

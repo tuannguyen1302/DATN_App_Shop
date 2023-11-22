@@ -9,18 +9,19 @@ import {
   Platform,
   ScrollView,
   PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
-import {SOCKET_URL} from '../../../utils/socketService';
+import imagePath from '../../../constatns/imagePath';
+import {apiGet, apiPut} from '../../../utils/utilus';
+import {API_BASE_URL, SHOP_API} from '../../../config/urls';
 
 const ShopScreen = () => {
   const navigation = useNavigation();
 
-  // States to track shop information and avatar image
   const [shopName, setShopName] = useState('');
   const [shopDescription, setShopDescription] = useState('');
   const [shopAddress, setShopAddress] = useState('');
@@ -28,19 +29,16 @@ const ShopScreen = () => {
   const [shopEmail, setShopEmail] = useState('');
   const [avatarSource, setAvatarSource] = useState([]);
 
-  // Function to clear the content of an input field
   const clearField = setField => {
     setField('');
   };
 
-  // Function to select an image from the camera
   const selectImage = async () => {
     try {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
       const response = await launchImageLibrary({mediaType: 'photo'});
 
       setAvatarSource(response.assets[0]);
-      console.log(response.assets[0]);
     } catch (error) {
       console.log(error);
     }
@@ -70,24 +68,13 @@ const ShopScreen = () => {
       formData.append('emailShop', shopEmail);
       formData.append('address', shopAddress);
 
-      formData.append('avatar', {
-        uri: avatarSource?.uri,
-        type: avatarSource?.type,
-        name: avatarSource?.fileName,
-      });
+      let localUri = avatarSource?.uri;
+      let filename = localUri.split('/').pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      formData.append('avatar', {uri: localUri, name: filename, type});
 
-      const res = await axios.put(
-        `${SOCKET_URL}v1/api/shop/updateShop`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'x-xclient-id': '654c895786644a5c7ac507df',
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
-          },
-        },
-      );
+      const res = await apiPut(`${SHOP_API}/updateShop`, formData);
 
       console.log(res.data);
     } catch (error) {
@@ -97,20 +84,15 @@ const ShopScreen = () => {
 
   const getApi = async () => {
     try {
-      const res = await axios.get(`${SOCKET_URL}v1/api/shop/getShopForShop`, {
-        headers: {
-          'x-xclient-id': '654c895786644a5c7ac507df',
-          authorization:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNzAwMjkwOTk2LCJleHAiOjE3MDExNTQ5OTZ9.lzUBd4bBCBd6zUsjp9S5C47ofetyCEZ9_aTEZcpxYJY',
-        },
-      });
-      setShopName(res.data.message?.nameShop);
-      setShopDescription(res.data.message?.des);
-      setShopAddress(res.data.message?.address);
-      setShopPhone(res.data.message?.phoneNumberShop.toString());
-      setShopEmail(res.data.message?.emailShop);
+      const res = await apiGet(`${SHOP_API}/getShopForShop`);
+      console.log(res);
+      setShopName(res?.message?.nameShop);
+      setShopDescription(res?.message?.des);
+      setShopAddress(res?.message?.address);
+      setShopPhone(res?.message?.phoneNumberShop.toString());
+      setShopEmail(res?.message?.emailShop);
       setAvatarSource({
-        uri: `${SOCKET_URL}${res.data.message?.avatarShop}`,
+        uri: `${API_BASE_URL}${res?.message?.avatarShop}`,
       });
     } catch (error) {
       console.log('Post api: ', error.message);
@@ -126,22 +108,18 @@ const ShopScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
       <ScrollView>
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.rowHeader}>
-            {/* Back button */}
             <Pressable onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={30} color={'black'} />
             </Pressable>
             <Text style={styles.titleText}>Sửa hồ sơ</Text>
-            {/* Save button */}
             <Pressable onPress={postApi}>
               <Text style={styles.saveText}>Lưu</Text>
             </Pressable>
           </View>
         </View>
 
-        {/* Display and select avatar image */}
         <Pressable style={styles.avatarSection} onPress={selectImage}>
           {avatarSource?.uri ? (
             <Image style={styles.avatar} source={{uri: avatarSource?.uri}} />
@@ -157,7 +135,6 @@ const ShopScreen = () => {
           <View style={styles.editButton} />
         </Pressable>
 
-        {/* Input shop information */}
         <View style={styles.formSection}>
           {[
             {label: 'Tên cửa hàng', state: shopName, setState: setShopName},
@@ -191,7 +168,6 @@ const ShopScreen = () => {
                 </View>
                 <View style={styles.inputStatus}>
                   <Text>{item?.state?.length}/120</Text>
-                  {/* Button to clear the input field content */}
                   <Pressable onPress={() => clearField(item.setState)}>
                     <AntDesign
                       name="closesquareo"
@@ -205,11 +181,7 @@ const ShopScreen = () => {
           ))}
         </View>
 
-        {/* Image at the bottom of the page */}
-        <Image
-          style={styles.bottomImage}
-          source={require('../../../../images/ShopSea.png')}
-        />
+        <Image style={styles.bottomImage} source={imagePath.shopSea} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

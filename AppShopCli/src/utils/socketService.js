@@ -1,13 +1,12 @@
 import io from 'socket.io-client';
-
-export const SOCKET_URL = 'https://f9c2-116-96-44-199.ngrok-free.app/';
+import {API_BASE_URL} from '../config/urls';
 
 class WSService {
   initializeSocket = async () => {
     try {
-      this.socket = io(SOCKET_URL, {
+      this.socket = io(API_BASE_URL, {
         transports: ['websocket'],
-        upgrade: true, // Hoặc để mặc định (true)
+        upgrade: true,
       });
 
       // console.log('initializing socket', this.socket);
