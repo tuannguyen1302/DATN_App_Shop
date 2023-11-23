@@ -20,6 +20,8 @@ export default {
   INVENTORY: 'InventoryScreen',
   NGANH_SP: 'Nganhsp',
   PHAN_LOAI_SP: 'Phanloaisp',
+  DISCOUNT: 'Discount',
+  DISCOUNT_ADD: 'AddDiscount',
 
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',

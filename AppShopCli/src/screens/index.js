@@ -23,3 +23,5 @@ export {default as ShopUpdate} from './HomeClass/OrderClass/ShopUpdate';
 export {default as PromotionScreen} from './HomeClass/OrderClass/PromotionScreen';
 export {default as StatisticalScreen} from './HomeClass/OrderClass/StatisticalScreen';
 export {default as InventoryScreen} from './HomeClass/OrderClass/InventoryScreen';
+export {default as Discountscreens} from './HomeClass/discountclass/Discountscreens';
+export {default as AddDiscount} from './HomeClass/discountclass/AddDiscount';
