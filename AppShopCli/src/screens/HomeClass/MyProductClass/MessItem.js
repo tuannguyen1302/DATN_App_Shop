@@ -6,19 +6,24 @@ import {
   TextInput,
   View,
   SafeAreaView,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import socketServices from '../../../utils/socketService';
-import {Pressable} from 'react-native';
-import {apiGet, getItem} from '../../../utils/utilus';
-import {CHAT_API} from '../../../config/urls';
+import {apiGet, getItem} from '../../../utils/utils';
+import {API_BASE_URL, CHAT_API} from '../../../config/urls';
 
-const MessageItem = ({route}) => {
+const MessageItem = ({navigation, route}) => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
-  const {_id} = route.params;
+  const {_id, name, avatar} = route.params;
 
   const getApi = useCallback(async () => {
     try {
@@ -31,7 +36,6 @@ const MessageItem = ({route}) => {
     }
   }, [_id]);
 
-  // Hàm gửi tin nhắn
   const senMessage = () => {
     if (!!message) {
       setMessage('');
@@ -94,7 +98,24 @@ const MessageItem = ({route}) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : null}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={30} color={'black'} />
+        </TouchableOpacity>
+        <View style={styles.userInfo}>
+          <Image
+            source={{uri: `${API_BASE_URL}${avatar}`}}
+            style={styles.userAvatar}
+          />
+          <Text style={styles.userName}>{name}</Text>
+        </View>
+        <TouchableOpacity onPress={() => {}}>
+          <AntDesign name="questioncircleo" size={30} color={'black'} />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={data}
         keyExtractor={item => item?._id}
@@ -109,26 +130,49 @@ const MessageItem = ({route}) => {
             value={message}
             onChangeText={setMessage}
             placeholder="Nhắn tin..."
-            style={{width: '80%', fontSize: 16}}
+            style={styles.inputText}
           />
           <Feather name="camera" size={25} color="#333" />
         </View>
-
         <Pressable
           onPress={senMessage}
           style={[styles.sendButton, !message && {backgroundColor: 'gray'}]}>
           <MaterialIcons name="send" size={25} color={'white'} />
         </Pressable>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
-// Style của component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  header: {
+    height: 65,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: '3%',
+    justifyContent: 'space-between',
+    borderColor: '#D9D9D9',
+    borderBottomWidth: 2,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    right: '15%',
+  },
+  userAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'black',
   },
   messageContainer: {
     flexDirection: 'row',
@@ -186,6 +230,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 10,
   },
+  inputText: {
+    width: '80%',
+    fontSize: 16,
+  },
   sendButton: {
     width: 55,
     height: 55,
@@ -196,5 +244,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// Xuất component để sử dụng
 export default MessageItem;

@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useFocusEffect} from '@react-navigation/native';
-import imagePath from '../../../constatns/imagePath';
-import {apiGet, apiPatch} from '../../../utils/utilus';
+import imagePath from '../../../constants/imagePath';
+import {apiGet, apiPatch} from '../../../utils/utils';
 import {API_BASE_URL, ORDER_API} from '../../../config/urls';
 
 const Tab = createMaterialTopTabNavigator();
@@ -25,13 +25,16 @@ const STATUS_TRANSLATIONS = {
 
 const tabNavigatorOptions = route => ({
   tabBarStyle: {
-    backgroundColor: 'white',
+    borderColor: 'gray',
+    borderWidth: 0.5,
     borderRadius: 10,
     marginHorizontal: '2%',
-    marginTop: '14%',
+    marginTop: '13%',
   },
   tabBarLabel: ({focused}) => (
-    <Text style={{color: focused ? 'black' : 'grey'}}>{route.name}</Text>
+    <Text style={{color: focused ? 'black' : 'grey', fontWeight: '500'}}>
+      {route.name}
+    </Text>
   ),
 });
 
@@ -204,12 +207,14 @@ const renderItem = (orderItem, navigation) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   itemContainer: {
+    elevation: 3,
     height: 120,
-    marginTop: '2%',
     padding: '2%',
     marginHorizontal: '2%',
+    marginVertical: '2%',
     borderRadius: 20,
     alignItems: 'center',
     flexDirection: 'row',
@@ -230,7 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 19,
     margin: '2%',
     color: 'black',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   colorInfo: {
     flexDirection: 'row',
@@ -240,7 +245,7 @@ const styles = StyleSheet.create({
     margin: '2%',
     color: 'black',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   underline: {
     textDecorationLine: 'underline',

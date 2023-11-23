@@ -15,8 +15,8 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {CheckBox} from 'react-native-elements';
 import {SIGNIN_API} from '../../config/urls';
-import imagePath from '../../constatns/imagePath';
-import {apiPost, setItem} from '../../utils/utilus';
+import imagePath from '../../constants/imagePath';
+import {apiPost, setItem} from '../../utils/utils';
 
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
@@ -51,7 +51,6 @@ const Login2 = ({navigation}) => {
           password: password,
           role: 'Shop',
         });
-
         setItem('LoginUser', res.message);
         console.log('Đăng nhập thành công');
         navigation.replace('BottomTab');

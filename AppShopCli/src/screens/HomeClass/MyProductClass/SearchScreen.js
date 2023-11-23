@@ -10,19 +10,17 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {useFocusEffect} from '@react-navigation/native';
 import fuzzy from 'fuzzy';
 import {renderProductItem} from './ProductScreen';
-import imagePath from '../../../constatns/imagePath';
-import {apiGet, getItem, setItem} from '../../../utils/utilus';
+import imagePath from '../../../constants/imagePath';
+import {apiGet, getItem, setItem} from '../../../utils/utils';
 import {PRODUCT_API} from '../../../config/urls';
 
 const SearchScreen = ({navigation}) => {
-  const [isSearching, setIsSearching] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
@@ -93,12 +91,12 @@ const SearchScreen = ({navigation}) => {
       onPress={() => saveSearchToHistory(item?.id ? item.name : item)}
       style={styles.searchItem}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <FontAwesome5 name={item?.id ? 'history' : 'search'} size={20} />
+        <FontAwesome5 name={item?.id ? 'history' : 'search'} size={23} />
         <Text style={styles.searchText}>{item?.id ? item.name : item}</Text>
       </View>
       {item?.id && (
         <TouchableOpacity onPress={() => deleteSearchItem(item.id)}>
-          <Feather name="x-circle" size={20} color="black" />
+          <Feather name="x-circle" size={22} color="black" />
         </TouchableOpacity>
       )}
     </Pressable>
@@ -137,16 +135,25 @@ const SearchScreen = ({navigation}) => {
         );
       } else {
         return (
-          <FlatList
-            data={searchHistory}
-            renderItem={renderSearchItem}
-            keyExtractor={item => item.id}
-            showsVerticalScrollIndicator={false}
-          />
+          <View>
+            {searchHistory.length ? (
+              <FlatList
+                data={searchHistory}
+                renderItem={renderSearchItem}
+                keyExtractor={item => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : (
+              <View style={styles.imageContainer}>
+                <Image style={styles.productImage} source={imagePath.search} />
+                <Text style={styles.imageText}>Tìm kiếm trong cửa hàng</Text>
+              </View>
+            )}
+          </View>
         );
       }
     } else {
-      if (productList.length === 0) {
+      if (productList.length < 1) {
         return (
           <View style={styles.imageContainer}>
             <Image style={styles.productImage} source={imagePath.noProduct} />
@@ -170,62 +177,42 @@ const SearchScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {isSearching ? (
-        <View style={{flex: 1}}>
-          <View style={styles.searchHeader}>
-            <View style={styles.searchBox}>
-              <Pressable>
-                <Ionicons name="search" size={24} color="black" />
-              </Pressable>
-              <TextInput
-                style={styles.searchInput}
-                defaultValue={searchText}
-                placeholder="Nhập tìm kiếm"
-                returnKeyType="search"
-                onFocus={() => setIsCheck(false)}
-                onSubmitEditing={() => saveSearchToHistory(searchText)}
-                onChangeText={setSearchText}
-              />
-              {searchText && (
-                <TouchableOpacity
-                  style={styles.clearSearchButton}
-                  onPress={() => setSearchText('')}>
-                  <Feather name="x-circle" size={24} color="black" />
-                </TouchableOpacity>
-              )}
-            </View>
-            <Pressable onPress={() => navigation.goBack()}>
-              <Text style={styles.cancelText}>Cancel</Text>
+      <View style={{flex: 1}}>
+        <View style={styles.searchHeader}>
+          <View style={styles.searchBox}>
+            <Pressable>
+              <Ionicons name="search" size={24} color="black" />
             </Pressable>
+            <TextInput
+              style={styles.searchInput}
+              defaultValue={searchText}
+              placeholder="Nhập tìm kiếm"
+              returnKeyType="search"
+              onFocus={() => setIsCheck(false)}
+              onSubmitEditing={() => saveSearchToHistory(searchText)}
+              onChangeText={setSearchText}
+            />
+            {searchText && (
+              <TouchableOpacity
+                style={styles.clearSearchButton}
+                onPress={() => setSearchText('')}>
+                <Feather name="x-circle" size={24} color="black" />
+              </TouchableOpacity>
+            )}
           </View>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </Pressable>
+        </View>
 
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="gray" />
-            </View>
-          ) : (
-            renderSearchList()
-          )}
-        </View>
-      ) : (
-        <View style={{flex: 1}}>
-          <View style={[styles.header, styles.searchHeaderButton]}>
-            <Pressable onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={30} color={'black'} />
-            </Pressable>
-            <Pressable
-              style={styles.searchHeaderView}
-              onPress={() => setIsSearching(true)}>
-              <AntDesign name="search1" size={30} />
-              <Text style={styles.searchPlaceholder}>Tìm kiếm</Text>
-            </Pressable>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="gray" />
           </View>
-          <View style={styles.imageContainer}>
-            <Image style={styles.productImage} source={imagePath.search} />
-            <Text style={styles.imageText}>Tìm kiếm trong cửa hàng</Text>
-          </View>
-        </View>
-      )}
+        ) : (
+          renderSearchList()
+        )}
+      </View>
     </View>
   );
 };
@@ -233,26 +220,25 @@ const SearchScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  searchHeaderButton: {
-    height: 50,
-    marginHorizontal: '5%',
-    borderRadius: 10,
   },
   searchHeaderView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: '5%',
-    width: '80%',
+    alignSelf: 'center',
+    width: '85%',
+    marginVertical: '2%',
+    height: 45,
+    padding: 5,
+    backgroundColor: '#DDDDDD',
+    borderRadius: 10,
   },
   searchPlaceholder: {
     marginLeft: '5%',
-    color: '#BBBBBB',
+    fontSize: 15,
+    color: 'gray',
   },
   imageContainer: {
     marginTop: '10%',
@@ -263,7 +249,9 @@ const styles = StyleSheet.create({
     height: 55,
     flexDirection: 'row',
     padding: '2%',
+    borderColor: '#D9D9D9',
     alignItems: 'center',
+    borderBottomWidth: 1,
     backgroundColor: 'white',
   },
   searchBox: {
@@ -308,10 +296,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     justifyContent: 'space-between',
-    padding: '1%',
+    padding: '2%',
   },
   searchText: {
-    marginLeft: '2%',
+    left: '20%',
+    fontSize: 15,
     color: 'black',
     fontWeight: '500',
   },

@@ -12,7 +12,6 @@ export async function apiReq(
     const token = await getItem('LoginUser');
 
     headers = {
-      'Content-Type': 'multipart/form-data',
       'x-xclient-id': token?.userId,
       authorization: token?.accessToken,
       ...headers,

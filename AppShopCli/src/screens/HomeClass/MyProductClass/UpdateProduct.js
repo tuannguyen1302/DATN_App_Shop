@@ -17,7 +17,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
-import {apiPut} from '../../../utils/utilus';
+import {apiGet, apiPut} from '../../../utils/utils';
 
 const UpdateProduct = ({navigation, route}) => {
   const {item} = route.params;
@@ -133,7 +133,9 @@ const UpdateProduct = ({navigation, route}) => {
         formData.append('thumbs', {uri: localUri, name: filename, type});
       });
 
-      await apiPut(`${PRODUCT_API}/editProduct/${item?._id}`, formData);
+      await apiPut(`${PRODUCT_API}/editProduct/${item?._id}`, formData, {
+        'Content-Type': 'multipart/form-data',
+      });
       navigation.goBack();
     } catch (error) {
       console.log('Post api: ', error.message);

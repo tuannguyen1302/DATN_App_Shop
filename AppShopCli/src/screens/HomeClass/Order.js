@@ -11,8 +11,8 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import imagePath from '../../constatns/imagePath';
-import {clearAllItem} from '../../utils/utilus';
+import imagePath from '../../constants/imagePath';
+import {clearAllItem} from '../../utils/utils';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,98 +23,103 @@ const Order = ({navigation}) => {
     navigation.replace('Login2');
   };
 
-  const renderButton = (iconName, text, onPress) => (
-    <Pressable style={styles.buttonView} onPress={onPress}>
-      <View style={styles.rowButton}>
-        <View style={styles.iconTextContainer}>
-          {iconName()}
-          <Text style={styles.text}>{text}</Text>
-        </View>
-        <AntDesign name="right" color={'#19B9EC'} size={windowWidth * 0.03} />
-      </View>
-    </Pressable>
-  );
-
   return (
     <ScrollView style={styles.container}>
-      <Image style={styles.image} source={imagePath.box} />
-      <View style={styles.horizontalLine} />
+      <View style={styles.horizontalLine}>
+        <Image style={styles.image} source={imagePath.box} />
+      </View>
       <View style={styles.content}>
         <Text style={styles.headerText}>Quản lý</Text>
-        <View style={styles.categoryContainer}>
-          {renderButton(
-            () => (
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('OrderScreen')}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
               <AntDesign
                 name="profile"
                 size={windowWidth * 0.08}
                 color={'#333333'}
               />
-            ),
-            'Đơn hàng',
-            () => navigation.navigate('OrderScreen'),
-          )}
-          {renderButton(
-            () => (
+              <Text style={styles.text}>Đơn hàng</Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('ShopScreen')}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
               <Entypo name="shop" size={windowWidth * 0.08} color={'#333333'} />
-            ),
-            'Cửa hàng',
-            () => navigation.navigate('ShopScreen'),
-          )}
-          {renderButton(
-            () => (
+              <Text style={styles.text}>Cửa hàng</Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('PromotionScreen')}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
               <AntDesign
                 name="gift"
                 size={windowWidth * 0.08}
                 color={'#333333'}
               />
-            ),
-            'Ưu đãi',
-            () => navigation.navigate('PromotionScreen'),
-          )}
-        </View>
+              <Text style={styles.text}>Ưu đãi</Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
         <Text style={[styles.headerText, {marginTop: windowHeight * 0.02}]}>
           Thông tin
         </Text>
-        <View style={styles.categoryContainer}>
-          {renderButton(
-            () => (
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('StatisticalScreen')}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
               <AntDesign
                 name="barchart"
                 size={windowWidth * 0.08}
                 color={'#333333'}
               />
-            ),
-            'Thống kê',
-            () => navigation.navigate('StatisticalScreen'),
-          )}
-          {renderButton(
-            () => (
+              <Text style={styles.text}>Thống kê</Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
+        <Pressable
+          style={styles.buttonView}
+          onPress={() => navigation.navigate('InventoryScreen')}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
               <MaterialIcons
                 name="warehouse"
                 size={windowWidth * 0.08}
                 color={'#333333'}
               />
-            ),
-            'Tồn kho',
-            () => navigation.navigate('InventoryScreen'),
-          )}
-        </View>
+              <Text style={styles.text}>Tồn kho</Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
         <Text style={[styles.headerText, {marginTop: windowHeight * 0.02}]}>
           Khác
         </Text>
-        <View style={styles.categoryContainer}>
-          {renderButton(
-            () => (
+        <Pressable style={styles.buttonView} onPress={logout}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
               <MaterialIcons
                 name="logout"
                 size={windowWidth * 0.08}
                 color={'#333333'}
               />
-            ),
-            'Đăng xuất',
-            logout,
-          )}
-        </View>
+              <Text style={styles.text}>Đăng xuất</Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -126,17 +131,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: windowWidth * 0.9,
+    width: windowWidth * 1,
     height: windowHeight * 0.2,
     alignSelf: 'center',
     resizeMode: 'contain',
   },
   horizontalLine: {
-    width: windowWidth * 0.75,
-    alignSelf: 'center',
-    borderColor: '#999999',
+    borderColor: '#999',
     borderBottomWidth: 1,
-    marginTop: windowHeight * 0.01,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomLeftRadius: 80,
+    borderBottomRightRadius: 80,
   },
   content: {
     marginVertical: windowHeight * 0.01,
@@ -148,16 +154,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   buttonView: {
-    height: windowHeight * 0.05,
+    marginTop: windowHeight * 0.02,
+    height: windowHeight * 0.06,
     borderRadius: 10,
-    borderColor: '#999999',
+    borderWidth: 0.5,
+    elevation: 5,
+    borderColor: 'gray',
     justifyContent: 'center',
-    marginHorizontal: windowHeight * 0.01,
-    marginVertical: windowHeight * 0.01,
+    backgroundColor: 'white',
   },
   rowButton: {
     alignItems: 'center',
     flexDirection: 'row',
+    marginHorizontal: windowWidth * 0.04,
     justifyContent: 'space-between',
   },
   iconTextContainer: {
@@ -169,12 +178,6 @@ const styles = StyleSheet.create({
     left: '30%',
     fontSize: windowWidth * 0.04,
     color: 'black',
-  },
-  categoryContainer: {
-    marginTop: windowHeight * 0.01,
-    borderRadius: 10,
-    justifyContent: 'center',
-    backgroundColor: '#F1F0F0',
   },
 });
 

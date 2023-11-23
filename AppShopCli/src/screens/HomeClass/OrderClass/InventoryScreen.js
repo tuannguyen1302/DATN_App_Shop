@@ -61,8 +61,8 @@ const InventoryScreen = () => {
           />
         </View>
         <View style={styles.rowContainer}>
-          <ValueDetails label="Value" value="1.000.000" />
-          <ValueDetails label="Quantity" value="10" />
+          <ValueDetails label="Giá trị" value="1.000.000" />
+          <ValueDetails label="Số lượng" value="10" />
         </View>
       </View>
     </View>
@@ -124,8 +124,7 @@ const InventoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '10%',
-    backgroundColor: '#F6F6F6',
+    backgroundColor: 'white',
   },
   inventoryContainer: {
     flexDirection: 'row',
@@ -133,8 +132,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: '2%',
     marginHorizontal: '4%',
-    marginTop: '5%',
-    elevation: 2,
+    marginTop: '14%',
+    elevation: 5,
     marginBottom: '2%',
   },
   inventoryImage: {
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
     marginHorizontal: '4%',
     padding: '2%',
     borderRadius: 10,
-    elevation: 2,
+    elevation: 5,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',

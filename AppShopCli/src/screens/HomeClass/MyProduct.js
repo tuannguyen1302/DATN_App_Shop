@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from './MyProductClass/ProductScreen';
@@ -28,9 +21,8 @@ const MyProduct = ({navigation}) => {
           source={{uri: account.avatar}}
         />
         <View style={styles.headerTextContainer}>
-          <Text style={styles.name} selectable>
-            {account.name}
-          </Text>
+          {/* selectable */}
+          <Text style={styles.name}>{account.name}</Text>
           <Text style={styles.shopName}>{account.nameShop}</Text>
         </View>
         <View style={styles.headerIconsContainer}>
@@ -39,25 +31,24 @@ const MyProduct = ({navigation}) => {
             <Ionicons
               name="chatbubble-ellipses-outline"
               size={30}
-              color={'#333333'}
+              color={'#333'}
             />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Ionicons name="notifications-outline" size={30} color="#333333" />
+            <Ionicons name="notifications-outline" size={30} color="#333" />
           </TouchableOpacity>
         </View>
       </View>
 
       <ProductScreen navigation={navigation} />
 
-      <Pressable
+      <TouchableOpacity
         style={styles.btnAdd}
         onPress={() => {
           navigation.navigate('AddProduct');
         }}>
         <Feather name="plus-square" size={25} color={'white'} />
-        {/* <Text style={styles.txtAdd}>Thêm sản phẩm mới</Text> */}
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -97,23 +88,23 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#333333',
+    color: '#333',
   },
   shopName: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#757575',
+    color: '#333',
   },
   btnAdd: {
     position: 'absolute',
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
     bottom: '4%',
     right: '8%',
-    backgroundColor: '#19B9EC',
+    backgroundColor: '#222',
   },
   txtAdd: {
     marginLeft: 10,

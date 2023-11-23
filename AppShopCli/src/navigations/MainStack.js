@@ -1,5 +1,5 @@
 import React from 'react';
-import navigationStrings from '../constatns/navigationStrings';
+import navigationStrings from '../constants/navigationStrings';
 import TabRoutes from './TabRoutes';
 import * as Screens from '../screens';
 
@@ -35,10 +35,6 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}
         component={Screens.MessItem}
-        options={({route}) => ({
-          title: route.params.name,
-          headerShown: true,
-        })}
       />
       <Stack.Screen
         name={navigationStrings.SEARCH}
@@ -72,6 +68,10 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.SHOP}
         component={Screens.ShopScreen}
+      />
+      <Stack.Screen
+        name={navigationStrings.SHOP_UPDATE}
+        component={Screens.ShopUpdate}
       />
       <Stack.Screen
         name={navigationStrings.PROMOTION}

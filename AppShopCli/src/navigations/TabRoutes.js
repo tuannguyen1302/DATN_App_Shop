@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import navigationStrings from '../constatns/navigationStrings';
+import navigationStrings from '../constants/navigationStrings';
 import * as Screens from '../screens';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -12,9 +12,9 @@ export default function TabRoutes() {
       initialRouteName={navigationStrings.MY_PRODUCT}
       screenOptions={{
         tabBarShowLabel: false,
-        tabBarStyle: {height: 60},
+        tabBarStyle: {height: 60, borderTopWidth: 1},
         headerShown: false,
-        tabBarActiveTintColor: '#000000',
+        tabBarActiveTintColor: '#000',
       }}>
       <Tab.Screen
         name={navigationStrings.MY_PRODUCT}
@@ -31,7 +31,6 @@ export default function TabRoutes() {
 }
 
 const tabOptions = (iconNameFocused, iconNameUnfocused) => ({
-  tabBarActiveTintColor: '#19B9EC',
   tabBarIcon: ({focused, size, color}) => (
     <FontAwesome5
       name={focused ? iconNameFocused : iconNameUnfocused}

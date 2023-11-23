@@ -5,7 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {ListItem, Avatar} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
 import {API_BASE_URL, CHAT_API} from '../../../config/urls';
-import {apiGet} from '../../../utils/utilus';
+import {apiGet} from '../../../utils/utils';
 
 const MessageScreen = ({navigation}) => {
   const [data, setData] = useState([]);
@@ -71,6 +71,7 @@ const MessageScreen = ({navigation}) => {
               navigation.navigate('MessItem', {
                 _id: item?.chat?._id,
                 name: item?.user?.user_name,
+                avatar: item?.user?.user_avatar,
               });
             }}
             containerStyle={{marginBottom: 1}}

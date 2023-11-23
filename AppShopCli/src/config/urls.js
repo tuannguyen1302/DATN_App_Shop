@@ -1,5 +1,4 @@
-export const API_BASE_URL =
-  'https://serverapiecommercefashion-v0zj.onrender.com/';
+export const API_BASE_URL = 'https://ef22-116-96-44-199.ngrok-free.app/';
 
 export const getApiUrl = endpoint => API_BASE_URL + endpoint;
 

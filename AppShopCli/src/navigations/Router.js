@@ -13,7 +13,7 @@ function Routes() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <>{MainStack(Stack)}</>
+        {MainStack(Stack)}
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -14,6 +14,7 @@ export default {
   ORDER_SCREEN: 'OrderScreen',
   ORDER_HISTORY: 'OrderHistory',
   SHOP: 'ShopScreen',
+  SHOP_UPDATE: 'ShopUpdate',
   PROMOTION: 'PromotionScreen',
   STATIS: 'StatisticalScreen',
   INVENTORY: 'InventoryScreen',

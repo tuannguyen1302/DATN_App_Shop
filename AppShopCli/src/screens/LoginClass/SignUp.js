@@ -13,10 +13,9 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import {SIGNUP_API} from '../../config/urls';
-import imagePath from '../../constatns/imagePath';
-import {apiPost} from '../../utils/utilus';
+import imagePath from '../../constants/imagePath';
+import {apiPost} from '../../utils/utils';
 
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);

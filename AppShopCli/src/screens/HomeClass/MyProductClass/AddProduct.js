@@ -18,7 +18,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import {PRODUCT_API} from '../../../config/urls';
-import {apiPost} from '../../../utils/utilus';
+import {apiPost} from '../../../utils/utils';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -130,7 +130,9 @@ const AddProduct = () => {
         });
       });
 
-      await apiPost(`${PRODUCT_API}/createProduct`, formData);
+      await apiPost(`${PRODUCT_API}/createProduct`, formData, {
+        'Content-Type': 'multipart/form-data',
+      });
       navigation.goBack();
     } catch (error) {
       console.log('Post api: ', error.message);

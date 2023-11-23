@@ -19,6 +19,7 @@ export {default as UpdateProduct} from './HomeClass/MyProductClass/UpdateProduct
 export {default as OrderScreen} from './HomeClass/OrderClass/OrderScreen';
 export {default as OrderHistory} from './HomeClass/OrderClass/OrderHistory';
 export {default as ShopScreen} from './HomeClass/OrderClass/ShopScreen';
+export {default as ShopUpdate} from './HomeClass/OrderClass/ShopUpdate';
 export {default as PromotionScreen} from './HomeClass/OrderClass/PromotionScreen';
 export {default as StatisticalScreen} from './HomeClass/OrderClass/StatisticalScreen';
 export {default as InventoryScreen} from './HomeClass/OrderClass/InventoryScreen';

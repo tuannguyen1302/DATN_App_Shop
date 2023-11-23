@@ -16,8 +16,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import imagePath from '../../../constatns/imagePath';
-import {apiGet, apiPut} from '../../../utils/utilus';
+import imagePath from '../../../constants/imagePath';
+import {apiGet, apiPut} from '../../../utils/utils';
 import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
 
 const TAB_ITEMS = [
@@ -135,12 +135,13 @@ const ProductScreen = ({navigation}) => {
     }
   };
 
-  const sortProducts = () => {
+  const sortProducts = sort => {
+    setSortOrder(sort);
     if (productList.length > 0) {
       const sortedProducts = [...productList].sort((a, b) => {
         const priceA = a.product_price;
         const priceB = b.product_price;
-        return sortOrder === '+' ? priceB - priceA : priceA - priceB;
+        return sort === '+' ? priceA - priceB : priceB - priceA;
       });
       setProductList(sortedProducts);
     }
@@ -175,13 +176,13 @@ const ProductScreen = ({navigation}) => {
           <AntDesign name="bars" size={24} color={'black'} />
           <Picker
             selectedValue={sortOrder}
-            style={{width: '59%', color: 'green'}}
+            style={{width: '58%', height: 40, color: 'green'}}
             onValueChange={itemValue => {
-              setSortOrder(itemValue), sortProducts();
+              sortProducts(itemValue);
             }}>
-            <Picker.Item enabled={false} label="Sắp xếp" />
-            <Picker.Item label="Tăng dần ➕" value="+" />
-            <Picker.Item label="Giảm dần ➖" value="-" />
+            <Picker.Item label="Sắp xếp" value="" />
+            <Picker.Item label="Tăng dần" value="+" />
+            <Picker.Item label="Giảm dần" value="-" />
           </Picker>
         </Pressable>
         <Pressable onPress={() => navigation.navigate('SearchScreen')}>
@@ -241,11 +242,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 5,
     backgroundColor: 'white',
+    borderWidth: 0.5,
     justifyContent: 'center',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   selectedTab: {
+    height: 45,
     borderBottomWidth: 3,
     borderBottomColor: '#536EFF',
   },
@@ -265,7 +268,9 @@ const styles = StyleSheet.create({
     margin: '2%',
     height: 185,
     borderRadius: 10,
-    elevation: 10,
+    borderWidth: 0.3,
+    borderColor: 'gray',
+    elevation: 7,
     backgroundColor: 'white',
     padding: '4%',
   },
@@ -309,7 +314,7 @@ const styles = StyleSheet.create({
   actionButton: {
     width: '40%',
     height: 25,
-    borderColor: 'black',
+    borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 10,
     justifyContent: 'center',

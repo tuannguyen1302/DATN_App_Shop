@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import imagePath from '../../constatns/imagePath';
+import imagePath from '../../constants/imagePath';
 import {height, width} from '../../styles/responsiveSize';
 import fontFamily from '../../styles/fontFamily';
 

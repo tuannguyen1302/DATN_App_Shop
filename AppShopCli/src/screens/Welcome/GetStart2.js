@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import commonStyles from './styles';
-import imagePath from '../../constatns/imagePath';
+import imagePath from '../../constants/imagePath';
 
 const GetStart2 = () => {
   const navigation = useNavigation();
