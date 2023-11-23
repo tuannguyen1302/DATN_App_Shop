@@ -36,7 +36,7 @@ const AddProduct = () => {
       'Content-Type': 'multipart/form-data',
       'x-xclient-id': '654c895786644a5c7ac507df',
       ahthorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjODk1Nzg2NjQ0YTVjN2FjNTA3ZGYiLCJlbWFpbCI6Inh1YW5kdWFuMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJFBBRVFHUU9qdjBSbmZYRlMyVHZpa2VDMy5OWXgzZ0FrdXJpR3Vzb0ZGVzVjQ0dHelA5aHd5IiwiaWF0IjoxNjk5OTY0MjY3LCJleHAiOjE3MDA4MjgyNjd9.ZKxsuIMf2uBt0vBPt4pkDgWuEEsF3GG91dRMb6DHkwE',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTRjOGEwODFmMTA1NDA2OTJiZGM5OTgiLCJlbWFpbCI6ImR1YzEyM0BnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRWR1l3dWY4Z0czSnVvR0FSM1hDSXd1UC9iR0lYSzdGbGJRU1RvNXVFZGdYS1ZWUTNpQlVJYSIsImlhdCI6MTcwMDc0NzcyMywiZXhwIjoxNzAxNjExNzIzfQ.e6b2XU7X14vXAilxpFXjwms7kqRcbOI_dQ1UKRS6IRg',
     },
   });
 
@@ -452,8 +452,6 @@ const styles = StyleSheet.create({
   },
   priceAndInventoryInput: {
     fontSize: 15,
-
-
   },
   footer: {
     backgroundColor: '#ffffff',

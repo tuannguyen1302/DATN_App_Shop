@@ -18,6 +18,7 @@ const PhanLoaiSP = ({ navigation }) => {
 
     const [SelectedMau, setSelectedMau] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
+    const [mangtoanbo, setmangtoanbo] = useState([]);
 
     const toggleDialog = () => {
         setDialogVisible(!isDialogVisible);
@@ -48,7 +49,7 @@ const PhanLoaiSP = ({ navigation }) => {
     const handleAdd1 = () => {
         if (inputValue.trim() !== '') {
             setData1(prevData1 => [{ id: Date.now().toString(), text: inputValue }, ...prevData1]);
-            setSelectedItems(prevSelectedItems => [...prevSelectedItems, { id: Date.now().toString(), text: inputValue }]);
+            setSelectedItems1(prevSelectedItems => [...prevSelectedItems, { id: Date.now().toString(), text: inputValue }]);
         }
         toggleDialog();
         setInputValue('');
@@ -92,8 +93,8 @@ const PhanLoaiSP = ({ navigation }) => {
             { cancelable: true },
         );
     };
-    //const [selectedSizes, setSelectedSizes] = useState([]);
-    const handleSelectItem = useCallback((id) => {
+
+    const handleSelectItem = (id) => {
         setSelectedItems((prevSelectedItems) => {
             const newItem = data.find((item) => item.id === id);
             // console.log(newItem + "sdasdfsd");
@@ -114,8 +115,8 @@ const PhanLoaiSP = ({ navigation }) => {
                 return prevSelectedItems;
             }
         });
-    }, [SelectedMau]);
-    console.log(SelectedMau + " 2222222222222222222222222222222222222222222222");
+    };
+
     const handleSelectItem1 = (id) => {
         setSelectedItems1((prevSelectedItems) => {
             const newItem1 = data1.find((item) => item.id === id);
@@ -145,7 +146,55 @@ const PhanLoaiSP = ({ navigation }) => {
             ? [{ id: 'button', isButton: true }, ...data1]
             : data1;
 
+    // const luu = () => {
+    //    const phanLoaiData = {
+    //     color: SelectedMau,
+    //     size: selectedSizes.map((size) => {
+    //         return {
+    //             kieusize: size,
+    //             soluong: 0, // Bạn có thể thiết lập giá trị mặc định cho số lượng
+    //         };
+    //     }),
+    // };
 
+    // // In ra đối tượng dữ liệu để kiểm tra
+    // console.log(phanLoaiData);
+    // }
+    const luu = () => {
+        // Tạo một mảng đối tượng chứa tất cả thông tin
+        const phanLoaiData = SelectedMau.map((mau) => {
+            return {
+                color: mau,
+                size: selectedSizes.map((size) => {
+                    return {
+                        kieusize: size.text,
+                        soluong: 0,
+                    };
+                }),
+            };
+        });
+
+        // In ra mảng đối tượng dữ liệu để kiểm tra
+        console.log(phanLoaiData);
+
+        // Chuyển đổi mảng dữ liệu thành dạng mảng mà bạn mong muốn
+        const formattedData = phanLoaiData.map(({ color, size }) => ({
+            color,
+            size: size.map(({ kieusize, soluong }) => ({
+                kieusize,
+                soluong,
+            })),
+        }));
+
+        // In ra mảng đã được định dạng lại để kiểm tra
+        console.log(formattedData);
+
+        // Nếu bạn muốn lưu dữ liệu này hoặc gửi nó đến server, thực hiện hành động tương ứng ở đây
+        // Ví dụ: lưu vào state hoặc gửi lên server thông qua API
+        // setState({ formattedData });
+        // hoặc
+        // api.post('/luu-dulieu', formattedData);
+    };
 
     return (
         <View style={styles.container}>
@@ -163,9 +212,7 @@ const PhanLoaiSP = ({ navigation }) => {
                 <View style={styles.view}>
                     <View style={styles.view1} >
                         <Text style={{ fontSize: 20, color: '#000000' }}> Màu sắc </Text>
-                        <Pressable >
-                            <Text style={{ fontSize: 20, color: '#FF0000' }}> Sửa </Text>
-                        </Pressable>
+
                     </View>
                     <View style={styles.horizontalLine1} />
                     <View style={{
@@ -226,9 +273,7 @@ const PhanLoaiSP = ({ navigation }) => {
                 <View style={styles.view}>
                     <View style={styles.view1} >
                         <Text style={{ fontSize: 20, color: '#000000' }}> Size </Text>
-                        <Pressable >
-                            <Text style={{ fontSize: 20, color: '#FF0000' }}> Sửa </Text>
-                        </Pressable>
+
                     </View>
                     <View style={styles.horizontalLine1} />
                     <View style={{
@@ -323,32 +368,46 @@ const PhanLoaiSP = ({ navigation }) => {
                     <Text style={{ fontSize: 20, padding: 5, color: 'red', }}>Thay đổi hàng loạt  </Text>
                 </View>
                 <FlatList
-                    data={data}
+                    data={SelectedMau}
                     keyExtractor={item => item.id}
                     scrollEnabled={false}
                     renderItem={({ item }) => (
                         <View style={styles.item12}>
                             <View style={styles.view3}>
                                 <Text style={{ fontSize: 20, padding: 5, color: 'black' }}> Màu Sắc :  </Text>
-                                {SelectedMau.length > 0 && (
-                                    <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>
-                                        {SelectedMau[0]}
-                                    </Text>
-                                )}
+                                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{item}</Text>
+
                             </View>
                             <View style={styles.view4}>
                                 <Text style={{ fontSize: 20, padding: 5, color: 'black' }}> Size :  </Text>
                             </View>
                             <View style={styles.view4}>
                                 {selectedSizes.map((size, index) => (
-                                    <Text key={index} style={{ fontSize: 20, padding: 5, color: 'black', borderBottomWidth: 1 }}>{size} </Text>
+                                    <>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16 }}>
+                                            <Text key={index} style={{ fontSize: 20, padding: 5, color: 'black', borderBottomWidth: 1 }}>{size} </Text>
+                                            <TextInput
+                                                style={{ textAlign: 'right' }}
+                                                maxLength={10}
+                                                keyboardType="numeric"
+                                                placeholder={'Nhap so luong hang '}
+                                            />
+                                        </View>
+                                    </>
                                 ))}
+
                             </View>
                         </View>
                     )}
                 />
 
             </ScrollView>
+            <View style={styles.footer}>
+                <TouchableOpacity style={styles.button} onPress={luu} >
+                    <Text style={styles.buttonText}>Lưu</Text>
+                </TouchableOpacity>
+
+            </View>
         </View >
     );
 };
@@ -497,5 +556,16 @@ const styles = StyleSheet.create({
     }, item12: {
         width: '100%',
 
+    }, footer: {
+        backgroundColor: '#ffffff',
+        height: 60,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        borderWidth: 1,
+        margin: 5
+    }, buttonText: {
+        fontSize: 30,
+        color: '#000000',
     },
 });
