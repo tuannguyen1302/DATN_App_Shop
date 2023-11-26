@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -10,21 +10,21 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import {Picker} from '@react-native-picker/picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import imagePath from '../../../constants/imagePath';
-import { apiGet, apiPut } from '../../../utils/utils';
-import { API_BASE_URL, PRODUCT_API } from '../../../config/urls';
+import {apiGet, apiPut} from '../../../utils/utils';
+import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
 
 const TAB_ITEMS = [
-  { status: 'All' },
-  { status: 'Còn hàng' },
-  { status: 'Hết hàng' },
-  { status: 'Bị ẩn' },
+  {status: 'All'},
+  {status: 'Còn hàng'},
+  {status: 'Hết hàng'},
+  {status: 'Bị ẩn'},
 ];
 
 export const renderProductItem = (item, navigation, toggleHideProduct) => (
@@ -32,10 +32,10 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
     <View style={styles.itemHeader}>
       <FastImage
         style={styles.productImage}
-        source={{ uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}` }}
+        source={{uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`}}
         resizeMode={FastImage.resizeMode.cover}
       />
-      <View style={{ marginLeft: '2%', flex: 1 }}>
+      <View style={{marginLeft: '2%', flex: 1}}>
         <Text style={styles.productName} numberOfLines={1}>
           {item?.product_name}
         </Text>
@@ -53,7 +53,7 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
           ) : (
             <Feather name={icon} size={15} color={'#222222'} />
           )}
-          <Text style={[styles.tabText, { left: '15%' }]}>
+          <Text style={[styles.tabText, {left: '15%'}]}>
             {index === 0 ? 'Kho hàng' : 'Đã bán'}:{' '}
             {index === 0 ? item?.product_quantity : 0}
           </Text>
@@ -64,7 +64,7 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
     <View style={styles.itemActions}>
       <Pressable
         style={styles.actionButton}
-        onPress={() => navigation.navigate('UpdateProduct', { item })}>
+        onPress={() => navigation.navigate('UpdateProduct', {item})}>
         <Text style={styles.buttonText}>Sửa</Text>
       </Pressable>
       <Pressable
@@ -76,7 +76,7 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
   </Pressable>
 );
 
-const ProductScreen = ({ navigation }) => {
+const ProductScreen = ({navigation}) => {
   const [status, setStatus] = useState('All');
   const [productList, setProductList] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState(5);
@@ -97,8 +97,9 @@ const ProductScreen = ({ navigation }) => {
       {
         text: 'Xác nhận',
         onPress: async () => {
-          const endpoint = `${PRODUCT_API}${product?.isDraft ? '/unpublishById' : '/publishById'
-            }/${product?._id}`;
+          const endpoint = `${PRODUCT_API}${
+            product?.isDraft ? '/unpublishById' : '/publishById'
+          }/${product?._id}`;
           await apiPut(endpoint);
           getTabStatus();
           ToastAndroid.show(
@@ -156,13 +157,13 @@ const ProductScreen = ({ navigation }) => {
     setVisibleProducts(prevVisibleProducts => prevVisibleProducts + 5);
   };
 
-  const renderTabItem = ({ item, index }) => (
+  const renderTabItem = ({item, index}) => (
     <Pressable
       style={[styles.tabItem, item?.status === status && styles.selectedTab]}
       onPress={() => {
         setLoading(true);
         setStatus(item?.status);
-        flatListRef.current.scrollToIndex({ index });
+        flatListRef.current.scrollToIndex({index});
       }}>
       <Text style={styles.tabText}>{item?.status}</Text>
     </Pressable>
@@ -171,11 +172,11 @@ const ProductScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.filter}>
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
           <AntDesign name="bars" size={24} color={'black'} />
           <Picker
             selectedValue={sortOrder}
-            style={{ width: '58%', height: 40, color: 'green' }}
+            style={{width: '58%', height: 40, color: 'green'}}
             onValueChange={itemValue => {
               sortProducts(itemValue);
             }}>
@@ -206,7 +207,7 @@ const ProductScreen = ({ navigation }) => {
       ) : productList.length ? (
         <FlatList
           data={productList?.slice(0, visibleProducts)}
-          renderItem={({ item }) =>
+          renderItem={({item}) =>
             renderProductItem(item, navigation, toggleHideProduct)
           }
           keyExtractor={item => item?._id}
