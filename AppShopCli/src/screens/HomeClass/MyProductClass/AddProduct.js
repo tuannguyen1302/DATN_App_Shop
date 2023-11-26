@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   FlatList,
@@ -20,6 +20,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { PRODUCT_API } from '../../../config/urls';
 import { apiPost } from '../../../utils/utils';
 
+
+
 const AddProduct = () => {
   const navigation = useNavigation();
 
@@ -29,11 +31,13 @@ const AddProduct = () => {
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
   const route = useRoute();
+
+  const { buil } = route.params || {};
   const { selectedCategory } = route.params || {};
-  const { mangtoanbo } = route.params || {};
-  // const [productInventory, setProductInventory] = useState('');
 
   const clearField = setField => setField('');
+
+
 
 
   const openCamera = async isFrontCamera => {
@@ -84,12 +88,11 @@ const AddProduct = () => {
     );
   };
   const hienthui = () => {
-    //console.log(mangtoanbo);
-    alert(mangtoanbo);
-    console.log(selectedCategory);
-  }
+    console.log(buil);
+    // console.log(selectedCategory);
+  };
   const postApi = async () => {
-    console.log("đang đăng sản phẩm ");
+    console.log('đang đăng sản phẩm ');
     try {
       if (
         !selectedImages ||
@@ -104,15 +107,13 @@ const AddProduct = () => {
         return;
       }
 
-      const productAttributes = [
-        mangtoanbo
-      ];
-      const product_attributes = JSON.parse(productAttributes);
+      const productAttributes = [buil];
+      //const product_attributes = JSON.parse(productAttributes);
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
       formData.append('product_price', productPrice);
-      formData.append('category', "65599b6f265ed146cfe0aca8");
+      formData.append('category', '65599b6f265ed146cfe0aca8');
       formData.append('product_attributes', productAttributes);
       selectedImages.forEach(image => {
         formData.append('thumbs', {
@@ -125,7 +126,7 @@ const AddProduct = () => {
       const res = await apiPost(`${PRODUCT_API}/createProduct`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + res);
+      console.log('okkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + JSON.stringify(res.message));
       navigation.goBack();
       console.log(formData);
     } catch (error) {
@@ -256,39 +257,39 @@ const AddProduct = () => {
             </View>
           ))}
         </View>
-        <Pressable onPress={() => {
-          navigation.navigate('Nganhsp');
-        }} style={styles.nganhsp}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Nganhsp');
+          }}
+          style={styles.nganhsp}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
-            Ngành sản phẩm{' '}
+            Ngành hàng sản phẩm
           </Text>
-          <AntDesign
-            name="right"
-            size={20}
-          />
+          <AntDesign name="right" size={20} />
         </Pressable>
-        <Pressable onPress={() => {
-          navigation.navigate('Phanloaisp');
-        }} style={styles.nganhsp}>
+        <Text style={{ fontSize: 18, color: 'black', padding: 5, backgroundColor: 'white', paddingLeft: 20 }}>Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}</Text>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Phanloaisp');
+          }}
+          style={styles.nganhsp}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
             Phân loại sản phẩm{' '}
           </Text>
-          <AntDesign
-            name="right"
-            size={20}
-
-          />
+          <AntDesign name="right" size={20} />
         </Pressable>
       </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={postApi}>
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={hienthui} style={[styles.button, { backgroundColor: '#000000' }]}>
+        <TouchableOpacity
+          onPress={hienthui}
+          style={[styles.button, { backgroundColor: '#000000' }]}>
           <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
   );
 };
 
