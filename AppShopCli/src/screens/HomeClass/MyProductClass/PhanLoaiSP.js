@@ -7,6 +7,8 @@ import { Modal } from 'react-native';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
+
+var arrayReq = [];
 const PhanLoaiSP = ({ navigation }) => {
     const { navigate } = useNavigation();
     const [isDialogVisible, setDialogVisible] = useState(false);
@@ -124,8 +126,9 @@ const PhanLoaiSP = ({ navigation }) => {
         console.log('=======================================');
 
         const newItemObject = { size: newItem1.size, options_quantity: newItem1.options_quantity };
+        arrayReq.push({ id: newItem1.id, size: newItem1.size, options_quantity: newItem1.options_quantity })
+        console.log(arrayReq[0].id);
         console.log('newItemObject--', newItemObject);
-
         // Thêm newItemObject vào array
         const newArray1 = [...array, newItemObject];
         setarray(newArray1);
@@ -156,14 +159,17 @@ const PhanLoaiSP = ({ navigation }) => {
         setSelectedItems1(prevSelectedItems => {
             // console.log(JSON.stringify(prevSelectedItems) + "prevSelectedItem");
             const index = prevSelectedItems.findIndex(item => item.id === id);
-            console.log(JSON.stringify(index) + "                             index");
+            const indexArr = arrayReq.findIndex(item => item.id === id);
+            if (indexArr !== -1) {
+                console.log(arrayReq);
+                arrayReq[indexArr].options_quantity = text;
+                console.log(arrayReq);
+            }
             if (index !== -1) {
                 // Nếu phần tử được tìm thấy, cập nhật options_quantity
                 const updatedItem = { ...prevSelectedItems[index], options_quantity: text };
-                console.log(updatedItem);
                 const updatedItems = [...prevSelectedItems];
                 updatedItems[index] = updatedItem;
-
                 // Cập nhật selectedSizes
                 const newSelectedSizes = updatedItems.map(item => ({ size: item.size, options_quantity: item.options_quantity }));
                 setSelectedSizes(newSelectedSizes);
@@ -406,6 +412,11 @@ const PhanLoaiSP = ({ navigation }) => {
                                     // Lấy id từ mảng SelectedMau tương ứng với chỉ số index
                                     console.log("selectedSizes:", selectedSizes);
                                     console.log(size);
+                                    console.log(arrayReq);
+                                    const indexArr = arrayReq.findIndex(item => item.size === size);
+                                    console.log(indexArr);
+                                    const id_v2 = arrayReq[indexArr].id;
+                                    console.log(`id_v2::::` + id_v2);
                                     const id = [index]?.id;
                                     if (id !== undefined) {
                                         console.log(id);
@@ -424,8 +435,8 @@ const PhanLoaiSP = ({ navigation }) => {
                                                     keyboardType="numeric"
                                                     placeholder={'Nhập số lượng hàng loạt'}
                                                     onChangeText={(text) => {
-                                                        console.log(`Item ID: ${size.id}, Text: ${text}`);
-                                                        handleQuantityChange(size.id, text);
+                                                        console.log(`Item ID: ${id_v2}, Text: ${text}`);
+                                                        handleQuantityChange(id_v2, text);
                                                     }}
                                                 />
                                             </View>
