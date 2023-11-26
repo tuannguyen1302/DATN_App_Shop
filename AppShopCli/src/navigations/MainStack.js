@@ -6,7 +6,7 @@ import * as Screens from '../screens';
 export default function (Stack) {
   return (
     <>
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationStrings.WELCOME1}
         component={Screens.GetStart}
       />
@@ -25,7 +25,7 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.SIGNUP}
         component={Screens.SignUp}
-      />
+      /> */}
       <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
         name={navigationStrings.MESSAGES}
@@ -108,8 +108,16 @@ export default function (Stack) {
         component={Screens.Discountscreens}
       />
       <Stack.Screen
+        name={navigationStrings.DISCOUNT_ITEM}
+        component={Screens.DiscountItem}
+      />
+      <Stack.Screen
         name={navigationStrings.DISCOUNT_ADD}
         component={Screens.AddDiscount}
+      />
+      <Stack.Screen
+        name={navigationStrings.DISCOUNT_UPDATE}
+        component={Screens.UpdateDiscount}
       />
     </>
   );

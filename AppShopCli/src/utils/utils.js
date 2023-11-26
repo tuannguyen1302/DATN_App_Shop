@@ -65,6 +65,10 @@ export function apiPost(endPoint, data, headers = {}) {
   return apiReq(endPoint, data, 'post', headers);
 }
 
+export function apiDelete(endPoint, data, headers = {}) {
+  return apiReq(endPoint, data, 'delete', headers);
+}
+
 export function apiPatch(endPoint, data, headers = {}) {
   return apiReq(endPoint, data, 'patch', headers);
 }

@@ -116,7 +116,6 @@ const Nganhsp = ({navigation}) => {
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        {/* Save and Display buttons */}
         <TouchableOpacity style={styles.button} onPress={handleDone}>
           <Text style={styles.buttonText}>Xong</Text>
         </TouchableOpacity>

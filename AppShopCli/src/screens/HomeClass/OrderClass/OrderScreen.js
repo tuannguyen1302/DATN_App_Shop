@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
@@ -51,11 +52,14 @@ const OrderScreen = () => {
   );
 };
 
-const fetchOrdersByStatus = async (setArray, text) => {
+const fetchOrdersByStatus = async (setArray, text, setLoading) => {
   try {
+    setLoading(true);
     const res = await apiGet(`${ORDER_API}/getAllOrderForShop/${text}`);
     setArray(res?.message?.orderRes?.user);
+    setLoading(false);
   } catch (error) {
+    setLoading(false);
     console.log('Call api: ', error.response.data);
   }
 };
@@ -66,20 +70,25 @@ const ImageComponent = ({source}) => (
 
 const OrderListScreen = ({navigation}) => {
   const [array, setArray] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      fetchOrdersByStatus(setArray, 'pending');
+      fetchOrdersByStatus(setArray, 'pending', setLoading);
     }, []),
   );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={array}
-        keyExtractor={item => item?.oderId}
-        renderItem={({item}) => renderItem(item, navigation)}
-      />
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={array}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+        />
+      )}
       <ImageComponent source={imagePath.order1} />
     </View>
   );
@@ -87,63 +96,78 @@ const OrderListScreen = ({navigation}) => {
 
 const InDeliveryScreen = ({navigation}) => {
   const [array, setArray] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      fetchOrdersByStatus(setArray, 'shipped');
+      fetchOrdersByStatus(setArray, 'shipped', setLoading);
     }, []),
   );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={array}
-        keyExtractor={item => item?.oderId}
-        renderItem={({item}) => renderItem(item, navigation)}
-      />
-      <ImageComponent source={imagePath.order2} />
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={array}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+        />
+      )}
+      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
 
 const DeliveredScreen = ({navigation}) => {
   const [array, setArray] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      fetchOrdersByStatus(setArray, 'delivered');
+      fetchOrdersByStatus(setArray, 'delivered', setLoading);
     }, []),
   );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={array}
-        keyExtractor={item => item?.oderId}
-        renderItem={({item}) => renderItem(item, navigation)}
-      />
-      <ImageComponent source={imagePath.order3} />
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={array}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+        />
+      )}
+      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
 
 const CanceledScreen = ({navigation}) => {
   const [array, setArray] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      fetchOrdersByStatus(setArray, 'cancelled');
+      fetchOrdersByStatus(setArray, 'cancelled', setLoading);
     }, []),
   );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={array}
-        keyExtractor={item => item?.oderId}
-        renderItem={({item}) => renderItem(item, navigation)}
-      />
-      <ImageComponent source={imagePath.order4} />
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={array}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+        />
+      )}
+      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
@@ -207,6 +231,7 @@ const renderItem = (orderItem, navigation) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     backgroundColor: 'white',
   },
   itemContainer: {

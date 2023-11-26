@@ -1,29 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from './MyProductClass/ProductScreen';
+import {API_BASE_URL, SHOP_API} from '../../config/urls';
+import {apiGet} from '../../utils/utils';
 
 const MyProduct = ({navigation}) => {
-  const account = {
-    id: 1,
-    name: 'Shop thời trang',
-    avatar:
-      'https://th.bing.com/th?id=ORMS.730f1690c9e478c37a9dace89225f259&pid=Wdp&w=300&h=156&qlt=90&c=1&rs=1&dpr=1&p=0',
-    nameShop: '❤️ shop yêu thích',
+  const [account, setAccount] = useState();
+
+  const getApi = async () => {
+    try {
+      const res = await apiGet(`${SHOP_API}/getShopForShop`);
+      setAccount(res?.message);
+    } catch (error) {
+      console.log('Post api: ', error.message);
+    }
   };
+
+  useEffect(() => {
+    getApi();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          style={[styles.avatarShop, styles.brightenAvatar]}
-          source={{uri: account.avatar}}
+          style={styles.avatarShop}
+          source={{uri: `${API_BASE_URL}${account?.avatarShop}`}}
         />
         <View style={styles.headerTextContainer}>
-          {/* selectable */}
-          <Text style={styles.name}>{account.name}</Text>
-          <Text style={styles.shopName}>{account.nameShop}</Text>
+          <Text style={styles.name}>{account?.nameShop}</Text>
+          <Text style={styles.shopName}>{account?.des}</Text>
         </View>
         <View style={styles.headerIconsContainer}>
           <TouchableOpacity
@@ -69,11 +77,10 @@ const styles = StyleSheet.create({
   avatarShop: {
     width: 60,
     height: 60,
-    resizeMode: 'cover',
+    borderColor: 'green',
+    borderWidth: 1,
+    resizeMode: 'contain',
     borderRadius: 30,
-  },
-  brightenAvatar: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
   },
   headerTextContainer: {
     marginLeft: 10,
