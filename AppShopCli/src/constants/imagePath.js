@@ -1,0 +1,16 @@
+export default {
+  logo1: require('../assets/images/Logo1.png'),
+  logo2: require('../assets/images/Logo2.png'),
+  icon: require('../assets/images/Icon.jpg'),
+  shop: require('../assets/images/Shop.png'),
+  facebook: require('../assets/images/facebook.png'),
+  google: require('../assets/images/google.png'),
+  noProduct: require('../assets/images/NoProduct.png'),
+  search: require('../assets/images/Search.png'),
+  box: require('../assets/images/Box.png'),
+  order1: require('../assets/images/Order1.png'),
+  order2: require('../assets/images/Order2.png'),
+  order3: require('../assets/images/Order3.png'),
+  order4: require('../assets/images/Order4.png'),
+  shopSea: require('../assets/images/ShopSea.png'),
+};
