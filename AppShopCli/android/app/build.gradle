@@ -125,3 +125,7 @@ dependencies {
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 // Khai báo hiện icon tại đây
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+
+project.ext.react = [
+    enableHermes: true,  // true là sử dụng Hermes, false là không sử dụng
+]

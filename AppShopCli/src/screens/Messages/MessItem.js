@@ -1,0 +1,105 @@
+import React, {useEffect, useState} from 'react';
+import {Text, View, Image, TouchableOpacity, Pressable} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {apiGet} from '../../utils/utils';
+import {API_BASE_URL, CHAT_API} from '../../config/urls';
+import {MessageItemStyles} from './styles';
+import {GiftedChat, Send} from 'react-native-gifted-chat';
+import socketServices from '../../utils/socketService';
+
+const MessageItem = ({navigation, route}) => {
+  const {_id, name, avatar} = route.params;
+  const [messages, setMessages] = useState([]);
+  const [shopId, setShopId] = useState();
+
+  const getApi = async () => {
+    try {
+      const res = await apiGet(`${CHAT_API}/getMessages/${_id}`);
+      const data = res?.message;
+      const formattedMessages = data?.messagers.map(message => ({
+        ...message,
+        user: {
+          _id: message?.senderId,
+          name: message?.senderId === shopId ? 'Me' : name,
+          avatar: `${API_BASE_URL}${avatar}`,
+        },
+      }));
+      setShopId(data?.shopId);
+      setMessages(formattedMessages.reverse());
+    } catch (error) {
+      console.log('API Error:', error);
+    }
+  };
+
+  const onSend = newMessages => {
+    socketServices.emit('chat message', {
+      senderId: shopId,
+      message: newMessages[0].text,
+      conversationId: _id,
+    });
+  };
+
+  useEffect(() => {
+    getApi();
+    socketServices.emit('joinRoom', _id);
+    socketServices.on('send message', msg => {
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, {
+          ...msg,
+          user: {
+            _id: msg?.senderId,
+            name: msg?.senderId === shopId ? 'Me' : name,
+            avatar: `${API_BASE_URL}${avatar}`,
+          },
+        }).reverse(),
+      );
+    });
+  }, []);
+
+  return (
+    <View style={MessageItemStyles.container}>
+      <View style={MessageItemStyles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={25} color={'black'} />
+        </TouchableOpacity>
+        <View style={MessageItemStyles.userInfo}>
+          <Image
+            source={{uri: `${API_BASE_URL}${avatar}`}}
+            style={MessageItemStyles.userAvatar}
+          />
+          <Text style={MessageItemStyles.userName}>{name}</Text>
+        </View>
+        <TouchableOpacity onPress={() => {}}>
+          <AntDesign name="questioncircleo" size={25} color={'black'} />
+        </TouchableOpacity>
+      </View>
+      <GiftedChat
+        messages={messages}
+        onSend={newMessages => onSend(newMessages)}
+        placeholder="Nhập tin nhắn..."
+        user={{
+          _id: shopId,
+        }}
+        messagesContainerStyle={{backgroundColor: '#FAF0E6'}}
+        textInputStyle={MessageItemStyles.input}
+        renderSend={props => (
+          <Send {...props} containerStyle={{justifyContent: 'center'}}>
+            <Pressable style={MessageItemStyles.sendButton}>
+              <MaterialIcons name="send" size={25} color={'white'} />
+            </Pressable>
+          </Send>
+        )}
+        isLoadingEarlier
+        renderActions={() => (
+          <TouchableOpacity style={{alignSelf: 'center', marginLeft: '3%'}}>
+            <Feather name="camera" size={25} color="#333" />
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+};
+
+export default MessageItem;
