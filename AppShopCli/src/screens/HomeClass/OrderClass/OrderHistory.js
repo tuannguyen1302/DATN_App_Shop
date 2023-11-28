@@ -7,16 +7,17 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
-import {API_BASE_URL} from '../../../config/urls';
+import {API_BASE_URL, ORDER_API} from '../../../config/urls';
+import {apiPatch} from '../../../utils/utils';
 
 const statusTranslations = {
   pending: 'Phê duyệt',
-  confirmed: 'Giao hàng',
   shipped: 'Đang vận chuyển',
   cancelled: 'Đã hủy',
   delivered: 'Đã giao hàng',
@@ -26,8 +27,24 @@ const OrderHistory = ({route}) => {
   const navigation = useNavigation();
   const {orderItem} = route.params;
 
-  const handleApproval = () => {
-    /* Xử lý khi nhấn nút Duyệt Đơn */
+  const handleApproval = async ischeck => {
+    try {
+      await apiPatch(
+        `${ORDER_API}/${
+          ischeck ? 'changeStatus' : `cancelByShop/${orderItem?.oderId}`
+        }`,
+        ischeck && {
+          order_id: orderItem?.oderId,
+          status: 'shipped',
+        },
+      );
+      navigation.navigate('OrderScreen', {
+        screen: ischeck ? 'Đang giao' : 'Đã hủy',
+      });
+      ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
+    } catch (error) {
+      console.log('Patch api: ', error.message);
+    }
   };
 
   return (
@@ -121,11 +138,20 @@ const OrderHistory = ({route}) => {
       </View>
 
       {orderItem?.status === 'pending' && (
-        <TouchableOpacity style={styles.button} onPress={handleApproval}>
-          <Text style={styles.buttonText}>
-            {statusTranslations[orderItem?.status]}
-          </Text>
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleApproval(true)}>
+            <Text style={styles.buttonText}>
+              {statusTranslations[orderItem?.status]}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, {backgroundColor: 'red'}]}
+            onPress={() => handleApproval(false)}>
+            <Text style={styles.buttonText}>Hủy</Text>
+          </TouchableOpacity>
+        </>
       )}
     </ScrollView>
   );
@@ -187,7 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    marginVertical: 20,
+    marginVertical: 10,
     backgroundColor: 'black',
   },
   buttonText: {

@@ -11,13 +11,13 @@ import {
   PermissionsAndroid,
   ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {useNavigation} from '@react-navigation/native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { useNavigation } from '@react-navigation/native';
 import imagePath from '../../../constants/imagePath';
-import {apiGet, apiPut} from '../../../utils/utils';
-import {API_BASE_URL, SHOP_API} from '../../../config/urls';
+import { apiGet, apiPut } from '../../../utils/utils';
+import { API_BASE_URL, SHOP_API } from '../../../config/urls';
 
 const ShopUpdate = () => {
   const navigation = useNavigation();
@@ -36,7 +36,7 @@ const ShopUpdate = () => {
   const selectImage = async () => {
     try {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-      const response = await launchImageLibrary({mediaType: 'photo'});
+      const response = await launchImageLibrary({ mediaType: 'photo' });
 
       setAvatarSource(response.assets[0]);
     } catch (error) {
@@ -72,13 +72,14 @@ const ShopUpdate = () => {
       let filename = localUri.split('/').pop();
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
-      formData.append('avatar', {uri: localUri, name: filename, type});
+      formData.append('avatar', { uri: localUri, name: filename, type });
 
       const res = await apiPut(`${SHOP_API}/updateShop`, formData, {
         'Content-Type': 'multipart/form-data',
       });
 
-      console.log(res.data);
+      console.log(res.message);
+      navigation.navigate('ShopScreen')
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -124,7 +125,7 @@ const ShopUpdate = () => {
 
         <Pressable style={styles.avatarSection} onPress={selectImage}>
           {avatarSource?.uri ? (
-            <Image style={styles.avatar} source={{uri: avatarSource?.uri}} />
+            <Image style={styles.avatar} source={{ uri: avatarSource?.uri }} />
           ) : (
             <Image
               style={styles.avatar}
@@ -139,7 +140,7 @@ const ShopUpdate = () => {
 
         <View style={styles.formSection}>
           {[
-            {label: 'Tên cửa hàng', state: shopName, setState: setShopName},
+            { label: 'Tên cửa hàng', state: shopName, setState: setShopName },
             {
               label: 'Mô tả cửa hàng',
               state: shopDescription,
@@ -150,15 +151,15 @@ const ShopUpdate = () => {
               state: shopAddress,
               setState: setShopAddress,
             },
-            {label: 'Số điện thoại', state: shopPhone, setState: setShopPhone},
-            {label: 'Email', state: shopEmail, setState: setShopEmail},
+            { label: 'Số điện thoại', state: shopPhone, setState: setShopPhone },
+            { label: 'Email', state: shopEmail, setState: setShopEmail },
           ].map((item, index) => (
             <View key={index} style={styles.inputContainer}>
               <View style={styles.inputRow}>
                 <View>
                   <Text style={styles.inputLabel}>
                     {item.label}
-                    <Text style={{color: 'red'}}>*</Text>
+                    <Text style={{ color: 'red' }}>*</Text>
                   </Text>
                   <TextInput
                     style={styles.inputField}

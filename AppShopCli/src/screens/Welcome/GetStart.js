@@ -4,14 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import commonStyles from './styles';
 import imagePath from '../../constants/imagePath';
 import colors from '../../styles/colors';
+import { getItem } from '../../utils/utils';
 
 const WelcomeScreen = ({ navigation }) => {
 
 
   const loading = async () => {
     try {
-      const accessToken = await AsyncStorage.getItem('LoginUser');
-      if (accessToken) {
+      const accessToken = await getItem('LoginUser');
+      if (accessToken.isChecked) {
         navigation.replace('BottomTab');
       } else {
         const timer = setTimeout(() => {

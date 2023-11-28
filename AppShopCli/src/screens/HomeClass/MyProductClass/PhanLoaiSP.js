@@ -138,9 +138,9 @@ const PhanLoaiSP = ({ navigation }) => {
         var data = [];
 
         for (let i = 0; i < selectedItems.length; i++) {
-            const mau = { color: selectedItems[i].text, option: [] };
+            const mau = { color: selectedItems[i].text, options: [] };
             for (let j = 0; j < selectedItems1.length; j++) {
-                mau.option.push({
+                mau.options.push({
                     size: selectedItems1[j].size,
                     options_quantity: selectedItems1[j].options_quantity,
                 });

@@ -55,7 +55,7 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
           )}
           <Text style={[styles.tabText, {left: '15%'}]}>
             {index === 0 ? 'Kho hàng' : 'Đã bán'}:{' '}
-            {index === 0 ? item?.product_quantity : 0}
+            {index === 0 ? item?.product_quantity : item?.product_sold}
           </Text>
         </View>
       ))}

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,10 +13,10 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {CheckBox} from 'react-native-elements';
-import {SIGNIN_API} from '../../config/urls';
+import { CheckBox } from 'react-native-elements';
+import { SIGNIN_API } from '../../config/urls';
 import imagePath from '../../constants/imagePath';
-import {apiPost, setItem} from '../../utils/utils';
+import { apiPost, setItem } from '../../utils/utils';
 
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
@@ -24,13 +24,15 @@ const isValidEmail = email =>
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
-const Login2 = ({navigation}) => {
+const Login2 = ({ navigation }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
   const [isButtonDisabled, setButtonDisabled] = useState(false);
+
+
 
   const login = async (email, password) => {
     if (!isButtonDisabled) {
@@ -52,12 +54,9 @@ const Login2 = ({navigation}) => {
             password: password,
             role: 'Shop',
           });
-          if (isChecked == true) {
-            setItem('LoginUser', res.message);
-          } else {
-            console.log('eoeoeoeoeoeoeo');
-          }
-          console.log('Đăng nhập thành công', res);
+          let loginUserData = res.message;
+          console.log(loginUserData);
+          setItem('LoginUser', { ...loginUserData, isChecked });
           setButtonDisabled(false);
           navigation.replace('BottomTab');
         } catch (error) {
@@ -77,7 +76,7 @@ const Login2 = ({navigation}) => {
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Text style={styles.title}>Login to your Account</Text>
 
-        <View style={{marginTop: '10%'}}>
+        <View style={{ marginTop: '10%' }}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
             value={email}
@@ -175,14 +174,14 @@ const SocialLoginButtons = () => (
 );
 
 // Component nút đăng nhập bằng tài khoản mạng xã hội
-const SocialButton = ({imageSource, onPress}) => (
+const SocialButton = ({ imageSource, onPress }) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
     <Image source={imageSource} style={styles.icon} />
   </TouchableOpacity>
 );
 
 // Component đường link đến màn hình đăng ký
-const SignUpLink = ({onPress}) => (
+const SignUpLink = ({ onPress }) => (
   <View style={styles.signUpLinkContainer}>
     <Text style={styles.signUpLinkText}>Don't have an account? </Text>
     <Text style={styles.signUpLink} onPress={onPress}>

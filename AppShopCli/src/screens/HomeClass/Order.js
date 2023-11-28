@@ -12,12 +12,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import imagePath from '../../constants/imagePath';
-import {clearAllItem} from '../../utils/utils';
+import { clearAllItem } from '../../utils/utils';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const Order = ({navigation}) => {
+const Order = ({ navigation }) => {
   const logout = () => {
     clearAllItem();
     navigation.replace('Login2');
@@ -47,7 +47,7 @@ const Order = ({navigation}) => {
         </Pressable>
         <Pressable
           style={styles.buttonView}
-          onPress={() => navigation.navigate('ShopScreen')}>
+          onPress={() => { navigation.navigate('ShopScreen') }}>
           <View style={styles.rowButton}>
             <View style={styles.iconTextContainer}>
               <Entypo name="shop" size={windowWidth * 0.08} color={'#333333'} />
@@ -71,7 +71,7 @@ const Order = ({navigation}) => {
             <AntDesign name="right" size={windowWidth * 0.03} />
           </View>
         </Pressable>
-        <Text style={[styles.headerText, {marginTop: windowHeight * 0.02}]}>
+        <Text style={[styles.headerText, { marginTop: windowHeight * 0.02 }]}>
           Thông tin
         </Text>
         <Pressable
@@ -104,9 +104,22 @@ const Order = ({navigation}) => {
             <AntDesign name="right" size={windowWidth * 0.03} />
           </View>
         </Pressable>
-        <Text style={[styles.headerText, {marginTop: windowHeight * 0.02}]}>
+        <Text style={[styles.headerText, { marginTop: windowHeight * 0.02 }]}>
           Khác
         </Text>
+        <Pressable style={styles.buttonView} onPress={() => navigation.navigate('Password')}>
+          <View style={styles.rowButton}>
+            <View style={styles.iconTextContainer}>
+              <MaterialIcons
+                name="password"
+                size={windowWidth * 0.08}
+                color={'#333333'}
+              />
+              <Text style={styles.text}>Đổi mật khấu </Text>
+            </View>
+            <AntDesign name="right" size={windowWidth * 0.03} />
+          </View>
+        </Pressable>
         <Pressable style={styles.buttonView} onPress={logout}>
           <View style={styles.rowButton}>
             <View style={styles.iconTextContainer}>

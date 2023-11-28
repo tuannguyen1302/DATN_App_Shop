@@ -22,9 +22,9 @@ export async function apiReq(
         headers,
       };
     }
-    axios[method](endPoint, data, {headers})
+    axios[method](endPoint, data, { headers })
       .then(result => {
-        const {data} = result;
+        const { data } = result;
 
         if (data.status === false) {
           return rej(data);
@@ -35,7 +35,7 @@ export async function apiReq(
         console.log(error);
         console.log(error && error.response, 'the error response');
         if (error && error.response && error.response.status === 401) {
-          return rej({...error.response.data, msg: 'Aunauthorized'});
+          return rej({ ...error.response.data, msg: 'Aunauthorized' });
         }
         if (error && error.response && error.response.data) {
           if (!error.response.data.message) {
@@ -46,7 +46,7 @@ export async function apiReq(
           }
           return rej(error.response.data);
         } else {
-          return rej({message: 'Network Error', msg: 'Network Error'});
+          return rej({ message: 'Network Error', msg: 'Network Error' });
         }
       });
   });
@@ -64,6 +64,10 @@ export function apiPost(endPoint, data, headers = {}) {
   return apiReq(endPoint, data, 'post', headers);
 }
 
+export function apiDelete(endPoint, data, headers = {}) {
+  return apiReq(endPoint, data, 'delete', headers);
+}
+
 export function apiPatch(endPoint, data, headers = {}) {
   return apiReq(endPoint, data, 'patch', headers);
 }
@@ -72,10 +76,10 @@ export const setItem = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
-    //10210console.log(jsonValue + "token");
-    console.log('đã lưu vài bộ nhớ ' + jsonValue);
+    console.log('Đã lưu vào bộ nhớ ' + jsonValue);
+
   } catch (e) {
-    console.log('error raised during setItem', e);
+    console.log('Lỗi khi lưu dữ liệu', e);
   }
 };
 

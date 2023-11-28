@@ -30,7 +30,7 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.MESSAGES}
         component={Screens.MessageScreen}
-        options={{headerShown: true, title: 'Tin nhắn'}}
+        options={{ headerShown: true, title: 'Tin nhắn' }}
       />
       <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}
@@ -96,6 +96,11 @@ export default function (Stack) {
         }}
       />
       <Stack.Screen
+        name={navigationStrings.PASSWORD}
+        component={Screens.Password}
+
+      />
+      <Stack.Screen
         name={navigationStrings.NGANH_SP}
         component={Screens.Nganhsp}
       />
@@ -108,9 +113,19 @@ export default function (Stack) {
         component={Screens.Discountscreens}
       />
       <Stack.Screen
+        name={navigationStrings.DISCOUNT_ITEM}
+        component={Screens.DiscountItem}
+      />
+      <Stack.Screen
         name={navigationStrings.DISCOUNT_ADD}
         component={Screens.AddDiscount}
       />
+      <Stack.Screen
+        name={navigationStrings.DISCOUNT_UPDATE}
+        component={Screens.UpdateDiscount}
+      />
+
+
     </>
   );
 }
