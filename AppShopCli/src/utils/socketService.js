@@ -1,5 +1,7 @@
 import io from 'socket.io-client';
-import {API_BASE_URL} from '../config/urls';
+
+
+import { API_BASE_URL } from '../config/urls';
 
 class WSService {
   initializeSocket = async () => {

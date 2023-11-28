@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -11,8 +11,8 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
-import {SIGNUP_API} from '../../config/urls';
+import { useNavigation } from '@react-navigation/native';
+import { SIGNUP_API } from '../../config/urls';
 import imagePath from '../../constants/imagePath';
 import {apiPost} from '../../utils/utils';
 import {SignUpStyle} from './styles';
@@ -48,14 +48,18 @@ const SignUp = () => {
       else if (password !== confirmPassword)
         setError('Mật khẩu không trùng khớp');
       else {
-        await apiPost(SIGNUP_API, {
-          email: email,
-          password: password,
-          role: 'Shop',
-        });
+        try {
+          await apiPost(SIGNUP_API, {
+            email: email,
+            password: password,
+            role: 'Shop',
+          });
 
-        console.log('Đăng ký thành công');
-        navigation.navigate('Login2');
+          console.log('Đăng ký thành công');
+          navigation.navigate('Login2');
+        } catch (error) {
+          console.log(error);
+        }
       }
       setTimeout(() => {
         setButtonDisabled(false);

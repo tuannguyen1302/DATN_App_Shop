@@ -5,6 +5,8 @@ const setItem = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
+    //10210console.log(jsonValue + "token");
+    console.log('đã lưu vài bộ nhớ ' + jsonValue);
   } catch (e) {
     console.error('Error during setItem:', e);
   }

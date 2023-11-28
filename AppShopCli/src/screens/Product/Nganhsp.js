@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,7 +10,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const Nganhsp = ({navigation}) => {
+const Nganhsp = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const click = category => {
@@ -29,7 +29,10 @@ const Nganhsp = ({navigation}) => {
   };
   const handleDone = () => {
     if (selectedCategory) {
-      Alert.alert('Đã chọn:', selectedCategory);
+
+
+      navigation.navigate('AddProduct', { selectedCategory });
+
     } else {
       Alert.alert(
         'Cảnh báo',
@@ -50,8 +53,8 @@ const Nganhsp = ({navigation}) => {
       <View style={styles.horizontalLine} />
 
       <TouchableOpacity
-        style={[styles.form, selectedCategory === 'Áo' && styles.selectedText]}
-        onPress={() => click('Áo')}>
+        style={[styles.form, selectedCategory === 'ao' && styles.selectedText]}
+        onPress={() => click('ao')}>
         <Text style={styles.textfrom}>Áo</Text>
         <View style={styles.icon}>{renderIcon('Áo')}</View>
       </TouchableOpacity>
@@ -59,58 +62,58 @@ const Nganhsp = ({navigation}) => {
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'Quần' && styles.selectedText,
+          selectedCategory === 'quan' && styles.selectedText,
         ]}
-        onPress={() => click('Quần')}>
+        onPress={() => click('quan')}>
         <Text style={styles.textfrom}>Quần</Text>
         <View style={styles.icon}>{renderIcon('Quần')}</View>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.form, selectedCategory === 'Mũ' && styles.selectedText]}
-        onPress={() => click('Mũ')}>
+        style={[styles.form, selectedCategory === 'mu' && styles.selectedText]}
+        onPress={() => click('mu')}>
         <Text style={styles.textfrom}>Mũ</Text>
         <View style={styles.icon}>{renderIcon('Mũ')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'Trang sức' && styles.selectedText,
+          selectedCategory === 'trang suc' && styles.selectedText,
         ]}
-        onPress={() => click('Trang sức')}>
+        onPress={() => click('trang suc')}>
         <Text style={styles.textfrom}>Trang sức </Text>
         <View style={styles.icon}>{renderIcon('Trang sức')}</View>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.form, selectedCategory === 'Túi' && styles.selectedText]}
-        onPress={() => click('Túi')}>
+        style={[styles.form, selectedCategory === 'tui' && styles.selectedText]}
+        onPress={() => click('tui')}>
         <Text style={styles.textfrom}>Túi</Text>
         <View style={styles.icon}>{renderIcon('Túi')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'Đồng Hồ' && styles.selectedText,
+          selectedCategory === 'dong ho' && styles.selectedText,
         ]}
-        onPress={() => click('Đồng Hồ')}>
+        onPress={() => click('dong ho')}>
         <Text style={styles.textfrom}>Đồng Hồ </Text>
         <View style={styles.icon}>{renderIcon('Đồng Hồ')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'Nước Hoa' && styles.selectedText,
+          selectedCategory === 'nuoc hoa' && styles.selectedText,
         ]}
-        onPress={() => click('Nước Hoa')}>
+        onPress={() => click('nuoc hoa')}>
         <Text style={styles.textfrom}>Nước Hoa </Text>
         <View style={styles.icon}>{renderIcon('Nước Hoa')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'Giầy' && styles.selectedText,
+          selectedCategory === 'giay' && styles.selectedText,
         ]}
-        onPress={() => click('Giầy')}>
+        onPress={() => click('giay')}>
         <Text style={styles.textfrom}>Giầy </Text>
         <View style={styles.icon}>{renderIcon('Giầy')}</View>
       </TouchableOpacity>

@@ -15,9 +15,9 @@ import React, {useEffect, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import imagePath from '../../constants/imagePath';
-import {apiGet, apiPut} from '../../utils/utils';
-import {API_BASE_URL, SHOP_API} from '../../config/urls';
+import imagePath from '../../../src/constants/imagePath';
+import {apiGet, apiPut} from '../../../utils/utils';
+import {API_BASE_URL, SHOP_API} from '../../../config/urls';
 
 const ShopUpdate = () => {
   const navigation = useNavigation();
@@ -78,7 +78,8 @@ const ShopUpdate = () => {
         'Content-Type': 'multipart/form-data',
       });
 
-      console.log(res.data);
+      console.log(res.message);
+      navigation.navigate('ShopScreen');
     } catch (error) {
       console.log('Post api: ', error.message);
     }

@@ -1,14 +1,16 @@
-import React, {useEffect} from 'react';
-import {View, Image, Text, ActivityIndicator} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Image, Text, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import commonStyles from './styles';
 import imagePath from '../../constants/imagePath';
 import colors from '../../styles/colors';
 
-const WelcomeScreen = ({navigation}) => {
+const WelcomeScreen = ({ navigation }) => {
+
+
   const loading = async () => {
     try {
-      const accessToken = await AsyncStorage.getItem('accessToken');
+      const accessToken = await AsyncStorage.getItem('LoginUser');
       if (accessToken) {
         navigation.replace('BottomTab');
       } else {
@@ -27,7 +29,7 @@ const WelcomeScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={[commonStyles.container, {backgroundColor: colors.black}]}>
+    <View style={[commonStyles.container, { backgroundColor: colors.black }]}>
       <View style={commonStyles.welcomeTextContainer}>
         <Text style={commonStyles.welcomeText}>Welcome</Text>
         <Text style={commonStyles.welcomeText}>Welcome</Text>

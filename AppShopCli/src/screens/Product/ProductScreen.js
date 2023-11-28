@@ -88,7 +88,7 @@ const ProductScreen = ({navigation}) => {
     const action = product?.isDraft ? 'hiện' : 'ẩn';
     const message = `Bạn muốn ${action} sản phẩm "${product?.product_name}"?`;
 
-    Alert.alert('Xác nhận ẩn sản phẩm', message, [
+    Alert.alert(`Bạn muốn ${action} sản phẩm`, message, [
       {
         text: 'Hủy',
         onPress: () => console.log('Cancel Pressed'),
