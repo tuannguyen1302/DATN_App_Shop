@@ -4,7 +4,6 @@ import {
   Text,
   Image,
   Pressable,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   ToastAndroid,
@@ -13,8 +12,9 @@ import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
-import {API_BASE_URL, ORDER_API} from '../../../config/urls';
-import {apiPatch} from '../../../utils/utils';
+import {API_BASE_URL, ORDER_API} from '../../config/urls';
+import {apiPatch} from '../../utils/utils';
+import {OrderHisStyle} from './styles';
 
 const statusTranslations = {
   pending: 'Phê duyệt',
@@ -48,50 +48,52 @@ const OrderHistory = ({route}) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView style={OrderHisStyle.container}>
+      <View style={OrderHisStyle.header}>
         <Pressable onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={30} color={'white'} />
         </Pressable>
-        <Text style={styles.titleText}>Thông tin đơn hàng</Text>
+        <Text style={OrderHisStyle.titleText}>Thông tin đơn hàng</Text>
         <View style={{width: 30}}></View>
       </View>
 
       <Image
-        style={styles.avatar}
+        style={OrderHisStyle.avatar}
         source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
       />
 
-      <View style={styles.row}>
-        <View style={styles.column}>
-          <View style={styles.infoRow}>
+      <View style={OrderHisStyle.row}>
+        <View style={OrderHisStyle.column}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="person" size={25} color={'black'} />
-            <Text style={styles.info}>{orderItem?.user_name}</Text>
+            <Text style={OrderHisStyle.info}>{orderItem?.user_name}</Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="phone" size={25} color={'black'} />
-            <Text style={styles.info}>{orderItem?.phoneNumber}</Text>
+            <Text style={OrderHisStyle.info}>{orderItem?.phoneNumber}</Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="location-on" size={25} color={'black'} />
-            <Text style={styles.info}>{orderItem?.order_shipping.City}</Text>
+            <Text style={OrderHisStyle.info}>
+              {orderItem?.order_shipping.City}
+            </Text>
           </View>
         </View>
 
-        <View style={styles.column}>
-          <View style={styles.infoRow}>
+        <View style={OrderHisStyle.column}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="shopping-cart" size={25} color={'black'} />
-            <Text style={styles.info}>{orderItem?.product_name}</Text>
+            <Text style={OrderHisStyle.info}>{orderItem?.product_name}</Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="local-mall" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               Số lượng: {orderItem?.product_attributes?.quantity}
             </Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="color-lens" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               Màu: {orderItem?.product_attributes?.color} | Size:{' '}
               {orderItem?.product_attributes?.size}
             </Text>
@@ -99,38 +101,38 @@ const OrderHistory = ({route}) => {
         </View>
       </View>
 
-      <View style={styles.row}>
-        <View style={styles.infoSection}>
-          <View style={styles.infoRow}>
+      <View style={OrderHisStyle.row}>
+        <View style={OrderHisStyle.infoSection}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="attach-money" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               Giá: {orderItem?.order_checkout?.totalPrice}
             </Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="local-shipping" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               Ship: {orderItem?.order_checkout?.feeShip}
             </Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="local-offer" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               Giảm giá: {orderItem?.order_checkout?.totalDiscount}
             </Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="payment" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               Tổng: {orderItem?.order_checkout?.totalCheckout}
             </Text>
           </View>
         </View>
 
-        <View style={styles.infoSection}>
-          <View style={styles.infoRow}>
+        <View style={OrderHisStyle.infoSection}>
+          <View style={OrderHisStyle.infoRow}>
             <MaterialIcons name="event" size={25} color={'black'} />
-            <Text style={styles.info}>
+            <Text style={OrderHisStyle.info}>
               {moment(orderItem?.crateDate).format('DD/MM/YYYY HH:mm')}
             </Text>
           </View>
@@ -140,87 +142,21 @@ const OrderHistory = ({route}) => {
       {orderItem?.status === 'pending' && (
         <>
           <TouchableOpacity
-            style={styles.button}
+            style={OrderHisStyle.button}
             onPress={() => handleApproval(true)}>
-            <Text style={styles.buttonText}>
+            <Text style={OrderHisStyle.buttonText}>
               {statusTranslations[orderItem?.status]}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, {backgroundColor: 'red'}]}
+            style={[OrderHisStyle.button, {backgroundColor: 'red'}]}
             onPress={() => handleApproval(false)}>
-            <Text style={styles.buttonText}>Hủy</Text>
+            <Text style={OrderHisStyle.buttonText}>Hủy</Text>
           </TouchableOpacity>
         </>
       )}
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#A4D3EE',
-  },
-  titleText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  avatar: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'cover',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  column: {
-    flex: 1,
-    padding: 10,
-  },
-  infoSection: {
-    padding: 20,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  info: {
-    fontSize: 16,
-    color: 'black',
-    marginLeft: 10,
-  },
-  buttonContainer: {
-    // flexDirection: 'row',
-    // justifyContent: 'space-around',
-    // marginTop: 20,
-  },
-  button: {
-    height: 50,
-    width: '60%',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginVertical: 10,
-    backgroundColor: 'black',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 15,
-    fontWeight: '500',
-  },
-});
 
 export default OrderHistory;

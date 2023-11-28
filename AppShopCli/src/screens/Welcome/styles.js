@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import colors from '../../styles/colors';
 import {
   height,
-  moderateScaleVertical,
+  moderateScale,
   textScale,
   width,
 } from '../../styles/responsiveSize';
@@ -23,7 +23,7 @@ const commonStyles = StyleSheet.create({
   welcomeTextContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: moderateScaleVertical(20),
+    marginBottom: moderateScale(20),
   },
   welcomeText: {
     color: colors.white,
@@ -32,7 +32,7 @@ const commonStyles = StyleSheet.create({
   },
   iconContainer: {
     alignSelf: 'flex-end',
-    marginRight: moderateScaleVertical(20),
+    marginRight: moderateScale(20),
   },
   icon: {
     width: width / 5,
@@ -45,14 +45,14 @@ const commonStyles = StyleSheet.create({
     resizeMode: 'contain',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: moderateScaleVertical(50),
+    marginBottom: moderateScale(50),
   },
   textContainer: {
     justifyContent: 'center',
     alignSelf: 'center',
     width: width / 1.5,
     height: height / 8,
-    marginBottom: moderateScaleVertical(50),
+    marginBottom: moderateScale(50),
   },
   text: {
     fontSize: textScale(39),
@@ -73,7 +73,7 @@ const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.white,
     textAlign: 'center',
-    marginTop: moderateScaleVertical(5),
+    marginTop: moderateScale(5),
   },
 });
 

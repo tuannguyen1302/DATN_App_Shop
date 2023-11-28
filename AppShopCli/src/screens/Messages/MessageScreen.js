@@ -4,8 +4,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {ListItem, Avatar} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
-import {API_BASE_URL, CHAT_API} from '../../../config/urls';
-import {apiGet} from '../../../utils/utils';
+import {API_BASE_URL, CHAT_API} from '../../config/urls';
+import {apiGet} from '../../utils/utils';
+import {MessageScreenStyles} from './styles';
 
 const MessageScreen = ({navigation}) => {
   const [data, setData] = useState([]);
@@ -14,7 +15,7 @@ const MessageScreen = ({navigation}) => {
     <Pressable
       onPress={() => showAlert(itemId)}
       style={[
-        styles.deleteButton,
+        MessageScreenStyles.deleteButton,
         check == 'left' && {backgroundColor: 'green'},
       ]}>
       {check == 'left' ? (
@@ -61,7 +62,7 @@ const MessageScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={MessageScreenStyles.container}>
       <FlatList
         data={data}
         keyExtractor={item => item?.chat?._id}
@@ -90,7 +91,7 @@ const MessageScreen = ({navigation}) => {
                   type="font-awesome"
                   color="green"
                   size={16}
-                  containerStyle={styles.statusIcon}
+                  containerStyle={MessageScreenStyles.statusIcon}
                 />
               )}
               {item?.user?.user_status === 'inactive' && (
@@ -99,17 +100,19 @@ const MessageScreen = ({navigation}) => {
                   type="font-awesome"
                   color="red"
                   size={13}
-                  containerStyle={styles.statusIcon}
+                  containerStyle={MessageScreenStyles.statusIcon}
                 />
               )}
             </Avatar>
             <ListItem.Content>
-              <View style={styles.titleContainer}>
-                <ListItem.Title numberOfLines={1} style={styles.title}>
+              <View style={MessageScreenStyles.titleContainer}>
+                <ListItem.Title
+                  numberOfLines={1}
+                  style={MessageScreenStyles.title}>
                   {item?.user?.user_name}
                 </ListItem.Title>
 
-                <ListItem.Subtitle style={styles.timeText}>
+                <ListItem.Subtitle style={MessageScreenStyles.timeText}>
                   12:00
                 </ListItem.Subtitle>
               </View>
@@ -125,52 +128,5 @@ const MessageScreen = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  titleContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: '#333',
-    width: '70%',
-  },
-  timeText: {
-    fontSize: 15,
-  },
-  notificationBadge: {
-    backgroundColor: 'blue',
-    borderRadius: 10,
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  deleteButton: {
-    flex: 1,
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  statusIcon: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-  },
-});
 
 export default MessageScreen;

@@ -1,93 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-export async function apiReq(
-  endPoint,
-  data,
-  method,
-  headers,
-  requestOptions = {},
-) {
-  return new Promise(async (res, rej) => {
-    const token = await getItem('LoginUser');
-
-    headers = {
-      'x-xclient-id': token?.userId,
-      authorization: token?.accessToken,
-      ...headers,
-    };
-    if (method === 'get' || method == 'delete') {
-      data = {
-        ...requestOptions,
-        ...data,
-        headers,
-      };
-    }
-    axios[method](endPoint, data, {headers})
-      .then(result => {
-        const {data} = result;
-
-        if (data.status === false) {
-          return rej(data);
-        }
-        return res(data);
-      })
-      .catch(error => {
-        console.log(error);
-        console.log(error && error.response, 'the error response');
-        if (error && error.response && error.response.status === 401) {
-          return rej({...error.response.data, msg: 'Aunauthorized'});
-        }
-        if (error && error.response && error.response.data) {
-          if (!error.response.data.message) {
-            return rej({
-              ...error.response.data,
-              msg: error.response.data.message || 'Network Error',
-            });
-          }
-          return rej(error.response.data);
-        } else {
-          return rej({message: 'Network Error', msg: 'Network Error'});
-        }
-      });
-  });
-}
-
-export function apiGet(endPoint, data, headers = {}) {
-  return apiReq(endPoint, data, 'get', headers);
-}
-
-export function apiPut(endPoint, data, headers = {}) {
-  return apiReq(endPoint, data, 'put', headers);
-}
-
-export function apiPost(endPoint, data, headers = {}) {
-  return apiReq(endPoint, data, 'post', headers);
-}
-
-export function apiDelete(endPoint, data, headers = {}) {
-  return apiReq(endPoint, data, 'delete', headers);
-}
-
-export function apiPatch(endPoint, data, headers = {}) {
-  return apiReq(endPoint, data, 'patch', headers);
-}
-
-export const setItem = async (key, value) => {
+const setItem = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
-    console.log('error raised during setItem', e);
+    console.error('Error during setItem:', e);
   }
 };
 
-export const getItem = async key => {
+const getItem = async key => {
   try {
     const data = await AsyncStorage.getItem(key);
     if (data) {
-      const parsedData = JSON.parse(data);
-      return parsedData;
+      return JSON.parse(data);
     } else {
       console.log(`No data found for key: ${key}`);
       return null;
@@ -98,10 +25,67 @@ export const getItem = async key => {
   }
 };
 
-export const clearAllItem = async () => {
+const clearAllItem = async () => {
   try {
     await AsyncStorage.clear();
   } catch (error) {
-    console.log('Error raised during setItem ', error);
+    console.error('Error during clearAllItem:', error);
   }
 };
+
+const apiReq = async (endPoint, data, method, headers, requestOptions = {}) => {
+  try {
+    const token = await getItem('LoginUser');
+
+    headers = {
+      'x-xclient-id': token?.userId,
+      authorization: token?.accessToken,
+      ...headers,
+    };
+
+    if (method === 'get' || method === 'delete') {
+      data = {
+        ...requestOptions,
+        ...data,
+        headers,
+      };
+    }
+
+    const response = await axios[method](endPoint, data, {headers});
+    const responseData = response.data;
+
+    if (responseData.status === false) {
+      throw responseData;
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('Error during API request:', error);
+
+    if (error.response && error.response.status === 401) {
+      throw {...error.response.data, msg: 'Unauthorized'};
+    }
+
+    if (error.response && error.response.data) {
+      throw {
+        ...error.response.data,
+        msg: error.response.data.message || 'Network Error',
+      };
+    } else {
+      throw {message: 'Network Error', msg: 'Network Error'};
+    }
+  }
+};
+
+const createApiFunction =
+  method =>
+  (endPoint, data, headers = {}) =>
+    apiReq(endPoint, data, method, headers);
+
+export const apiGet = createApiFunction('get');
+export const apiPut = createApiFunction('put');
+export const apiPost = createApiFunction('post');
+export const apiDelete = createApiFunction('delete');
+export const apiPatch = createApiFunction('patch');
+
+export {setItem, getItem, clearAllItem};

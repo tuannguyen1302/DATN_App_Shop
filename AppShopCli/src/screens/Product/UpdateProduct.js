@@ -16,8 +16,8 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
-import {apiGet, apiPut} from '../../../utils/utils';
+import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
+import {apiGet, apiPut} from '../../utils/utils';
 
 const UpdateProduct = ({navigation, route}) => {
   const {item} = route.params;

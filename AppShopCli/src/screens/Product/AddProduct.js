@@ -17,8 +17,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import {PRODUCT_API} from '../../../config/urls';
-import {apiPost} from '../../../utils/utils';
+import {PRODUCT_API} from '../../config/urls';
+import {apiPost} from '../../utils/utils';
 
 const AddProduct = () => {
   const navigation = useNavigation();

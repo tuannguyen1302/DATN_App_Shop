@@ -2,7 +2,6 @@ import React, {useState, useCallback} from 'react';
 import {
   Image,
   Pressable,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TextInput,
@@ -15,10 +14,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {useFocusEffect} from '@react-navigation/native';
 import fuzzy from 'fuzzy';
-import {renderProductItem} from './ProductScreen';
-import imagePath from '../../../constants/imagePath';
-import {apiGet, getItem, setItem} from '../../../utils/utils';
-import {PRODUCT_API} from '../../../config/urls';
+import {renderProductItem} from '../Product/ProductScreen';
+import imagePath from '../../constants/imagePath';
+import {apiGet, getItem, setItem} from '../../utils/utils';
+import {PRODUCT_API} from '../../config/urls';
+import SearchScreenStyles from './styles';
 
 const SearchScreen = ({navigation}) => {
   const [isCheck, setIsCheck] = useState(false);
@@ -89,10 +89,12 @@ const SearchScreen = ({navigation}) => {
   const renderSearchItem = ({item}) => (
     <Pressable
       onPress={() => saveSearchToHistory(item?.id ? item.name : item)}
-      style={styles.searchItem}>
+      style={SearchScreenStyles.searchItem}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <FontAwesome5 name={item?.id ? 'history' : 'search'} size={23} />
-        <Text style={styles.searchText}>{item?.id ? item.name : item}</Text>
+        <Text style={SearchScreenStyles.searchText}>
+          {item?.id ? item.name : item}
+        </Text>
       </View>
       {item?.id && (
         <TouchableOpacity onPress={() => deleteSearchItem(item.id)}>
@@ -144,9 +146,14 @@ const SearchScreen = ({navigation}) => {
                 showsVerticalScrollIndicator={false}
               />
             ) : (
-              <View style={styles.imageContainer}>
-                <Image style={styles.productImage} source={imagePath.search} />
-                <Text style={styles.imageText}>Tìm kiếm trong cửa hàng</Text>
+              <View style={SearchScreenStyles.imageContainer}>
+                <Image
+                  style={SearchScreenStyles.productImage}
+                  source={imagePath.search}
+                />
+                <Text style={SearchScreenStyles.imageText}>
+                  Tìm kiếm trong cửa hàng
+                </Text>
               </View>
             )}
           </View>
@@ -155,9 +162,14 @@ const SearchScreen = ({navigation}) => {
     } else {
       if (productList.length < 1) {
         return (
-          <View style={styles.imageContainer}>
-            <Image style={styles.productImage} source={imagePath.noProduct} />
-            <Text style={styles.imageText}>Không tìm thấy sản phẩm nào</Text>
+          <View style={SearchScreenStyles.imageContainer}>
+            <Image
+              style={SearchScreenStyles.productImage}
+              source={imagePath.noProduct}
+            />
+            <Text style={SearchScreenStyles.imageText}>
+              Không tìm thấy sản phẩm nào
+            </Text>
           </View>
         );
       }
@@ -176,15 +188,15 @@ const SearchScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={SearchScreenStyles.container}>
       <View style={{flex: 1}}>
-        <View style={styles.searchHeader}>
-          <View style={styles.searchBox}>
+        <View style={SearchScreenStyles.searchHeader}>
+          <View style={SearchScreenStyles.searchBox}>
             <Pressable>
               <Ionicons name="search" size={24} color="black" />
             </Pressable>
             <TextInput
-              style={styles.searchInput}
+              style={SearchScreenStyles.searchInput}
               defaultValue={searchText}
               placeholder="Nhập tìm kiếm"
               returnKeyType="search"
@@ -194,19 +206,19 @@ const SearchScreen = ({navigation}) => {
             />
             {searchText && (
               <TouchableOpacity
-                style={styles.clearSearchButton}
+                style={SearchScreenStyles.clearSearchButton}
                 onPress={() => setSearchText('')}>
                 <Feather name="x-circle" size={24} color="black" />
               </TouchableOpacity>
             )}
           </View>
           <Pressable onPress={() => navigation.goBack()}>
-            <Text style={styles.cancelText}>Cancel</Text>
+            <Text style={SearchScreenStyles.cancelText}>Cancel</Text>
           </Pressable>
         </View>
 
         {loading ? (
-          <View style={styles.loadingContainer}>
+          <View style={SearchScreenStyles.loadingContainer}>
             <ActivityIndicator size="large" color="gray" />
           </View>
         ) : (
@@ -216,99 +228,5 @@ const SearchScreen = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  searchHeaderView: {
-    alignSelf: 'center',
-    width: '85%',
-    marginVertical: '2%',
-    height: 45,
-    padding: 5,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 10,
-  },
-  searchPlaceholder: {
-    marginLeft: '5%',
-    fontSize: 15,
-    color: 'gray',
-  },
-  imageContainer: {
-    marginTop: '10%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  searchHeader: {
-    height: 55,
-    flexDirection: 'row',
-    padding: '2%',
-    borderColor: '#D9D9D9',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    backgroundColor: 'white',
-  },
-  searchBox: {
-    flex: 1,
-    height: 40,
-    borderRadius: 10,
-    paddingLeft: '3%',
-    marginRight: '4%',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#D9D9D9',
-  },
-  searchInput: {
-    flex: 1,
-    marginHorizontal: '2%',
-    color: 'black',
-  },
-  clearSearchButton: {
-    marginRight: '3%',
-  },
-  cancelText: {
-    color: 'red',
-    fontSize: 18,
-    fontWeight: '500',
-    marginRight: '5%',
-  },
-  productImage: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-  },
-  imageText: {
-    marginTop: '5%',
-    color: 'black',
-    fontSize: 18,
-  },
-  searchItem: {
-    height: 40,
-    borderBottomWidth: 0.5,
-    borderColor: 'gray',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-    padding: '2%',
-  },
-  searchText: {
-    left: '20%',
-    fontSize: 15,
-    color: 'black',
-    fontWeight: '500',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default SearchScreen;

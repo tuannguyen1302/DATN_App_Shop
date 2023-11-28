@@ -4,5 +4,7 @@ export default {
   gray: 'gray',
   blue: 'blue',
   red: 'red',
-  main: '#19B9EC',
+  green: 'green',
+  royal: '#536EFF',
+  cornflower: '#9999FF',
 };

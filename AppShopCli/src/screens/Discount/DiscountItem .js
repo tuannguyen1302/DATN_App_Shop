@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
-import {API_BASE_URL} from '../../../config/urls';
+import {API_BASE_URL} from '../../config/urls';
 
 const DiscountItem = ({route}) => {
   const {discount} = route.params;

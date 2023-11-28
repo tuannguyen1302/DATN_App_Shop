@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {apiDelete, apiGet} from '../../../utils/utils';
-import {API_BASE_URL, DISCOUNT_API} from '../../../config/urls';
+import {apiDelete, apiGet} from '../../utils/utils';
+import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {formatDate} from './DiscountItem ';
 

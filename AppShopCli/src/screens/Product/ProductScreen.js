@@ -16,9 +16,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import imagePath from '../../../constants/imagePath';
-import {apiGet, apiPut} from '../../../utils/utils';
-import {API_BASE_URL, PRODUCT_API} from '../../../config/urls';
+import imagePath from '../../constants/imagePath';
+import {apiGet, apiPut} from '../../utils/utils';
+import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
 
 const TAB_ITEMS = [
   {status: 'All'},

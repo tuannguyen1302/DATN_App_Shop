@@ -6,8 +6,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TextInput} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
-import {DISCOUNT_API} from '../../../config/urls';
-import {apiPost} from '../../../utils/utils';
+import {DISCOUNT_API} from '../../config/urls';
+import {apiPost} from '../../utils/utils';
 
 const applyOptions = [
   {id: 0, name: 'Tất cả sản phẩm'},

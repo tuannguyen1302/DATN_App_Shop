@@ -19,8 +19,8 @@ import {Dropdown} from 'react-native-element-dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
-import {API_BASE_URL, DISCOUNT_API, PRODUCT_API} from '../../../config/urls';
-import {apiGet, apiPost} from '../../../utils/utils';
+import {API_BASE_URL, DISCOUNT_API, PRODUCT_API} from '../../config/urls';
+import {apiGet, apiPost} from '../../utils/utils';
 
 const APPLY_OPTIONS = [
   {id: 0, name: 'Tất cả sản phẩm'},
@@ -313,15 +313,16 @@ const AddDiscount = ({navigation}) => {
             snapPoints={['25%', '50%']}
             backgroundStyle={{
               borderRadius: 25,
-              borderWidth: 1,
+              borderWidth: 0.5,
             }}>
             <View style={{flex: 1}}>
               <Text
                 style={{
                   fontSize: 25,
+                  color: 'black',
                   fontWeight: 'bold',
                   textAlign: 'center',
-                  marginVertical: '2%',
+                  marginVertical: '1%',
                 }}>
                 Chọn sản phẩm
               </Text>
@@ -349,7 +350,7 @@ const AddDiscount = ({navigation}) => {
                       height: 60,
                       borderWidth: 1,
                       borderColor: discountData?.product_ids.includes(item?._id)
-                        ? 'green'
+                        ? 'blue'
                         : 'gray',
                       marginHorizontal: '5%',
                       marginTop: '2%',
@@ -434,12 +435,13 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: 'black',
+    fontWeight: '600',
     width: 200,
   },
   productPrice: {
     fontSize: 14,
-    color: '#888',
+    color: 'black',
   },
 });
 

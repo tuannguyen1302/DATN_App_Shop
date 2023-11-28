@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -16,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {SIGNUP_API} from '../../config/urls';
 import imagePath from '../../constants/imagePath';
 import {apiPost} from '../../utils/utils';
+import {SignUpStyle} from './styles';
 
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
@@ -66,12 +66,10 @@ const SignUp = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        {/* Tiêu đề màn hình */}
-        <Text style={styles.title}>Create your Account</Text>
+      style={SignUpStyle.container}>
+      <ScrollView contentContainerStyle={SignUpStyle.scrollViewContainer}>
+        <Text style={SignUpStyle.title}>Create your Account</Text>
 
-        {/* Ô nhập email */}
         <View style={{marginTop: '10%'}}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
@@ -81,7 +79,6 @@ const SignUp = () => {
             onChangeText={setEmail}
           />
 
-          {/* Ô nhập mật khẩu */}
           <InputField
             icon={<Entypo name="lock" size={25} color={'#999999'} />}
             value={password}
@@ -93,7 +90,6 @@ const SignUp = () => {
             setPasswordVisible={setPasswordVisible}
           />
 
-          {/* Ô nhập xác nhận mật khẩu */}
           <InputField
             icon={<Entypo name="lock" size={25} color={'#999999'} />}
             value={confirmPassword}
@@ -105,26 +101,23 @@ const SignUp = () => {
             setPasswordVisible={setConfirmPasswordVisible}
           />
 
-          {/* Hiển thị lỗi nếu có */}
-          {error && <Text style={styles.error}>{error}</Text>}
+          {error && <Text style={SignUpStyle.error}>{error}</Text>}
 
-          {/* Nút đăng ký */}
-          <TouchableOpacity style={styles.signUpButton} onPress={checkLogin}>
-            <Text style={styles.signUpButtonText}>Sign Up</Text>
+          <TouchableOpacity
+            style={SignUpStyle.signUpButton}
+            onPress={checkLogin}>
+            <Text style={SignUpStyle.signUpButtonText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Nút đăng ký bằng tài khoản mạng xã hội */}
         <SocialLoginButtons />
 
-        {/* Đường link đến màn hình đăng nhập */}
         <SignInLink onPress={() => navigation.navigate('Login2')} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-// Component ô nhập dữ liệu
 const InputField = ({
   icon,
   isPassword,
@@ -132,16 +125,16 @@ const InputField = ({
   setPasswordVisible,
   ...props
 }) => (
-  <View style={styles.inputField}>
-    <View style={styles.iconContainer}>{icon}</View>
+  <View style={SignUpStyle.inputField}>
+    <View style={SignUpStyle.iconContainer}>{icon}</View>
     <TextInput
-      style={styles.inputFieldText}
+      style={SignUpStyle.inputFieldText}
       secureTextEntry={isPassword && !passwordVisible}
       {...props}
     />
     {isPassword && (
       <TouchableOpacity
-        style={styles.eyeIconContainer}
+        style={SignUpStyle.eyeIconContainer}
         onPress={() => setPasswordVisible(!passwordVisible)}>
         {passwordVisible ? (
           <Entypo name="eye" size={25} color={'#000000'} />
@@ -153,18 +146,15 @@ const InputField = ({
   </View>
 );
 
-// Component nút đăng ký bằng tài khoản mạng xã hội
 const SocialLoginButtons = () => (
   <>
-    {/* Dòng chữ "or continue with" */}
-    <View style={styles.orContinueWith}>
-      <View style={styles.separator} />
-      <Text style={styles.orContinueWithText}>or continue with</Text>
-      <View style={styles.separator} />
+    <View style={SignUpStyle.orContinueWith}>
+      <View style={SignUpStyle.separator} />
+      <Text style={SignUpStyle.orContinueWithText}>or continue with</Text>
+      <View style={SignUpStyle.separator} />
     </View>
 
-    {/* Nút đăng ký bằng Facebook và Google */}
-    <View style={styles.socialButtonsContainer}>
+    <View style={SignUpStyle.socialButtonsContainer}>
       <SocialButton
         imageSource={imagePath.facebook}
         onPress={() => alert('facebook')}
@@ -177,135 +167,19 @@ const SocialLoginButtons = () => (
   </>
 );
 
-// Component nút mạng xã hội
 const SocialButton = ({imageSource, onPress}) => (
-  <TouchableOpacity style={styles.button} onPress={onPress}>
-    <Image source={imageSource} style={styles.icon} />
+  <TouchableOpacity style={SignUpStyle.button} onPress={onPress}>
+    <Image source={imageSource} style={SignUpStyle.icon} />
   </TouchableOpacity>
 );
 
-// Component đường link đến màn hình đăng nhập
 const SignInLink = ({onPress}) => (
-  <View style={styles.signUpLinkContainer}>
-    <Text style={styles.signUpLinkText}>Already have an account? </Text>
-    <Text style={styles.signUpLink} onPress={onPress}>
+  <View style={SignUpStyle.signUpLinkContainer}>
+    <Text style={SignUpStyle.signUpLinkText}>Already have an account? </Text>
+    <Text style={SignUpStyle.signUpLink} onPress={onPress}>
       Sign In
     </Text>
   </View>
 );
-
-// StyleSheet
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-    flex: 1,
-    alignItems: 'center',
-  },
-  scrollViewContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 45,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  inputField: {
-    padding: 10,
-    alignSelf: 'center',
-    backgroundColor: '#EAEAEA',
-    borderRadius: 12,
-    height: 64,
-    width: 365,
-    justifyContent: 'center',
-    marginBottom: 25,
-    flexDirection: 'row',
-    marginHorizontal: '5%',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    width: 30,
-    alignItems: 'center',
-  },
-  inputFieldText: {
-    flex: 1,
-    marginLeft: 10,
-    color: '#000000',
-    fontSize: 18,
-  },
-  eyeIconContainer: {
-    width: 30,
-    alignItems: 'center',
-  },
-  error: {
-    color: 'red',
-    marginLeft: 40,
-  },
-  signUpButton: {
-    backgroundColor: 'black',
-    height: 60,
-    width: 350,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    marginTop: '5%',
-  },
-  signUpButtonText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 25,
-  },
-  orContinueWith: {
-    marginTop: '5%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  separator: {
-    borderWidth: 0.2,
-    width: 100,
-    height: 1,
-    color: '#D9D9D9',
-    marginHorizontal: '2%',
-  },
-  orContinueWithText: {
-    color: '#585555',
-    fontSize: 18,
-  },
-  socialButtonsContainer: {
-    marginTop: '5%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  button: {
-    width: 82,
-    height: 64,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    width: 30,
-    height: 30,
-  },
-  signUpLinkContainer: {
-    marginTop: '10%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  signUpLinkText: {
-    fontSize: 18,
-    color: '#7B7070',
-    alignSelf: 'center',
-  },
-  signUpLink: {
-    fontSize: 18,
-    color: 'black',
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-  },
-});
 
 export default SignUp;
