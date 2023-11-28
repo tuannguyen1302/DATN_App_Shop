@@ -24,7 +24,7 @@ export default {
   DISCOUNT_ITEM: 'DiscountItem',
   DISCOUNT_ADD: 'AddDiscount',
   DISCOUNT_UPDATE: 'UpdateDiscount',
-
+  PASSWORD: 'Password',
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',
   MY_PRODUCT: 'MyProduct',

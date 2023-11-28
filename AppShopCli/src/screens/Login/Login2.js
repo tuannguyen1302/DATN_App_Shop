@@ -42,10 +42,21 @@ const Login2 = ({navigation}) => {
       else if (password.length < 6)
         setError('Mật khẩu phải có ít nhất 6 kí tự');
       else {
-        const res = await apiPost(SIGNIN_API, {email, password, role: 'Shop'});
-        setItem('LoginUser', res.message);
-        console.log('Đăng nhập thành công');
-        navigation.replace('BottomTab');
+        try {
+          const res = await apiPost(SIGNIN_API, {
+            email: email,
+            password: password,
+            role: 'Shop',
+          });
+          let loginUserData = res.message;
+          console.log(loginUserData);
+          setItem('LoginUser', {...loginUserData, isChecked});
+          setButtonDisabled(false);
+          navigation.replace('BottomTab');
+        } catch (error) {
+          alert(error.message);
+          setButtonDisabled(false);
+        }
       }
       setTimeout(() => setButtonDisabled(false), 2000);
     }

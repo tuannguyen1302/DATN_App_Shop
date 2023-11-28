@@ -53,8 +53,8 @@ const Nganhsp = ({ navigation }) => {
       <View style={styles.horizontalLine} />
 
       <TouchableOpacity
-        style={[styles.form, selectedCategory === 'ao' && styles.selectedText]}
-        onPress={() => click('ao')}>
+        style={[styles.form, selectedCategory === 'Áo' && styles.selectedText]}
+        onPress={() => click('Áo')}>
         <Text style={styles.textfrom}>Áo</Text>
         <View style={styles.icon}>{renderIcon('Áo')}</View>
       </TouchableOpacity>
@@ -62,58 +62,58 @@ const Nganhsp = ({ navigation }) => {
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'quan' && styles.selectedText,
+          selectedCategory === 'Quần' && styles.selectedText,
         ]}
-        onPress={() => click('quan')}>
+        onPress={() => click('Quần')}>
         <Text style={styles.textfrom}>Quần</Text>
         <View style={styles.icon}>{renderIcon('Quần')}</View>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.form, selectedCategory === 'mu' && styles.selectedText]}
-        onPress={() => click('mu')}>
+        style={[styles.form, selectedCategory === 'Mũ' && styles.selectedText]}
+        onPress={() => click('Mũ')}>
         <Text style={styles.textfrom}>Mũ</Text>
         <View style={styles.icon}>{renderIcon('Mũ')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'trang suc' && styles.selectedText,
+          selectedCategory === 'Trang sức' && styles.selectedText,
         ]}
-        onPress={() => click('trang suc')}>
+        onPress={() => click('Trang sức')}>
         <Text style={styles.textfrom}>Trang sức </Text>
         <View style={styles.icon}>{renderIcon('Trang sức')}</View>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.form, selectedCategory === 'tui' && styles.selectedText]}
-        onPress={() => click('tui')}>
+        style={[styles.form, selectedCategory === 'Túi' && styles.selectedText]}
+        onPress={() => click('Túi')}>
         <Text style={styles.textfrom}>Túi</Text>
         <View style={styles.icon}>{renderIcon('Túi')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'dong ho' && styles.selectedText,
+          selectedCategory === 'Đồng Hồ' && styles.selectedText,
         ]}
-        onPress={() => click('dong ho')}>
+        onPress={() => click('Đồng Hồ')}>
         <Text style={styles.textfrom}>Đồng Hồ </Text>
         <View style={styles.icon}>{renderIcon('Đồng Hồ')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'nuoc hoa' && styles.selectedText,
+          selectedCategory === 'Nước Hoa' && styles.selectedText,
         ]}
-        onPress={() => click('nuoc hoa')}>
+        onPress={() => click('Nước Hoa')}>
         <Text style={styles.textfrom}>Nước Hoa </Text>
         <View style={styles.icon}>{renderIcon('Nước Hoa')}</View>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.form,
-          selectedCategory === 'giay' && styles.selectedText,
+          selectedCategory === 'Giầy' && styles.selectedText,
         ]}
-        onPress={() => click('giay')}>
+        onPress={() => click('Giầy')}>
         <Text style={styles.textfrom}>Giầy </Text>
         <View style={styles.icon}>{renderIcon('Giầy')}</View>
       </TouchableOpacity>

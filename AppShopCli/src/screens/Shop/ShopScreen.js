@@ -11,8 +11,8 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import React, {useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {apiGet} from '../../../utils/utils';
-import {API_BASE_URL, SHOP_API} from '../../../config/urls';
+import {apiGet} from '../../../src/utils/utils';
+import {API_BASE_URL, SHOP_API} from '../../../src/config/urls';
 
 const ShopScreen = () => {
   const [shopName, setShopName] = useState('');

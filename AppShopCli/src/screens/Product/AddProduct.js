@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Alert,
   FlatList,
@@ -16,9 +16,9 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useNavigation} from '@react-navigation/native';
-import {PRODUCT_API} from '../../config/urls';
-import {apiPost} from '../../utils/utils';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {PRODUCT_API} from '../../../src/config/urls';
+import {apiPost} from '../../../src/utils/utils';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -29,7 +29,9 @@ const AddProduct = () => {
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
   const route = useRoute();
-  const {selectedCategory, data} = route.params || {};
+
+  const {buil} = route.params || {};
+  const {selectedCategory} = route.params || {};
 
   const clearField = setField => setField('');
 
@@ -81,7 +83,7 @@ const AddProduct = () => {
     );
   };
   const hienthui = () => {
-    console.log(data);
+    console.log(buil);
     // console.log(selectedCategory);
   };
   const postApi = async () => {
@@ -100,8 +102,8 @@ const AddProduct = () => {
         return;
       }
 
-      const productAttributes = [data];
-      const product_attributes = JSON.parse(productAttributes);
+      const productAttributes = [buil];
+      //const product_attributes = JSON.parse(productAttributes);
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
@@ -119,7 +121,9 @@ const AddProduct = () => {
       const res = await apiPost(`${PRODUCT_API}/createProduct`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      console.log('okkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + res);
+      console.log(
+        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + JSON.stringify(res.message),
+      );
       navigation.goBack();
       console.log(formData);
     } catch (error) {
@@ -256,10 +260,20 @@ const AddProduct = () => {
           }}
           style={styles.nganhsp}>
           <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
-            Ngành sản phẩm{' '}
+            Ngành hàng sản phẩm
           </Text>
           <AntDesign name="right" size={20} />
         </Pressable>
+        <Text
+          style={{
+            fontSize: 18,
+            color: 'black',
+            padding: 5,
+            backgroundColor: 'white',
+            paddingLeft: 20,
+          }}>
+          Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
+        </Text>
         <Pressable
           onPress={() => {
             navigation.navigate('Phanloaisp');

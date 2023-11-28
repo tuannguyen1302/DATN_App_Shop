@@ -6,7 +6,7 @@ import * as Screens from '../screens';
 export default function (Stack) {
   return (
     <>
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationStrings.WELCOME1}
         component={Screens.GetStart}
       />
@@ -25,7 +25,7 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.SIGNUP}
         component={Screens.SignUp}
-      />
+      /> */}
       <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
         name={navigationStrings.MESSAGES}
@@ -90,6 +90,10 @@ export default function (Stack) {
           title: 'Kho hàng',
           headerTransparent: true,
         }}
+      />
+      <Stack.Screen
+        name={navigationStrings.PASSWORD}
+        component={Screens.Password}
       />
       <Stack.Screen
         name={navigationStrings.NGANH_SP}

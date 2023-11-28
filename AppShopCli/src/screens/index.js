@@ -26,3 +26,4 @@ export {default as Discountscreens} from './Discount/Discountscreens';
 export {default as DiscountItem} from './Discount/DiscountItem ';
 export {default as AddDiscount} from './Discount/AddDiscount';
 export {default as UpdateDiscount} from './Discount/UpdateDiscount';
+export {default as Password} from './Order/Password';
