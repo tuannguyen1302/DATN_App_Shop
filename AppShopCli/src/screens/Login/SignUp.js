@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -11,11 +11,12 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
-import { SIGNUP_API } from '../../config/urls';
+import {useNavigation} from '@react-navigation/native';
+import {SIGNUP_API} from '../../config/urls';
 import imagePath from '../../constants/imagePath';
 import {apiPost} from '../../utils/utils';
 import {SignUpStyle} from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
@@ -34,36 +35,34 @@ const SignUp = () => {
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const checkLogin = async () => {
-    if (!isButtonDisabled) {
-      setError('');
-      setButtonDisabled(true);
-      if (!email) setError('Email không được để trống');
-      else if (!isValidEmail(email)) setError('Email không đúng định dạng');
-      else if (!password || !confirmPassword)
-        setError('Mật khẩu không được để trống');
-      else if (password.length < 6 || confirmPassword.length < 6)
-        setError('Mật khẩu trên 6 kí tự');
-      else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
-        setError('Mật khẩu có in hoa, kí tự đặc biệt');
-      else if (password !== confirmPassword)
-        setError('Mật khẩu không trùng khớp');
-      else {
-        try {
-          await apiPost(SIGNUP_API, {
-            email: email,
-            password: password,
-            role: 'Shop',
-          });
+    setError('');
 
-          console.log('Đăng ký thành công');
-          navigation.navigate('Login2');
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      setTimeout(() => {
+    if (!email) setError('Email không được để trống');
+    else if (!isValidEmail(email)) setError('Email không đúng định dạng');
+    else if (!password || !confirmPassword)
+      setError('Mật khẩu không được để trống');
+    else if (password.length < 6 || confirmPassword.length < 6)
+      setError('Mật khẩu trên 6 kí tự');
+    else if (!isValidPassword(password) || !isValidPassword(confirmPassword))
+      setError('Mật khẩu có in hoa, kí tự đặc biệt');
+    else if (password !== confirmPassword)
+      setError('Mật khẩu không trùng khớp');
+    else {
+      try {
+        setButtonDisabled(true);
+        await apiPost(SIGNUP_API, {
+          email: email,
+          password: password,
+          role: 'Shop',
+        });
+
+        console.log('Đăng ký thành công');
         setButtonDisabled(false);
-      }, 2000);
+        navigation.navigate('Login2');
+      } catch (error) {
+        setButtonDisabled(false);
+        console.log(error);
+      }
     }
   };
 
@@ -117,6 +116,12 @@ const SignUp = () => {
         <SocialLoginButtons />
 
         <SignInLink onPress={() => navigation.navigate('Login2')} />
+
+        <Spinner
+          visible={isButtonDisabled}
+          textContent={'Loading...'}
+          textStyle={{color: '#FFF'}}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

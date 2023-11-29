@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, Image, TouchableOpacity, Pressable} from 'react-native';
+import {Text, View, Image, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {apiGet} from '../../utils/utils';
 import {API_BASE_URL, CHAT_API} from '../../config/urls';
 import {MessageItemStyles} from './styles';
-import {GiftedChat, Send} from 'react-native-gifted-chat';
+import {GiftedChat} from 'react-native-gifted-chat';
 import socketServices from '../../utils/socketService';
 
 const MessageItem = ({navigation, route}) => {
@@ -53,7 +52,7 @@ const MessageItem = ({navigation, route}) => {
             name: msg?.senderId === shopId ? 'Me' : name,
             avatar: `${API_BASE_URL}${avatar}`,
           },
-        }).reverse(),
+        }),
       );
     });
   }, []);
@@ -84,13 +83,13 @@ const MessageItem = ({navigation, route}) => {
         }}
         messagesContainerStyle={{backgroundColor: '#FAF0E6'}}
         textInputStyle={MessageItemStyles.input}
-        renderSend={props => (
-          <Send {...props} containerStyle={{justifyContent: 'center'}}>
-            <Pressable style={MessageItemStyles.sendButton}>
-              <MaterialIcons name="send" size={25} color={'white'} />
-            </Pressable>
-          </Send>
-        )}
+        // renderSend={props => (
+        //   <Send {...props} containerStyle={{justifyContent: 'center'}}>
+        //     <TouchableOpacity style={MessageItemStyles.sendButton}>
+        //       <MaterialIcons name="send" size={25} color={'white'} />
+        //     </TouchableOpacity>
+        //   </Send>
+        // )}
         isLoadingEarlier
         renderActions={() => (
           <TouchableOpacity style={{alignSelf: 'center', marginLeft: '3%'}}>

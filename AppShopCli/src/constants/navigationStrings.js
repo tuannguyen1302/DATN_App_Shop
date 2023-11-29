@@ -11,7 +11,7 @@ export default {
   PRODUCT: 'Product',
   ADD_PRODUCT: 'AddProduct',
   UPDATE_PRODUCT: 'UpdateProduct',
-  ORDER_SCREEN: 'OrderScreen',
+
   ORDER_HISTORY: 'OrderHistory',
   SHOP: 'ShopScreen',
   SHOP_UPDATE: 'ShopUpdate',
@@ -25,8 +25,11 @@ export default {
   DISCOUNT_ADD: 'AddDiscount',
   DISCOUNT_UPDATE: 'UpdateDiscount',
   PASSWORD: 'Password',
+  Setting: 'Setting',
+  NOTIFI: 'NotifiScreen',
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',
-  MY_PRODUCT: 'MyProduct',
+  HomeScreen: 'HomeScreen',
   ORDER: 'Order',
+  PROFILE: 'Profile',
 };

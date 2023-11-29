@@ -1,7 +1,8 @@
 import React from 'react';
 import navigationStrings from '../constants/navigationStrings';
-import TabRoutes from './TabRoutes';
+
 import * as Screens from '../screens';
+import TabRoutes from './TabRoutes';
 
 export default function (Stack) {
   return (
@@ -28,13 +29,16 @@ export default function (Stack) {
       />
       <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
-        name={navigationStrings.MESSAGES}
-        component={Screens.MessageScreen}
-        options={{ headerShown: true, title: 'Tin nhắn' }}
-      />
-      <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}
         component={Screens.MessItem}
+      />
+      <Stack.Screen
+        name={navigationStrings.NOTIFI}
+        component={Screens.NotifiScreen}
+        options={{
+          headerShown: true,
+          title: 'Thông báo',
+        }}
       />
       <Stack.Screen
         name={navigationStrings.SEARCH}
@@ -51,15 +55,6 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.UPDATE_PRODUCT}
         component={Screens.UpdateProduct}
-      />
-      <Stack.Screen
-        name={navigationStrings.ORDER_SCREEN}
-        component={Screens.OrderScreen}
-        options={{
-          headerShown: true,
-          title: 'Đơn hàng',
-          headerTransparent: true,
-        }}
       />
       <Stack.Screen
         name={navigationStrings.ORDER_HISTORY}
@@ -79,7 +74,6 @@ export default function (Stack) {
         options={{
           headerShown: true,
           title: 'Thống kê',
-          headerTransparent: true,
         }}
       />
       <Stack.Screen
@@ -88,7 +82,6 @@ export default function (Stack) {
         options={{
           headerShown: true,
           title: 'Kho hàng',
-          headerTransparent: true,
         }}
       />
       <Stack.Screen
@@ -118,6 +111,10 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.DISCOUNT_UPDATE}
         component={Screens.UpdateDiscount}
+      />
+      <Stack.Screen
+        name={navigationStrings.Setting}
+        component={Screens.Setting}
       />
     </>
   );

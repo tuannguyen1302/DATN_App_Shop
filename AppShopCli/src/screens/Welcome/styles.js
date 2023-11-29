@@ -20,16 +20,6 @@ const commonStyles = StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 100,
   },
-  welcomeTextContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: moderateScale(20),
-  },
-  welcomeText: {
-    color: colors.white,
-    fontSize: textScale(30),
-    fontWeight: 'bold',
-  },
   iconContainer: {
     alignSelf: 'flex-end',
     marginRight: moderateScale(20),

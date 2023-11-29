@@ -49,7 +49,7 @@ const Password = () => {
         </View>
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 5 }}>
-        <Image source={imagePath.logo2} style={styles.logo} />
+        <Image source={imagePath.logo} style={styles.logo} />
       </View>
 
       <View style={{ marginHorizontal: 20, padding: 10 }}>
@@ -124,7 +124,7 @@ export default Password;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#D8D7D7',
+    backgroundColor: '#FFFFFF',
     flex: 1,
     paddingBottom: 20,
   },

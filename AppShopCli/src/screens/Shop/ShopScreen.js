@@ -13,6 +13,8 @@ import React, { useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { apiGet } from '../../../src/utils/utils';
 import { API_BASE_URL, SHOP_API } from '../../../src/config/urls';
+import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ShopScreen = () => {
   const [shopName, setShopName] = useState('');
@@ -54,50 +56,66 @@ const ShopScreen = () => {
               <AntDesign name="arrowleft" size={30} color={'black'} />
             </Pressable>
             <Text style={styles.titleText}>Thông tin shop </Text>
+
+
+            <Ionicons name="settings-sharp" size={30} color="#333" />
+
+          </View>
+        </View>
+
+        <View style={styles.avatarSection}>
+          <View>
+            {avatarSource?.uri ? (
+              <Image style={styles.avatar} source={{ uri: avatarSource?.uri }} />
+            ) : (
+              <Image
+                style={styles.avatar}
+                source={{
+                  uri: 'https://i.ytimg.com/vi/Sj0NENb2nT4/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBk8S6cRMKFRWzWWGT8hOL1e0LO3w',
+                }}
+              />
+            )}
             <Pressable
               onPress={() => {
                 navigation.navigate('ShopUpdate');
-              }}>
-              <Text style={styles.saveText}>Sửa </Text>
+              }}
+              style={{ width: 30, height: 30, borderRadius: 20, backgroundColor: '#474747', marginLeft: 80, marginTop: -30, justifyContent: 'center', alignItems: 'center' }} >
+              <Feather color={'white'} name="edit-3" size={20} />
             </Pressable>
           </View>
+          <View style={{ marginHorizontal: 10, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'black' }} > {shopName} </Text>
+            <Text style={{ fontSize: 20, color: '#575656' }} > {shopEmail} </Text>
+            <Text style={{ fontSize: 20, color: '#575656' }} > {shopPhone} </Text>
+          </View>
+
         </View>
-        <View style={styles.avatarSection}>
-          {avatarSource?.uri ? (
-            <Image style={styles.avatar} source={{ uri: avatarSource?.uri }} />
-          ) : (
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: 'https://i.ytimg.com/vi/Sj0NENb2nT4/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBk8S6cRMKFRWzWWGT8hOL1e0LO3w',
-              }}
-            />
-          )}
+        <View style={styles.hori}>
+        </View>
+
+        <View style={styles.viewname}>
+          <Text style={styles.text}> Tên Cửa Hàng: </Text>
+          <Text style={styles.otxt} > {shopName} </Text>
         </View>
         <View style={styles.viewname}>
-          <Text style={{ ...styles.txt, fontSize: 20 }}>Tên cửa hàng: </Text>
-          <Text style={{ fontSize: 18, color: 'black' }}>{shopName}</Text>
+          <Text style={styles.text} > Địa chỉ cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopAddress} </Text>
         </View>
         <View style={styles.viewname}>
-          <Text style={styles.txt}>Mô Tả cửa hàng: </Text>
-          <Text style={{ fontSize: 18, color: 'black', marginLeft: 2 }}>
-            {shopDescription}
-          </Text>
+          <Text style={styles.text} > SĐT cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopPhone} </Text>
         </View>
         <View style={styles.viewname}>
-          <Text style={styles.txt}>Địa chỉ cửa hàng: </Text>
-          <Text style={{ fontSize: 18, color: 'black' }}>{shopAddress}</Text>
+          <Text style={styles.text} > Email cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopEmail} </Text>
         </View>
         <View style={styles.viewname}>
-          <Text style={styles.txt}>Số điện thoại: </Text>
-          <Text style={{ fontSize: 18, color: 'black' }}>{shopPhone}</Text>
+          <Text style={styles.text} > Mô tả cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopDescription} </Text>
         </View>
-        <View style={styles.viewname}>
-          <Text style={styles.txt}>Email: </Text>
-          <Text style={{ fontSize: 18, color: 'black' }}>{shopEmail}</Text>
-        </View>
+
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 };
 const styles = StyleSheet.create({
@@ -126,32 +144,45 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  anh: {
-    backgroundColor: 'red',
-    height: 200,
-  },
+
   avatarSection: {
-    height: 250,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-    marginBottom: 20,
+    alignItems: 'flex-start',
+    justifyContent: 'ceter',
+    marginTop: 20,
+    marginBottom: 25,
+    marginLeft: 30,
+    flexDirection: 'row'
   },
   avatar: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     borderRadius: 100,
   },
   viewname: {
-    backgroundColor: '#F0F0F0',
-    marginHorizontal: 20,
-    borderRadius: 15,
-    marginTop: 20,
-    padding: 10,
-    paddingRight: 20,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+
+    marginTop: 25,
+    marginHorizontal: 30,
+
   },
-  txt: { fontSize: 20, fontWeight: '600', color: 'black' },
+
+  hori: {
+    height: 1,
+    borderWidth: 1,
+    borderColor: '#A8A8A880',
+    marginHorizontal: 30
+
+  }, otxt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    borderRadius: 20,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    height: 50,
+    lineHeight: 50,
+    textAlignVertical: 'center',
+    paddingLeft: 20,
+    marginTop: 5,
+    color: 'black'
+  }, text: { fontSize: 20, marginLeft: 20, fontWeight: 'bold' }
 });
 export default ShopScreen;

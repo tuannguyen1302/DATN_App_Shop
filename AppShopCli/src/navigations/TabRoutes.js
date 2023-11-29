@@ -3,13 +3,14 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import navigationStrings from '../constants/navigationStrings';
 import * as Screens from '../screens';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabRoutes() {
   return (
     <Tab.Navigator
-      initialRouteName={navigationStrings.MY_PRODUCT}
+      initialRouteName={navigationStrings.HomeScreen}
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {height: 60, borderTopWidth: 1},
@@ -17,25 +18,31 @@ export default function TabRoutes() {
         tabBarActiveTintColor: '#000',
       }}>
       <Tab.Screen
-        name={navigationStrings.MY_PRODUCT}
-        component={Screens.MyProduct}
-        options={tabOptions('box-open', 'box')}
+        name={navigationStrings.HomeScreen}
+        component={Screens.HomeScreen}
+        options={tabOptions('home', FontAwesome5)}
+      />
+      <Tab.Screen
+        name={navigationStrings.MESSAGES}
+        component={Screens.MessageScreen}
+        options={tabOptions('message1', AntDesign)}
       />
       <Tab.Screen
         name={navigationStrings.ORDER}
-        component={Screens.Order}
-        options={tabOptions('clipboard', 'clipboard-list')}
+        component={Screens.OrderScreen}
+        options={tabOptions('profile', AntDesign)}
+      />
+      <Tab.Screen
+        name={navigationStrings.PROFILE}
+        component={Screens.ProfileScreen}
+        options={tabOptions('user-alt', FontAwesome5)}
       />
     </Tab.Navigator>
   );
 }
 
-const tabOptions = (iconNameFocused, iconNameUnfocused) => ({
-  tabBarIcon: ({focused, size, color}) => (
-    <FontAwesome5
-      name={focused ? iconNameFocused : iconNameUnfocused}
-      size={size}
-      color={color}
-    />
+const tabOptions = (focused, Icons) => ({
+  tabBarIcon: ({size, color}) => (
+    <Icons name={focused} size={size} color={color} />
   ),
 });
