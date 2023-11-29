@@ -9,10 +9,10 @@ import {
   ScrollView,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import React, {useState} from 'react';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {apiGet} from '../../../src/utils/utils';
-import {API_BASE_URL, SHOP_API} from '../../../src/config/urls';
+import React, { useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { apiGet } from '../../../src/utils/utils';
+import { API_BASE_URL, SHOP_API } from '../../../src/config/urls';
 
 const ShopScreen = () => {
   const [shopName, setShopName] = useState('');
@@ -63,29 +63,38 @@ const ShopScreen = () => {
           </View>
         </View>
         <View style={styles.avatarSection}>
-          <Image style={styles.avatar} source={{uri: avatarSource?.uri}} />
+          {avatarSource?.uri ? (
+            <Image style={styles.avatar} source={{ uri: avatarSource?.uri }} />
+          ) : (
+            <Image
+              style={styles.avatar}
+              source={{
+                uri: 'https://i.ytimg.com/vi/Sj0NENb2nT4/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBk8S6cRMKFRWzWWGT8hOL1e0LO3w',
+              }}
+            />
+          )}
         </View>
         <View style={styles.viewname}>
-          <Text style={{...styles.txt, fontSize: 20}}>Tên cửa hàng: </Text>
-          <Text style={{fontSize: 18, color: 'black'}}>{shopName}</Text>
+          <Text style={{ ...styles.txt, fontSize: 20 }}>Tên cửa hàng: </Text>
+          <Text style={{ fontSize: 18, color: 'black' }}>{shopName}</Text>
         </View>
         <View style={styles.viewname}>
           <Text style={styles.txt}>Mô Tả cửa hàng: </Text>
-          <Text style={{fontSize: 18, color: 'black', marginLeft: 2}}>
+          <Text style={{ fontSize: 18, color: 'black', marginLeft: 2 }}>
             {shopDescription}
           </Text>
         </View>
         <View style={styles.viewname}>
           <Text style={styles.txt}>Địa chỉ cửa hàng: </Text>
-          <Text style={{fontSize: 18, color: 'black'}}>{shopName}</Text>
+          <Text style={{ fontSize: 18, color: 'black' }}>{shopAddress}</Text>
         </View>
         <View style={styles.viewname}>
           <Text style={styles.txt}>Số điện thoại: </Text>
-          <Text style={{fontSize: 18, color: 'black'}}>{shopPhone}</Text>
+          <Text style={{ fontSize: 18, color: 'black' }}>{shopPhone}</Text>
         </View>
         <View style={styles.viewname}>
           <Text style={styles.txt}>Email: </Text>
-          <Text style={{fontSize: 18, color: 'black'}}>{shopEmail}</Text>
+          <Text style={{ fontSize: 18, color: 'black' }}>{shopEmail}</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -143,6 +152,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  txt: {fontSize: 20, fontWeight: '600', color: 'black'},
+  txt: { fontSize: 20, fontWeight: '600', color: 'black' },
 });
 export default ShopScreen;

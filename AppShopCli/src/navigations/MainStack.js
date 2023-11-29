@@ -6,7 +6,7 @@ import * as Screens from '../screens';
 export default function (Stack) {
   return (
     <>
-      {/* <Stack.Screen
+      <Stack.Screen
         name={navigationStrings.WELCOME1}
         component={Screens.GetStart}
       />
@@ -25,12 +25,12 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.SIGNUP}
         component={Screens.SignUp}
-      /> */}
+      />
       <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
         name={navigationStrings.MESSAGES}
         component={Screens.MessageScreen}
-        options={{headerShown: true, title: 'Tin nhắn'}}
+        options={{ headerShown: true, title: 'Tin nhắn' }}
       />
       <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}
