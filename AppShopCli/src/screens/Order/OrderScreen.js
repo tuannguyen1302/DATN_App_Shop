@@ -26,11 +26,8 @@ const STATUS_TRANSLATIONS = {
 
 const tabNavigatorOptions = route => ({
   tabBarStyle: {
-    borderColor: 'gray',
-    borderWidth: 0.5,
     borderRadius: 10,
     marginHorizontal: '2%',
-    marginTop: '13%',
   },
   tabBarLabel: ({focused}) => (
     <Text style={{color: focused ? 'black' : 'grey', fontWeight: '500'}}>
@@ -42,6 +39,32 @@ const tabNavigatorOptions = route => ({
 const OrderScreen = () => {
   return (
     <View style={OrderScrStyle.container}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginHorizontal: '5%',
+          alignItems: 'center',
+        }}>
+        <Image
+          style={{
+            width: 50,
+            height: 50,
+            borderWidth: 1,
+            borderColor: 'green',
+            borderRadius: 20,
+          }}
+          source={imagePath.logo}
+        />
+        <Text
+          style={{
+            left: '20%',
+            fontSize: 22,
+            color: 'black',
+            fontWeight: '600',
+          }}>
+          Order
+        </Text>
+      </View>
       <Tab.Navigator screenOptions={({route}) => tabNavigatorOptions(route)}>
         <Tab.Screen name="Đơn hàng" component={OrderListScreen} />
         <Tab.Screen name="Đang giao" component={InDeliveryScreen} />

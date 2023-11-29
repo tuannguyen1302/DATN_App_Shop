@@ -17,7 +17,7 @@ const Login1Style = StyleSheet.create({
     color: '#000000',
     fontSize: 40,
     fontFamily: fontFamily.blackFont,
-    fontWeight: '500',
+    fontWeight: '600',
     textAlign: 'center',
     marginBottom: '5%',
   },
@@ -101,7 +101,8 @@ const Login2Style = StyleSheet.create({
   },
   title: {
     fontSize: 45,
-    fontWeight: 'bold',
+    color: '#222',
+    fontWeight: '700',
     textAlign: 'center',
   },
   inputField: {

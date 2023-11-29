@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Image, Text, ActivityIndicator} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {View, Image, ActivityIndicator} from 'react-native';
 import commonStyles from './styles';
 import imagePath from '../../constants/imagePath';
 import colors from '../../styles/colors';
@@ -28,13 +27,9 @@ const WelcomeScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={[commonStyles.container, {backgroundColor: colors.black}]}>
-      <View style={commonStyles.welcomeTextContainer}>
-        <Text style={commonStyles.welcomeText}>Welcome</Text>
-        <Text style={commonStyles.welcomeText}>Welcome</Text>
-      </View>
-      <Image source={imagePath.logo1} style={commonStyles.logo} />
-      <ActivityIndicator size={45} color={'white'} />
+    <View style={commonStyles.container}>
+      <Image source={imagePath.logo} style={commonStyles.logo} />
+      <ActivityIndicator size={45} color={colors.black} />
     </View>
   );
 };

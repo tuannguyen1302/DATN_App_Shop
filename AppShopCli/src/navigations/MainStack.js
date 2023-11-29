@@ -6,7 +6,7 @@ import * as Screens from '../screens';
 export default function (Stack) {
   return (
     <>
-      {/* <Stack.Screen
+      <Stack.Screen
         name={navigationStrings.WELCOME1}
         component={Screens.GetStart}
       />
@@ -25,16 +25,19 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.SIGNUP}
         component={Screens.SignUp}
-      /> */}
-      <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
-      <Stack.Screen
-        name={navigationStrings.MESSAGES}
-        component={Screens.MessageScreen}
-        options={{headerShown: true, title: 'Tin nhắn'}}
       />
+      <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}
         component={Screens.MessItem}
+      />
+      <Stack.Screen
+        name={navigationStrings.NOTIFI}
+        component={Screens.NotifiScreen}
+        options={{
+          headerShown: true,
+          title: 'Thông báo',
+        }}
       />
       <Stack.Screen
         name={navigationStrings.SEARCH}
@@ -51,15 +54,6 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.UPDATE_PRODUCT}
         component={Screens.UpdateProduct}
-      />
-      <Stack.Screen
-        name={navigationStrings.ORDER_SCREEN}
-        component={Screens.OrderScreen}
-        options={{
-          headerShown: true,
-          title: 'Đơn hàng',
-          headerTransparent: true,
-        }}
       />
       <Stack.Screen
         name={navigationStrings.ORDER_HISTORY}
@@ -79,7 +73,6 @@ export default function (Stack) {
         options={{
           headerShown: true,
           title: 'Thống kê',
-          headerTransparent: true,
         }}
       />
       <Stack.Screen
@@ -88,7 +81,6 @@ export default function (Stack) {
         options={{
           headerShown: true,
           title: 'Kho hàng',
-          headerTransparent: true,
         }}
       />
       <Stack.Screen

@@ -1,4 +1,3 @@
-// MyProduct.js
 import React, {useEffect, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -6,15 +5,17 @@ import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from '../Product/ProductScreen';
 import {API_BASE_URL, SHOP_API} from '../../config/urls';
 import {apiGet} from '../../utils/utils';
-import {MyProductStyles} from './styles';
+import HomeStyle from './styles';
+import socketServices from '../../utils/socketService';
 
-const MyProduct = ({navigation}) => {
+const HomeScreen = ({navigation}) => {
   const [account, setAccount] = useState();
 
   const getApi = async () => {
     try {
       const res = await apiGet(`${SHOP_API}/getShopForShop`);
       setAccount(res?.message);
+      socketServices.emit('new-user-add', res?.message?._id);
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -25,35 +26,24 @@ const MyProduct = ({navigation}) => {
   }, []);
 
   return (
-    <View style={MyProductStyles.container}>
-      <View style={MyProductStyles.header}>
+    <View style={HomeStyle.container}>
+      <View style={HomeStyle.header}>
         <Image
-          style={MyProductStyles.avatarShop}
+          style={HomeStyle.avatarShop}
           source={{uri: `${API_BASE_URL}${account?.avatarShop}`}}
         />
-        <View style={MyProductStyles.headerTextContainer}>
-          <Text style={MyProductStyles.name}>{account?.nameShop}</Text>
-          <Text style={MyProductStyles.shopName}>{account?.des}</Text>
-        </View>
-        <View style={MyProductStyles.headerIconsContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MessageScreen')}>
-            <Ionicons
-              name="chatbubble-ellipses-outline"
-              size={30}
-              color={'#333'}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="notifications-outline" size={30} color="#333" />
-          </TouchableOpacity>
-        </View>
+        <Text style={HomeStyle.name}>Hello, {account?.nameShop}!</Text>
+        <TouchableOpacity
+          style={HomeStyle.button}
+          onPress={() => navigation.navigate('NotifiScreen')}>
+          <Ionicons name="notifications-outline" size={30} color="#333" />
+        </TouchableOpacity>
       </View>
 
       <ProductScreen navigation={navigation} />
 
       <TouchableOpacity
-        style={MyProductStyles.btnAdd}
+        style={HomeStyle.btnAdd}
         onPress={() => {
           navigation.navigate('AddProduct');
         }}>
@@ -63,4 +53,4 @@ const MyProduct = ({navigation}) => {
   );
 };
 
-export default MyProduct;
+export default HomeScreen;

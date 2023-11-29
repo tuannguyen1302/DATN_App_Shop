@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 const MessageScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   titleContainer: {
     width: '100%',
@@ -25,7 +26,7 @@ const MessageScreenStyles = StyleSheet.create({
     backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 5,
+    marginVertical: 5,
   },
   statusIcon: {
     position: 'absolute',
