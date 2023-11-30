@@ -7,26 +7,7 @@ import TabRoutes from './TabRoutes';
 export default function (Stack) {
   return (
     <>
-      <Stack.Screen
-        name={navigationStrings.WELCOME1}
-        component={Screens.GetStart}
-      />
-      <Stack.Screen
-        name={navigationStrings.WELCOME2}
-        component={Screens.GetStart2}
-      />
-      <Stack.Screen
-        name={navigationStrings.LOGIN1}
-        component={Screens.Login1}
-      />
-      <Stack.Screen
-        name={navigationStrings.LOGIN2}
-        component={Screens.Login2}
-      />
-      <Stack.Screen
-        name={navigationStrings.SIGNUP}
-        component={Screens.SignUp}
-      />
+
       <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}

@@ -126,26 +126,28 @@ const ProfileSceen = () => {
       </View>
       <View style={styles.hori}>
       </View>
+      <View style={{ marginBottom: 20 }}>
 
-      <View style={styles.viewname}>
-        <Text style={styles.text}> Tên Cửa Hàng: </Text>
-        <Text style={styles.otxt} > {shopName} </Text>
-      </View>
-      <View style={styles.viewname}>
-        <Text style={styles.text} > Địa chỉ cửa hàng:</Text>
-        <Text style={styles.otxt}> {shopAddress} </Text>
-      </View>
-      <View style={styles.viewname}>
-        <Text style={styles.text} > SĐT cửa hàng:</Text>
-        <Text style={styles.otxt}> {shopPhone} </Text>
-      </View>
-      <View style={styles.viewname}>
-        <Text style={styles.text} > Email cửa hàng:</Text>
-        <Text style={styles.otxt}> {shopEmail} </Text>
-      </View>
-      <View style={styles.viewname}>
-        <Text style={styles.text} > Mô tả cửa hàng:</Text>
-        <Text style={styles.otxt}> {shopDescription} </Text>
+        <View style={styles.viewname}>
+          <Text style={styles.text}> Tên Cửa Hàng: </Text>
+          <Text style={styles.otxt} > {shopName} </Text>
+        </View>
+        <View style={styles.viewname}>
+          <Text style={styles.text} > Địa chỉ cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopAddress} </Text>
+        </View>
+        <View style={styles.viewname}>
+          <Text style={styles.text} > SĐT cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopPhone} </Text>
+        </View>
+        <View style={styles.viewname}>
+          <Text style={styles.text} > Email cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopEmail} </Text>
+        </View>
+        <View style={styles.viewname}>
+          <Text style={styles.text} > Mô tả cửa hàng:</Text>
+          <Text style={styles.otxt}> {shopDescription} </Text>
+        </View>
       </View>
 
     </ScrollView>
@@ -154,8 +156,9 @@ const ProfileSceen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
     flex: 1,
+
   },
   header: {
     height: 60,
@@ -216,7 +219,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginTop: 5,
     color: '#000000',
-    marginHorizontal: 10
+    marginHorizontal: 10,
+
   },
   text: { fontSize: 20, marginLeft: 20, fontWeight: 'bold', color: 'black' }
 });
