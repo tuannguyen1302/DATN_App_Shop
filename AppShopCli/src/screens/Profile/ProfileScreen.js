@@ -13,6 +13,8 @@ import { apiGet } from '../../../src/utils/utils';
 import { API_BASE_URL, SHOP_API } from '../../../src/config/urls';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Spinner from 'react-native-loading-spinner-overlay';
 import imagePath from '../../constants/imagePath';
 import { TouchableOpacity } from 'react-native';
 
@@ -150,6 +152,7 @@ const ProfileSceen = () => {
           <Text style={styles.otxt}> {shopDescription} </Text>
         </View>
       </View>
+
 
     </ScrollView>
   );

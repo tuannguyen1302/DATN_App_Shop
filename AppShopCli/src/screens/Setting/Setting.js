@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Pressable,
     Text,
@@ -14,19 +14,28 @@ import { apiDelete, clearAllItem } from '../../utils/utils';
 import { SIGNOUT_API } from '../../config/urls';
 import socketServices from '../../utils/socketService';
 import ProfileStyles from '../Profile/styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const Setting = ({ navigation }) => {
+    const [isButtonDisabled, setButtonDisabled] = useState(false);
     const logout = async () => {
-        await apiDelete(SIGNOUT_API);
-        clearAllItem();
-        socketServices.emit('logout');
-        navigation.replace('Login2');
+        setButtonDisabled(true);
+        try {
+            await apiDelete(SIGNOUT_API);
+            clearAllItem();
+            socketServices.emit('logout');
+            setButtonDisabled(false);
+            navigation.replace('Login2');
+        } catch (error) {
+            setButtonDisabled(false);
+            console.log('Logout: ', error);
+        }
     };
     return (
-        <ScrollView style={ProfileStyles.container}>
+        <View style={ProfileStyles.container}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -60,6 +69,7 @@ const Setting = ({ navigation }) => {
                     </Text>
                 </View>
             </View>
+
             <View style={ProfileStyles.content}>
                 <Text style={ProfileStyles.headerText}>Quản lý</Text>
                 <Pressable
@@ -155,7 +165,12 @@ const Setting = ({ navigation }) => {
                     </View>
                 </Pressable>
             </View>
-        </ScrollView>
+            <Spinner
+                visible={isButtonDisabled}
+                textContent={'Đang đăng xuất...'}
+                textStyle={{ color: '#FFF' }}
+            />
+        </View>
     );
 };
 export default Setting

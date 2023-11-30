@@ -40,8 +40,9 @@ const OrderScreen = () => {
     <View style={OrderScrStyle.container}>
       <View
         style={{
-          marginTop: 15,
+          marginVertical: 15,
           flexDirection: 'row',
+          marginHorizontal: '5%',
           marginHorizontal: '5%',
           alignItems: 'center',
         }}>
@@ -87,10 +88,6 @@ const fetchOrdersByStatus = async (setArray, text, setLoading) => {
   }
 };
 
-const ImageComponent = ({source}) => (
-  <Image style={OrderScrStyle.image} source={source} />
-);
-
 const OrderListScreen = ({navigation}) => {
   const [array, setArray] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -112,7 +109,6 @@ const OrderListScreen = ({navigation}) => {
           renderItem={({item}) => renderItem(item, navigation)}
         />
       )}
-      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
@@ -138,7 +134,6 @@ const InDeliveryScreen = ({navigation}) => {
           renderItem={({item}) => renderItem(item, navigation)}
         />
       )}
-      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
@@ -164,7 +159,6 @@ const DeliveredScreen = ({navigation}) => {
           renderItem={({item}) => renderItem(item, navigation)}
         />
       )}
-      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };
@@ -190,7 +184,6 @@ const CanceledScreen = ({navigation}) => {
           renderItem={({item}) => renderItem(item, navigation)}
         />
       )}
-      <ImageComponent source={imagePath.order1} />
     </View>
   );
 };

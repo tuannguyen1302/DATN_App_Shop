@@ -8,8 +8,10 @@ const ProfileStyles = StyleSheet.create({
     flex: 1,
   },
   content: {
+    flex: 1,
     marginVertical: windowHeight * 0.05,
     marginHorizontal: windowWidth * 0.05,
+
   },
   headerText: {
     fontSize: windowWidth * 0.06,

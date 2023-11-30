@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  PermissionsAndroid,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from '../Product/ProductScreen';
@@ -7,9 +13,25 @@ import {API_BASE_URL, SHOP_API} from '../../config/urls';
 import {apiGet} from '../../utils/utils';
 import HomeStyle from './styles';
 import socketServices from '../../utils/socketService';
+import {Notifications} from 'react-native-notifications';
 
 const HomeScreen = ({navigation}) => {
   const [account, setAccount] = useState();
+
+  const handlePress = async () => {
+    try {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      Notifications.postLocalNotification({
+        title: 'Thông báo',
+        body: 'Đây là một thông báo mẫu',
+        extra: 'data',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getApi = async () => {
     try {
