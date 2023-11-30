@@ -59,9 +59,11 @@ const MessageScreen = ({navigation}) => {
     <View style={MessageScreenStyles.container}>
       <View
         style={{
+          marginTop: 15,
           flexDirection: 'row',
           marginHorizontal: '5%',
           alignItems: 'center',
+          marginBottom: '2%',
         }}>
         <Image
           style={{
@@ -95,7 +97,6 @@ const MessageScreen = ({navigation}) => {
                 avatar: item?.user?.user_avatar,
               });
             }}
-            containerStyle={{marginVertical: 1}}
             rightContent={() => renderButton(item?._id, 'right')}
             bottomDivider>
             <Avatar

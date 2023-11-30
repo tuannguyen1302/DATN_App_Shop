@@ -60,8 +60,17 @@ const MessageItem = ({navigation, route}) => {
   return (
     <View style={MessageItemStyles.container}>
       <View style={MessageItemStyles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={25} color={'black'} />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <AntDesign name="left" size={20} color={'black'} />
         </TouchableOpacity>
         <View style={MessageItemStyles.userInfo}>
           <Image
@@ -81,7 +90,6 @@ const MessageItem = ({navigation, route}) => {
         user={{
           _id: shopId,
         }}
-        messagesContainerStyle={{backgroundColor: '#FAF0E6'}}
         textInputStyle={MessageItemStyles.input}
         // renderSend={props => (
         //   <Send {...props} containerStyle={{justifyContent: 'center'}}>

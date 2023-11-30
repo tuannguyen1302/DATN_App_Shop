@@ -46,6 +46,7 @@ const ProfileSceen = () => {
       console.log('Post api: ', error.message);
     }
   };
+
   useFocusEffect(
     React.useCallback(() => {
       getApi();

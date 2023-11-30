@@ -288,9 +288,10 @@ const styles = StyleSheet.create({
   },
   productItem: {
     padding: '2%',
-    height: 100,
+    elevation: 3,
+    height: 120,
     borderRadius: 10,
-    borderWidth: 0.5,
+    borderWidth: 0.2,
     borderColor: 'gray',
     marginBottom: '2%',
     marginHorizontal: '4%',
@@ -300,8 +301,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   productImage: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     resizeMode: 'cover',
     borderRadius: 10,
   },

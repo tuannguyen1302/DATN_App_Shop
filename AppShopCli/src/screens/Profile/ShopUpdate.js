@@ -60,6 +60,7 @@ const ShopUpdate = () => {
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
           ToastAndroid.SHORT,
         );
+
         return;
       }
 
@@ -76,12 +77,13 @@ const ShopUpdate = () => {
       let type = match ? `image/${match[1]}` : `image`;
       formData.append('avatar', { uri: localUri, name: filename, type });
 
+      //navigation.goBack();
       const res = await apiPut(`${SHOP_API}/updateShop`, formData, {
         'Content-Type': 'multipart/form-data',
       });
 
       console.log(res.message);
-      navigation.navigate('ShopScreen');
+      navigation.navigate('Profile')
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -207,7 +209,7 @@ const ShopUpdate = () => {
         </View>
       </ScrollView>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={postApi} >
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
 
@@ -225,6 +227,7 @@ const styles = StyleSheet.create({
   header: {
     height: 60,
     justifyContent: 'center',
+    marginTop: 20
   },
   rowHeader: {
     flexDirection: 'row',

@@ -1,13 +1,31 @@
 import React from 'react';
 import navigationStrings from '../constants/navigationStrings';
-
-import * as Screens from '../screens';
 import TabRoutes from './TabRoutes';
+import * as Screens from '../screens';
 
 export default function (Stack) {
   return (
     <>
-
+      <Stack.Screen
+        name={navigationStrings.WELCOME1}
+        component={Screens.GetStart}
+      />
+      <Stack.Screen
+        name={navigationStrings.WELCOME2}
+        component={Screens.GetStart2}
+      />
+      <Stack.Screen
+        name={navigationStrings.LOGIN1}
+        component={Screens.Login1}
+      />
+      <Stack.Screen
+        name={navigationStrings.LOGIN2}
+        component={Screens.Login2}
+      />
+      <Stack.Screen
+        name={navigationStrings.SIGNUP}
+        component={Screens.SignUp}
+      />
       <Stack.Screen name={navigationStrings.TAB_ROUTER} component={TabRoutes} />
       <Stack.Screen
         name={navigationStrings.CHAT_MESSAGS}
@@ -16,10 +34,6 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.NOTIFI}
         component={Screens.NotifiScreen}
-        options={{
-          headerShown: true,
-          title: 'Thông báo',
-        }}
       />
       <Stack.Screen
         name={navigationStrings.SEARCH}
@@ -92,10 +106,6 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.DISCOUNT_UPDATE}
         component={Screens.UpdateDiscount}
-      />
-      <Stack.Screen
-        name={navigationStrings.Setting}
-        component={Screens.Setting}
       />
     </>
   );

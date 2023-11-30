@@ -3,10 +3,10 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   ScrollView,
   TouchableOpacity,
   ToastAndroid,
+  StyleSheet,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -14,7 +14,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 import {API_BASE_URL, ORDER_API} from '../../config/urls';
 import {apiPatch} from '../../utils/utils';
-import {OrderHisStyle} from './styles';
 
 const statusTranslations = {
   pending: 'Phê duyệt',
@@ -23,7 +22,7 @@ const statusTranslations = {
   delivered: 'Đã giao hàng',
 };
 
-const OrderHistory = ({route}) => {
+const UpdatedOrderHistory = ({route}) => {
   const navigation = useNavigation();
   const {orderItem} = route.params;
 
@@ -48,115 +47,237 @@ const OrderHistory = ({route}) => {
   };
 
   return (
-    <ScrollView style={OrderHisStyle.container}>
-      <View style={OrderHisStyle.header}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={30} color={'white'} />
-        </Pressable>
-        <Text style={OrderHisStyle.titleText}>Thông tin đơn hàng</Text>
-        <View style={{width: 30}}></View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text style={styles.titleText}>Thông tin đơn hàng</Text>
       </View>
-
-      <Image
-        style={OrderHisStyle.avatar}
-        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
-      />
-
-      <View style={OrderHisStyle.row}>
-        <View style={OrderHisStyle.column}>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="person" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>{orderItem?.user_name}</Text>
-          </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="phone" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>{orderItem?.phoneNumber}</Text>
-          </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="location-on" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
-              {orderItem?.order_shipping.City}
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.productInfoContainer}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`,
+            }}
+          />
+          <View style={styles.productDetails}>
+            <Text numberOfLines={2} style={styles.productName}>
+              {orderItem?.product_name}
             </Text>
-          </View>
-        </View>
-
-        <View style={OrderHisStyle.column}>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="shopping-cart" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>{orderItem?.product_name}</Text>
-          </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="local-mall" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
+            <Text style={styles.productAttribute}>
               Số lượng: {orderItem?.product_attributes?.quantity}
             </Text>
-          </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="color-lens" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
+            <Text style={styles.productAttribute}>
               Màu: {orderItem?.product_attributes?.color} | Size:{' '}
               {orderItem?.product_attributes?.size}
             </Text>
           </View>
         </View>
-      </View>
-
-      <View style={OrderHisStyle.row}>
-        <View style={OrderHisStyle.infoSection}>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="attach-money" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
-              Giá: {orderItem?.order_checkout?.totalPrice}
-            </Text>
+        <View style={styles.separator} />
+        <TouchableOpacity
+          style={styles.statusButton}
+          // onPress={() => handleApproval(false)}
+        >
+          <Text style={[styles.buttonText, {color: 'red'}]}>Hủy đơn</Text>
+        </TouchableOpacity>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Khách hàng:</Text>
+            <Text style={styles.infoText}>{orderItem?.user_name}</Text>
           </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="local-shipping" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
-              Ship: {orderItem?.order_checkout?.feeShip}
-            </Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Số điện thoại:</Text>
+            <Text style={styles.infoText}>{orderItem?.phoneNumber}</Text>
           </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="local-offer" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
-              Giảm giá: {orderItem?.order_checkout?.totalDiscount}
-            </Text>
-          </View>
-          <View style={OrderHisStyle.infoRow}>
-            <MaterialIcons name="payment" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
-              Tổng: {orderItem?.order_checkout?.totalCheckout}
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Địa chỉ:</Text>
+            <Text style={styles.infoText}>
+              {orderItem?.order_shipping.City}
             </Text>
           </View>
         </View>
 
-        <View style={OrderHisStyle.infoSection}>
-          <View style={OrderHisStyle.infoRow}>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Giá: </Text>
+            <Text style={styles.infoText}>
+              {orderItem?.order_checkout?.totalPrice}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Phí ship:</Text>
+            <Text style={styles.infoText}>
+              {orderItem?.order_checkout?.feeShip}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Giảm giá:</Text>
+            <Text style={styles.infoText}>
+              {orderItem?.order_checkout?.totalDiscount}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Tổng:</Text>
+            <Text style={styles.infoText}>
+              {orderItem?.order_checkout?.totalCheckout}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.infoSection}>
+          <View style={styles.infoRow}>
             <MaterialIcons name="event" size={25} color={'black'} />
-            <Text style={OrderHisStyle.info}>
+            <Text style={styles.infoText}>
               {moment(orderItem?.crateDate).format('DD/MM/YYYY HH:mm')}
             </Text>
           </View>
         </View>
-      </View>
 
-      {orderItem?.status === 'pending' && (
-        <>
+        {orderItem?.status === 'pending' && (
           <TouchableOpacity
-            style={OrderHisStyle.button}
+            style={styles.approvalButton}
             onPress={() => handleApproval(true)}>
-            <Text style={OrderHisStyle.buttonText}>
+            <Text style={styles.buttonText}>
               {statusTranslations[orderItem?.status]}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[OrderHisStyle.button, {backgroundColor: 'red'}]}
-            onPress={() => handleApproval(false)}>
-            <Text style={OrderHisStyle.buttonText}>Hủy</Text>
-          </TouchableOpacity>
-        </>
-      )}
-    </ScrollView>
+          // <TouchableOpacity
+          //   style={styles.cancelButton}
+          //   onPress={() => handleApproval(false)}>
+          //   <Text style={styles.buttonText}>Hủy</Text>
+          // </TouchableOpacity>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
-export default OrderHistory;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+  },
+  titleText: {
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '600',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  productInfoContainer: {
+    flexDirection: 'row',
+    marginHorizontal: '5%',
+    marginTop: '5%',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+  },
+  productDetails: {
+    marginLeft: 10,
+    flexShrink: 1,
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'black',
+    marginBottom: 5,
+  },
+  productAttribute: {
+    fontSize: 16,
+    color: 'black',
+    fontWeight: '500',
+    marginBottom: 5,
+  },
+  separator: {
+    borderWidth: 1,
+    borderColor: '#DDDDDD',
+    marginHorizontal: '5%',
+  },
+  statusButton: {
+    height: 30,
+    backgroundColor: '#FFE4E1',
+    marginHorizontal: '5%',
+    marginVertical: '2%',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  infoContainer: {
+    marginHorizontal: '5%',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  infoLabel: {
+    fontSize: 16,
+    color: 'black',
+    fontWeight: '500',
+    marginLeft: 10,
+  },
+  infoText: {
+    fontSize: 16,
+    marginVertical: '2%',
+    color: 'black',
+    fontWeight: '500',
+  },
+  infoSection: {
+    borderWidth: 1,
+    borderColor: '#DDDDDD',
+    marginHorizontal: '5%',
+  },
+  approvalButton: {
+    height: 50,
+    width: '80%',
+    bottom: '5%',
+    position: 'absolute',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginVertical: 10,
+    backgroundColor: 'black',
+  },
+  cancelButton: {
+    height: 50,
+    width: '80%',
+    bottom: '5%',
+    position: 'absolute',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginVertical: 10,
+    backgroundColor: 'red',
+  },
+});
+
+export default UpdatedOrderHistory;

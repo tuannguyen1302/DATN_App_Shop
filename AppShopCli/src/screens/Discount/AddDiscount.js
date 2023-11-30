@@ -32,30 +32,49 @@ const SALE_OPTIONS = [
   {id: 1, name: 'Giá tiền'},
 ];
 
+const renderTextInput = (label, value, field, keyboardType = 'default') => {
+  return (
+    <TextInput
+      label={label}
+      value={value}
+      style={styles.input}
+      keyboardType={keyboardType}
+      onChangeText={text => handleTextChange(text, field)}
+      left={
+        <TextInput.Icon
+          icon={() => <FontAwesome name="bullhorn" size={24} />}
+        />
+      }
+    />
+  );
+};
+
 const AddDiscount = ({navigation}) => {
   const [productList, setProductList] = useState([]);
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
-  const [isStartDate, setStartDate] = useState(null);
+  const [isStartDate, setStartDate] = useState(false);
   const bottomSheetModalRef = useRef(null);
 
   const [discountData, setDiscountData] = useState({
     name: '',
     des: '',
     code: '',
-    type: '',
+    type: 'percentage',
     value: '0',
     uses_count: '0',
     min_order_value: '0',
     max_uses: '0',
     max_uses_per_user: '0',
-    applies_to: '',
+    applies_to: 'all',
     start_date: '',
     end_date: '',
     product_ids: [],
   });
 
-  const [selectedApplyOption, setSelectedApplyOption] = useState();
-  const [selectedSaleOption, setSelectedSaleOption] = useState();
+  const [selectedApplyOption, setSelectedApplyOption] = useState(
+    APPLY_OPTIONS[0],
+  );
+  const [selectedSaleOption, setSelectedSaleOption] = useState(SALE_OPTIONS[0]);
 
   const handleDropdownChange = (value, field) => {
     value.id !== 0 && presentBottomSheet();
@@ -172,123 +191,57 @@ const AddDiscount = ({navigation}) => {
             value={selectedSaleOption}
             onChange={value => handleSaleOptionChange(value, 'type')}
           />
-          <TextInput
-            label="Tên chương trình"
-            value={discountData['name']}
-            style={styles.input}
-            onChangeText={text => handleTextChange(text, 'name')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="bullhorn" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Mô tả"
-            value={discountData['des']}
-            multiline={true}
-            onChangeText={text => handleTextChange(text, 'des')}
-            style={styles.input}
-            left={
-              <TextInput.Icon
-                icon={() => <AntDesign name="form" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Mã giảm giá"
-            value={discountData['code']}
-            style={styles.input}
-            onChangeText={text => handleTextChange(text, 'code')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="barcode" size={24} />}
-              />
-            }
-          />
-          {discountData.type == 'percentage' && (
-            <TextInput
-              label={'Phần trăm giảm'}
-              value={discountData['value']}
-              style={styles.input}
-              keyboardType="numeric"
-              onChangeText={text => handleTextChange(text, 'value')}
-              left={
-                <TextInput.Icon
-                  icon={() => <FontAwesome name="percent" size={24} />}
-                />
-              }
-              theme={{
-                colors: {
-                  primary: 'black',
-                },
-              }}
-            />
+          {renderTextInput(
+            'Tên chương trình',
+            discountData['name'],
+            'name',
+            'default',
           )}
-          <TextInput
-            label="Số tiền giảm tối đa"
-            value={discountData['min_order_value']}
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={text => handleTextChange(text, 'min_order_value')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="money" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Số lượng sử dụng"
-            value={discountData['max_uses']}
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={text => handleTextChange(text, 'max_uses')}
-            left={
-              <TextInput.Icon
-                icon={() => <AntDesign name="codesquareo" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Giới hạn sử dụng"
-            value={discountData['max_uses_per_user']}
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={text => handleTextChange(text, 'max_uses_per_user')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="linode" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Ngày bắt đầu"
-            editable={false}
-            style={styles.input}
-            value={discountData['start_date'] + ''}
-            left={
-              <TextInput.Icon
-                onPress={() => {
-                  setStartDate(true), setDatePickerOpen(true);
-                }}
-                icon={() => <Fontisto name="date" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Ngày kết thúc"
-            value={discountData['end_date'] + ''}
-            editable={false}
-            style={styles.input}
-            left={
-              <TextInput.Icon
-                onPress={() => {
-                  setStartDate(false), setDatePickerOpen(true);
-                }}
-                icon={() => <Fontisto name="date" size={24} />}
-              />
-            }
-          />
+          {renderTextInput('Mô tả', discountData['des'], 'des', 'default')}
+          {renderTextInput(
+            'Mã giảm giá',
+            discountData['code'],
+            'code',
+            'default',
+          )}
+          {discountData.type === 'percentage' &&
+            renderTextInput(
+              'Phần trăm giảm',
+              discountData['value'],
+              'value',
+              'numeric',
+            )}
+          {renderTextInput(
+            'Số tiền giảm tối đa',
+            discountData['min_order_value'],
+            'min_order_value',
+            'numeric',
+          )}
+          {renderTextInput(
+            'Số lượng sử dụng',
+            discountData['max_uses'],
+            'max_uses',
+            'numeric',
+          )}
+          {renderTextInput(
+            'Giới hạn sử dụng',
+            discountData['max_uses_per_user'],
+            'max_uses_per_user',
+            'numeric',
+          )}
+          {renderTextInput(
+            'Ngày bắt đầu',
+            discountData['start_date'] + '',
+            'start_date',
+            'default',
+          )}
+          {renderTextInput(
+            'Ngày kết thúc',
+            discountData['end_date'] + '',
+            'end_date',
+            'default',
+          )}
+
           <DatePicker
             title={`Thời gian ${isStartDate ? 'bắt đầu' : 'kết thúc'}`}
             mode="datetime"

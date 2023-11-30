@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   Image,
   Pressable,
@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import {useFocusEffect} from '@react-navigation/native';
 import fuzzy from 'fuzzy';
 import {renderProductItem} from '../Product/ProductScreen';
 import imagePath from '../../constants/imagePath';
@@ -70,11 +70,9 @@ const SearchScreen = ({navigation}) => {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchProductList();
-    }, []),
-  );
+  useEffect(() => {
+    fetchProductList();
+  }, []);
 
   const deleteSearchItem = async itemId => {
     try {
@@ -87,7 +85,7 @@ const SearchScreen = ({navigation}) => {
   };
 
   const renderSearchItem = ({item}) => (
-    <Pressable
+    <TouchableOpacity
       onPress={() => saveSearchToHistory(item?.id ? item.name : item)}
       style={SearchScreenStyles.searchItem}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -101,7 +99,7 @@ const SearchScreen = ({navigation}) => {
           <Feather name="x-circle" size={22} color="black" />
         </TouchableOpacity>
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 
   const renderSearchList = () => {
@@ -189,42 +187,90 @@ const SearchScreen = ({navigation}) => {
 
   return (
     <View style={SearchScreenStyles.container}>
-      <View style={{flex: 1}}>
-        <View style={SearchScreenStyles.searchHeader}>
-          <View style={SearchScreenStyles.searchBox}>
-            <Pressable>
-              <Ionicons name="search" size={24} color="black" />
-            </Pressable>
-            <TextInput
-              style={SearchScreenStyles.searchInput}
-              defaultValue={searchText}
-              placeholder="Nhập tìm kiếm"
-              returnKeyType="search"
-              onFocus={() => setIsCheck(false)}
-              onSubmitEditing={() => saveSearchToHistory(searchText)}
-              onChangeText={setSearchText}
-            />
-            {searchText && (
-              <TouchableOpacity
-                style={SearchScreenStyles.clearSearchButton}
-                onPress={() => setSearchText('')}>
-                <Feather name="x-circle" size={24} color="black" />
-              </TouchableOpacity>
-            )}
-          </View>
-          <Pressable onPress={() => navigation.goBack()}>
-            <Text style={SearchScreenStyles.cancelText}>Cancel</Text>
-          </Pressable>
-        </View>
-
-        {loading ? (
-          <View style={SearchScreenStyles.loadingContainer}>
-            <ActivityIndicator size="large" color="gray" />
-          </View>
-        ) : (
-          renderSearchList()
-        )}
+      <View
+        style={{
+          flexDirection: 'row',
+          marginHorizontal: '5%',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text
+          style={{
+            left: '30%',
+            fontSize: 22,
+            color: 'black',
+            fontWeight: '600',
+          }}>
+          Search
+        </Text>
       </View>
+      <View style={SearchScreenStyles.searchHeader}>
+        <View
+          style={{
+            flex: 0.95,
+            height: 45,
+            marginVertical: 15,
+            borderRadius: 20,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            backgroundColor: '#EEEEEE',
+          }}
+          onPress={() => navigation.navigate('SearchScreen')}>
+          <TextInput
+            style={SearchScreenStyles.searchInput}
+            defaultValue={searchText}
+            placeholder="Nhập tìm kiếm"
+            returnKeyType="search"
+            onFocus={() => setIsCheck(false)}
+            onSubmitEditing={() => saveSearchToHistory(searchText)}
+            onChangeText={setSearchText}
+          />
+          {searchText ? (
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => setSearchText('')}>
+              <Feather name="x-circle" size={24} color="black" />
+            </TouchableOpacity>
+          ) : (
+            <AntDesign
+              style={{marginRight: 10}}
+              name="search1"
+              size={24}
+              color={'gray'}
+            />
+          )}
+        </View>
+        <Pressable
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <Ionicons name="filter-sharp" size={24} color={'black'} />
+        </Pressable>
+      </View>
+      {loading ? (
+        <View style={SearchScreenStyles.loadingContainer}>
+          <ActivityIndicator size="large" color="gray" />
+        </View>
+      ) : (
+        renderSearchList()
+      )}
     </View>
   );
 };
