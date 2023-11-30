@@ -101,26 +101,26 @@ const UpdatedOrderHistory = ({route}) => {
           </View>
         </View>
 
-        <View style={styles.priceContainer}>
-          <View style={styles.priceRow}>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Giá: </Text>
             <Text style={styles.infoText}>
               {orderItem?.order_checkout?.totalPrice}
             </Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Phí ship:</Text>
             <Text style={styles.infoText}>
               {orderItem?.order_checkout?.feeShip}
             </Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Giảm giá:</Text>
             <Text style={styles.infoText}>
               {orderItem?.order_checkout?.totalDiscount}
             </Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Tổng:</Text>
             <Text style={styles.infoText}>
               {orderItem?.order_checkout?.totalCheckout}
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   infoLabel: {
@@ -247,14 +248,6 @@ const styles = StyleSheet.create({
     marginVertical: '2%',
     color: 'black',
     fontWeight: '500',
-  },
-  priceContainer: {
-    marginHorizontal: '5%',
-  },
-  priceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
   },
   infoSection: {
     borderWidth: 1,
