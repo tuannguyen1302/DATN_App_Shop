@@ -14,7 +14,7 @@ const Login1 = () => {
 
   return (
     <View style={Login1Style.container}>
-      <Image source={imagePath.logo2} style={Login1Style.logo} />
+      <Image source={imagePath.logo} style={Login1Style.logo} />
       <Text style={Login1Style.title}>Let's You In</Text>
 
       <TouchableOpacity

@@ -1,6 +1,5 @@
 export default {
-  logo1: require('../assets/images/Logo1.png'),
-  logo2: require('../assets/images/Logo2.png'),
+  logo: require('../assets/images/Logo.png'),
   icon: require('../assets/images/Icon.jpg'),
   shop: require('../assets/images/Shop.png'),
   facebook: require('../assets/images/facebook.png'),

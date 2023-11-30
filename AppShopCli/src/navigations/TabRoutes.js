@@ -1,41 +1,69 @@
-import * as React from 'react';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import navigationStrings from '../constants/navigationStrings';
-import * as Screens from '../screens';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import TabButton from '../components/TabButton';
+import * as Screens from '../screens';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabRoutes() {
+const TabArr = [
+  {
+    route: navigationStrings.HomeScreen,
+    label: 'Home',
+    type: FontAwesome5,
+    icon: 'home',
+    component: Screens.HomeScreen,
+  },
+  {
+    route: navigationStrings.MESSAGES,
+    label: 'Message',
+    type: AntDesign,
+    icon: 'message1',
+    component: Screens.MessageScreen,
+  },
+  {
+    route: navigationStrings.ORDER,
+    label: 'Order',
+    type: AntDesign,
+    icon: 'profile',
+    component: Screens.OrderScreen,
+  },
+  {
+    route: navigationStrings.PROFILE,
+    label: 'Profile',
+    type: FontAwesome5,
+    icon: 'user-alt',
+    component: Screens.ProfileScreen,
+  },
+];
+
+const TabRoutes = () => {
   return (
     <Tab.Navigator
-      initialRouteName={navigationStrings.MY_PRODUCT}
       screenOptions={{
-        tabBarShowLabel: false,
-        tabBarStyle: {height: 60, borderTopWidth: 1},
         headerShown: false,
         tabBarActiveTintColor: '#000',
+        tabBarStyle: {
+          height: 60,
+          borderRadius: 10,
+          elevation: 5,
+        },
       }}>
-      <Tab.Screen
-        name={navigationStrings.MY_PRODUCT}
-        component={Screens.MyProduct}
-        options={tabOptions('box-open', 'box')}
-      />
-      <Tab.Screen
-        name={navigationStrings.ORDER}
-        component={Screens.Order}
-        options={tabOptions('clipboard', 'clipboard-list')}
-      />
+      {TabArr.map((item, index) => (
+        <Tab.Screen
+          key={index}
+          name={item.route}
+          component={item.component}
+          options={{
+            tabBarShowLabel: false,
+            tabBarButton: props => <TabButton {...props} item={item} />,
+          }}
+        />
+      ))}
     </Tab.Navigator>
   );
-}
+};
 
-const tabOptions = (iconNameFocused, iconNameUnfocused) => ({
-  tabBarIcon: ({focused, size, color}) => (
-    <FontAwesome5
-      name={focused ? iconNameFocused : iconNameUnfocused}
-      size={size}
-      color={color}
-    />
-  ),
-});
+export default TabRoutes;

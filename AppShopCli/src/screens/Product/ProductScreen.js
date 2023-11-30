@@ -9,11 +9,13 @@ import {
   Image,
   ActivityIndicator,
   ToastAndroid,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import imagePath from '../../constants/imagePath';
@@ -27,51 +29,53 @@ const TAB_ITEMS = [
   {status: 'Bị ẩn'},
 ];
 
+export const formatCurrency = value => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  }).format(value);
+};
+
 export const renderProductItem = (item, navigation, toggleHideProduct) => (
   <Pressable style={styles.productItem}>
-    <View style={styles.itemHeader}>
+    <TouchableOpacity onPress={() => toggleHideProduct(item)}>
       <FastImage
         style={styles.productImage}
         source={{uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`}}
         resizeMode={FastImage.resizeMode.cover}
       />
-      <View style={{marginLeft: '2%', flex: 1}}>
-        <Text style={styles.productName} numberOfLines={1}>
-          {item?.product_name}
-        </Text>
-        <Text style={styles.productPrice}>
-          đ {item?.product_price.toLocaleString().replace(/,/g, '.')}
-        </Text>
+      <View style={{position: 'absolute', right: 0}}>
+        <Octicons
+          name={item?.isDraft ? 'eye-closed' : 'eye'}
+          size={20}
+          color={'black'}
+        />
       </View>
-    </View>
+    </TouchableOpacity>
 
-    <View style={styles.itemDetails}>
-      {['boxes', 'list'].map((icon, index) => (
-        <View style={styles.icon} key={index}>
-          {index === 0 ? (
-            <FontAwesome5 name={icon} size={15} color={'#222222'} />
-          ) : (
-            <Feather name={icon} size={15} color={'#222222'} />
-          )}
-          <Text style={[styles.tabText, {left: '15%'}]}>
-            {index === 0 ? 'Kho hàng' : 'Đã bán'}:{' '}
-            {index === 0 ? item?.product_quantity : item?.product_sold}
-          </Text>
-        </View>
-      ))}
+    <View style={{flex: 1}}>
+      <Text style={styles.productName} numberOfLines={1}>
+        {item?.product_name}
+      </Text>
+      <Text style={styles.txt}>
+        Trạng thái:{' '}
+        <Text style={{color: item?.product_quantity ? 'green' : 'red'}}>
+          {item?.product_quantity ? 'còn hàng' : 'hết hàng'}
+        </Text>
+      </Text>
+      <Text style={styles.txt}>
+        Kho: {item?.product_quantity} | Bán: {item?.product_sold}
+      </Text>
     </View>
-
     <View style={styles.itemActions}>
-      <Pressable
+      <TouchableOpacity
         style={styles.actionButton}
         onPress={() => navigation.navigate('UpdateProduct', {item})}>
-        <Text style={styles.buttonText}>Sửa</Text>
-      </Pressable>
-      <Pressable
-        style={styles.actionButton}
-        onPress={() => toggleHideProduct(item)}>
-        <Text style={styles.buttonText}>{item?.isDraft ? 'Hiện' : 'Ẩn'}</Text>
-      </Pressable>
+        <FontAwesome name="edit" size={20} color={'black'} />
+      </TouchableOpacity>
+      <Text style={[styles.txt, {color: 'red', fontWeight: '700'}]}>
+        {formatCurrency(item?.product_price)}
+      </Text>
     </View>
   </Pressable>
 );
@@ -80,7 +84,7 @@ const ProductScreen = ({navigation}) => {
   const [status, setStatus] = useState('All');
   const [productList, setProductList] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState(5);
-  const [sortOrder, setSortOrder] = useState('');
+  // const [sortOrder, setSortOrder] = useState('');
   const [loading, setLoading] = useState(true);
   const flatListRef = useRef();
 
@@ -88,7 +92,7 @@ const ProductScreen = ({navigation}) => {
     const action = product?.isDraft ? 'hiện' : 'ẩn';
     const message = `Bạn muốn ${action} sản phẩm "${product?.product_name}"?`;
 
-    Alert.alert(`Bạn muốn ${action} sản phẩm`, message, [
+    Alert.alert(`Cảnh báo`, message, [
       {
         text: 'Hủy',
         onPress: () => console.log('Cancel Pressed'),
@@ -135,17 +139,17 @@ const ProductScreen = ({navigation}) => {
     }
   };
 
-  const sortProducts = sort => {
-    setSortOrder(sort);
-    if (productList.length > 0) {
-      const sortedProducts = [...productList].sort((a, b) => {
-        const priceA = a.product_price;
-        const priceB = b.product_price;
-        return sort === '+' ? priceA - priceB : priceB - priceA;
-      });
-      setProductList(sortedProducts);
-    }
-  };
+  // const sortProducts = sort => {
+  //   setSortOrder(sort);
+  //   if (productList.length > 0) {
+  //     const sortedProducts = [...productList].sort((a, b) => {
+  //       const priceA = a.product_price;
+  //       const priceB = b.product_price;
+  //       return sort === '+' ? priceA - priceB : priceB - priceA;
+  //     });
+  //     setProductList(sortedProducts);
+  //   }
+  // };
 
   useFocusEffect(
     useCallback(() => {
@@ -159,38 +163,53 @@ const ProductScreen = ({navigation}) => {
 
   const renderTabItem = ({item, index}) => (
     <Pressable
-      style={[styles.tabItem, item?.status === status && styles.selectedTab]}
+      style={[
+        styles.tabItem,
+        item?.status === status && {backgroundColor: '#EEEEEE'},
+      ]}
       onPress={() => {
         setLoading(true);
         setStatus(item?.status);
         flatListRef.current.scrollToIndex({index});
       }}>
-      <Text style={styles.tabText}>{item?.status}</Text>
+      <Text
+        style={[styles.tabText, item?.status === status && {color: 'black'}]}>
+        {item?.status}
+      </Text>
     </Pressable>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.filter}>
-        <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
-          <AntDesign name="bars" size={24} color={'black'} />
-          <Picker
-            selectedValue={sortOrder}
-            style={{width: '58%', height: 40, color: 'green'}}
-            onValueChange={itemValue => {
-              sortProducts(itemValue);
-            }}>
-            <Picker.Item label="Sắp xếp" value="" />
-            <Picker.Item label="Tăng dần" value="+" />
-            <Picker.Item label="Giảm dần" value="-" />
-          </Picker>
-        </Pressable>
-        <Pressable onPress={() => navigation.navigate('SearchScreen')}>
-          <AntDesign name="search1" size={24} color={'black'} />
-        </Pressable>
-      </View>
-      <View>
+      <ScrollView>
+        <View style={styles.filter}>
+          <Pressable
+            style={{
+              flex: 0.95,
+              height: 45,
+              marginVertical: 15,
+              borderRadius: 20,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              backgroundColor: '#EEEEEE',
+            }}
+            onPress={() => navigation.navigate('SearchScreen')}>
+            <Text style={{left: 20}}>Search</Text>
+            <AntDesign
+              style={{right: 20}}
+              name="search1"
+              size={24}
+              color={'gray'}
+            />
+          </Pressable>
+          <Pressable style={styles.button}>
+            <Ionicons name="filter-sharp" size={24} color={'black'} />
+          </Pressable>
+        </View>
+
         <FlatList
+          scrollEnabled={false}
           ref={flatListRef}
           data={TAB_ITEMS}
           renderItem={renderTabItem}
@@ -198,29 +217,30 @@ const ProductScreen = ({navigation}) => {
           horizontal
           showsHorizontalScrollIndicator={false}
         />
-      </View>
 
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="gray" />
-        </View>
-      ) : productList.length ? (
-        <FlatList
-          data={productList?.slice(0, visibleProducts)}
-          renderItem={({item}) =>
-            renderProductItem(item, navigation, toggleHideProduct)
-          }
-          keyExtractor={item => item?._id}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.1}
-          showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <View style={styles.imageContainer}>
-          <Image style={styles.productImage2} source={imagePath.noProduct} />
-          <Text style={styles.imageText}>Tab không có sản phẩm nào</Text>
-        </View>
-      )}
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="gray" />
+          </View>
+        ) : productList.length ? (
+          <FlatList
+            scrollEnabled={false}
+            data={productList?.slice(0, visibleProducts)}
+            renderItem={({item}) =>
+              renderProductItem(item, navigation, toggleHideProduct)
+            }
+            keyExtractor={item => item?._id}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.1}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View style={styles.imageContainer}>
+            <Image style={styles.productImage2} source={imagePath.noProduct} />
+            <Text style={styles.imageText}>Tab không có sản phẩm nào</Text>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -237,50 +257,52 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     width: 95,
-    height: 40,
-    marginTop: '2%',
+    height: 35,
+    borderWidth: 2,
+    borderRadius: 20,
     alignItems: 'center',
     marginHorizontal: 5,
+    marginVertical: '10%',
     backgroundColor: 'white',
-    borderWidth: 0.5,
+    borderColor: '#DDDDDD',
     justifyContent: 'center',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  selectedTab: {
-    height: 45,
-    borderBottomWidth: 3,
-    borderBottomColor: '#536EFF',
   },
   tabText: {
-    color: 'black',
-    fontWeight: '500',
+    color: 'gray',
+    fontWeight: '700',
   },
   filter: {
-    marginTop: '2%',
-    height: 40,
     flexDirection: 'row',
-    marginHorizontal: '5%',
+    marginLeft: '5%',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  productItem: {
-    margin: '2%',
-    height: 185,
-    borderRadius: 10,
-    borderWidth: 0.3,
-    borderColor: 'gray',
-    elevation: 7,
-    backgroundColor: 'white',
-    padding: '4%',
+  button: {
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+    marginRight: '5%',
   },
-  itemHeader: {
+  productItem: {
+    padding: '2%',
+    elevation: 3,
+    height: 120,
+    borderRadius: 10,
+    borderWidth: 0.2,
+    borderColor: 'gray',
+    marginBottom: '2%',
+    marginHorizontal: '4%',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   productImage: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     resizeMode: 'cover',
     borderRadius: 10,
   },
@@ -290,35 +312,25 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: '2%',
   },
-  productPrice: {
+  txt: {
+    color: 'black',
     marginTop: '2%',
-    color: 'red',
-    fontSize: 18,
-  },
-  itemDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#D9D9D9',
-    marginTop: '2%',
-    paddingVertical: '2%',
+    marginLeft: '2%',
+    fontSize: 15,
   },
   itemActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    width: '20%',
+    height: '100%',
     alignItems: 'center',
-    marginTop: '2%',
+    justifyContent: 'space-around',
   },
   actionButton: {
-    width: '40%',
-    height: 25,
-    borderColor: 'gray',
-    borderWidth: 1,
+    width: 40,
+    height: 40,
     borderRadius: 10,
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#E0EEEE',
+    justifyContent: 'center',
   },
   buttonText: {
     color: 'black',

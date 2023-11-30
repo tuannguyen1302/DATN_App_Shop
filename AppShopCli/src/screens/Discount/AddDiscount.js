@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import {TextInput} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -32,30 +32,57 @@ const SALE_OPTIONS = [
   {id: 1, name: 'Giá tiền'},
 ];
 
+const renderTextInput = (
+  label,
+  value,
+  field,
+  keyboardType = 'default',
+  handleTextChange,
+  multiline = false,
+) => {
+  return (
+    <TextInput
+      label={label}
+      value={value}
+      multiline={multiline}
+      style={styles.input}
+      keyboardType={keyboardType}
+      onChangeText={text => handleTextChange(text, field)}
+      left={
+        <TextInput.Icon
+          icon={() => <FontAwesome name="bullhorn" size={24} />}
+        />
+      }
+    />
+  );
+};
+
 const AddDiscount = ({navigation}) => {
   const [productList, setProductList] = useState([]);
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
-  const [isStartDate, setStartDate] = useState(null);
+  const [isStartDate, setStartDate] = useState(false);
   const bottomSheetModalRef = useRef(null);
 
   const [discountData, setDiscountData] = useState({
     name: '',
     des: '',
     code: '',
-    type: '',
+    type: 'percentage',
     value: '0',
     uses_count: '0',
     min_order_value: '0',
     max_uses: '0',
     max_uses_per_user: '0',
-    applies_to: '',
+    applies_to: 'all',
     start_date: '',
     end_date: '',
     product_ids: [],
   });
 
-  const [selectedApplyOption, setSelectedApplyOption] = useState();
-  const [selectedSaleOption, setSelectedSaleOption] = useState();
+  const [selectedApplyOption, setSelectedApplyOption] = useState(
+    APPLY_OPTIONS[0],
+  );
+  const [selectedSaleOption, setSelectedSaleOption] = useState(SALE_OPTIONS[0]);
 
   const handleDropdownChange = (value, field) => {
     value.id !== 0 && presentBottomSheet();
@@ -92,18 +119,20 @@ const AddDiscount = ({navigation}) => {
         return;
       }
 
-      if (
-        new Date(discountData.start_date) >= new Date(discountData.end_date)
-      ) {
-        ToastAndroid.show(
-          'Ngày bắt đầu phải trước ngày kết thúc.',
-          ToastAndroid.SHORT,
-        );
-        return;
-      }
+      console.log(discountData);
 
-      await apiPost(DISCOUNT_API, discountData);
-      ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
+      // if (
+      //   new Date(discountData.start_date) >= new Date(discountData.end_date)
+      // ) {
+      //   ToastAndroid.show(
+      //     'Ngày bắt đầu phải trước ngày kết thúc.',
+      //     ToastAndroid.SHORT,
+      //   );
+      //   return;
+      // }
+
+      // await apiPost(DISCOUNT_API, discountData);
+      // ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -137,19 +166,12 @@ const AddDiscount = ({navigation}) => {
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
         <View style={styles.header}>
-          <AntDesign
+          <TouchableOpacity
             onPress={() => navigation.goBack()}
-            name="arrowleft"
-            size={30}
-            color={'#FFF'}
-          />
-          <Text style={styles.headerText}>Thêm Giảm Giá</Text>
-          <AntDesign
-            onPress={postDiscountApi}
-            name="check"
-            size={30}
-            color={'#FFF'}
-          />
+            style={styles.backButton}>
+            <AntDesign name="left" size={20} color={'black'} />
+          </TouchableOpacity>
+          <Text style={styles.titleText}>Add Discount</Text>
         </View>
         <ScrollView style={styles.contentContainer}>
           <Text style={styles.label}>Áp dụng</Text>
@@ -172,95 +194,57 @@ const AddDiscount = ({navigation}) => {
             value={selectedSaleOption}
             onChange={value => handleSaleOptionChange(value, 'type')}
           />
-          <TextInput
-            label="Tên chương trình"
-            value={discountData['name']}
-            style={styles.input}
-            onChangeText={text => handleTextChange(text, 'name')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="bullhorn" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Mô tả"
-            value={discountData['des']}
-            multiline={true}
-            onChangeText={text => handleTextChange(text, 'des')}
-            style={styles.input}
-            left={
-              <TextInput.Icon
-                icon={() => <AntDesign name="form" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Mã giảm giá"
-            value={discountData['code']}
-            style={styles.input}
-            onChangeText={text => handleTextChange(text, 'code')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="barcode" size={24} />}
-              />
-            }
-          />
-          {discountData.type == 'percentage' && (
-            <TextInput
-              label={'Phần trăm giảm'}
-              value={discountData['value']}
-              style={styles.input}
-              keyboardType="numeric"
-              onChangeText={text => handleTextChange(text, 'value')}
-              left={
-                <TextInput.Icon
-                  icon={() => <FontAwesome name="percent" size={24} />}
-                />
-              }
-              theme={{
-                colors: {
-                  primary: 'black',
-                },
-              }}
-            />
+          {renderTextInput(
+            'Tên chương trình',
+            discountData['name'],
+            'name',
+            'default',
+            handleTextChange,
           )}
-          <TextInput
-            label="Số tiền giảm tối đa"
-            value={discountData['min_order_value']}
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={text => handleTextChange(text, 'min_order_value')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="money" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Số lượng sử dụng"
-            value={discountData['max_uses']}
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={text => handleTextChange(text, 'max_uses')}
-            left={
-              <TextInput.Icon
-                icon={() => <AntDesign name="codesquareo" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Giới hạn sử dụng"
-            value={discountData['max_uses_per_user']}
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={text => handleTextChange(text, 'max_uses_per_user')}
-            left={
-              <TextInput.Icon
-                icon={() => <FontAwesome name="linode" size={24} />}
-              />
-            }
-          />
+          {renderTextInput(
+            'Mô tả',
+            discountData['des'],
+            'des',
+            'default',
+            handleTextChange,
+            true,
+          )}
+          {renderTextInput(
+            'Mã giảm giá',
+            discountData['code'],
+            'code',
+            'default',
+            handleTextChange,
+          )}
+          {discountData.type === 'percentage' &&
+            renderTextInput(
+              'Phần trăm giảm',
+              discountData['value'],
+              'value',
+              'numeric',
+              handleTextChange,
+            )}
+          {renderTextInput(
+            'Số tiền giảm tối đa',
+            discountData['min_order_value'],
+            'min_order_value',
+            'numeric',
+            handleTextChange,
+          )}
+          {renderTextInput(
+            'Số lượng sử dụng',
+            discountData['max_uses'],
+            'max_uses',
+            'numeric',
+            handleTextChange,
+          )}
+          {renderTextInput(
+            'Giới hạn sử dụng',
+            discountData['max_uses_per_user'],
+            'max_uses_per_user',
+            'numeric',
+            handleTextChange,
+          )}
           <TextInput
             label="Ngày bắt đầu"
             editable={false}
@@ -289,6 +273,7 @@ const AddDiscount = ({navigation}) => {
               />
             }
           />
+
           <DatePicker
             title={`Thời gian ${isStartDate ? 'bắt đầu' : 'kết thúc'}`}
             mode="datetime"
@@ -350,7 +335,7 @@ const AddDiscount = ({navigation}) => {
                       height: 60,
                       borderWidth: 1,
                       borderColor: discountData?.product_ids.includes(item?._id)
-                        ? 'blue'
+                        ? 'red'
                         : 'gray',
                       marginHorizontal: '5%',
                       marginTop: '2%',
@@ -383,6 +368,24 @@ const AddDiscount = ({navigation}) => {
             </View>
           </BottomSheetModal>
         </ScrollView>
+        <TouchableOpacity
+          onPress={postDiscountApi}
+          style={{
+            width: 55,
+            position: 'absolute',
+            bottom: '3%',
+            height: 55,
+            borderRadius: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'black',
+            right: 0,
+            marginHorizontal: '5%',
+          }}>
+          <Text style={{color: 'white', fontWeight: '700', fontSize: 15}}>
+            Save
+          </Text>
+        </TouchableOpacity>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
@@ -396,19 +399,23 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 50,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#9999FF',
+    padding: 15,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFF',
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+  },
+  titleText: {
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '600',
+    left: 10,
   },
   contentContainer: {
-    marginBottom: 20,
     paddingHorizontal: 20,
   },
   label: {

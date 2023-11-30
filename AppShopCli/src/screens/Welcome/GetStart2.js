@@ -24,7 +24,7 @@ const GetStart2 = () => {
       </View>
 
       <TouchableOpacity style={commonStyles.button} onPress={handleButtonPress}>
-        <Text style={commonStyles.buttonText}>Next</Text>
+        <Text style={commonStyles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );

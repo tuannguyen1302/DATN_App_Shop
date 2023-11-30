@@ -17,6 +17,7 @@ import {SIGNIN_API} from '../../config/urls';
 import imagePath from '../../constants/imagePath';
 import {apiPost, setItem} from '../../utils/utils';
 import {Login2Style} from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const isValidEmail = email =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
@@ -32,33 +33,28 @@ const Login2 = ({navigation}) => {
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const login = async () => {
-    if (!isButtonDisabled) {
-      setError('');
-      setButtonDisabled(true);
+    setError('');
 
-      if (!email) setError('Email không được để trống');
-      else if (!isValidEmail(email)) setError('Email không đúng định dạng');
-      else if (!password) setError('Mật khẩu không được để trống');
-      else if (password.length < 6)
-        setError('Mật khẩu phải có ít nhất 6 kí tự');
-      else {
-        try {
-          const res = await apiPost(SIGNIN_API, {
-            email: email,
-            password: password,
-            role: 'Shop',
-          });
-          let loginUserData = res.message;
-          console.log(loginUserData);
-          setItem('LoginUser', {...loginUserData, isChecked});
-          setButtonDisabled(false);
-          navigation.replace('BottomTab');
-        } catch (error) {
-          alert(error.message);
-          setButtonDisabled(false);
-        }
+    if (!email) setError('Email không được để trống');
+    else if (!isValidEmail(email)) setError('Email không đúng định dạng');
+    else if (!password) setError('Mật khẩu không được để trống');
+    else if (password.length < 6) setError('Mật khẩu phải có ít nhất 6 kí tự');
+    else {
+      try {
+        setButtonDisabled(true);
+        const res = await apiPost(SIGNIN_API, {
+          email: email,
+          password: password,
+          role: 'Shop',
+        });
+
+        setItem('LoginUser', {...res.message, isChecked});
+        setButtonDisabled(false);
+        navigation.replace('BottomTab');
+      } catch (error) {
+        alert(error.message);
+        setButtonDisabled(false);
       }
-      setTimeout(() => setButtonDisabled(false), 2000);
     }
   };
 
@@ -114,6 +110,11 @@ const Login2 = ({navigation}) => {
         <SocialLoginButtons />
         <SignUpLink onPress={() => navigation.navigate('SignUp')} />
       </ScrollView>
+      <Spinner
+        visible={isButtonDisabled}
+        textContent={'Loading...'}
+        textStyle={{color: '#FFF'}}
+      />
     </KeyboardAvoidingView>
   );
 };

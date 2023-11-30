@@ -29,13 +29,11 @@ const SearchScreenStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   searchHeader: {
-    height: 55,
     flexDirection: 'row',
-    padding: '2%',
-    borderColor: '#D9D9D9',
+    marginHorizontal: '5%',
+    marginVertical: '1%',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    backgroundColor: 'white',
+    justifyContent: 'space-between',
   },
   searchBox: {
     flex: 1,
@@ -51,9 +49,6 @@ const SearchScreenStyles = StyleSheet.create({
     flex: 1,
     marginHorizontal: '2%',
     color: 'black',
-  },
-  clearSearchButton: {
-    marginRight: '3%',
   },
   cancelText: {
     color: 'red',
@@ -72,14 +67,15 @@ const SearchScreenStyles = StyleSheet.create({
     fontSize: 18,
   },
   searchItem: {
+    padding: 5,
     height: 40,
-    borderBottomWidth: 0.5,
-    borderColor: 'gray',
+    marginBottom: '1%',
+    marginHorizontal: '5%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    borderRadius: 10,
+    backgroundColor: '#EEEEEE',
     justifyContent: 'space-between',
-    padding: '2%',
   },
   searchText: {
     left: '20%',

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Pressable, StyleSheet, FlatList, Alert} from 'react-native';
+import {View, Pressable, FlatList, Alert, Image, Text} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {ListItem, Avatar} from '@rneui/themed';
@@ -7,6 +7,7 @@ import {Icon} from 'react-native-elements';
 import {API_BASE_URL, CHAT_API} from '../../config/urls';
 import {apiGet} from '../../utils/utils';
 import {MessageScreenStyles} from './styles';
+import imagePath from '../../constants/imagePath';
 
 const MessageScreen = ({navigation}) => {
   const [data, setData] = useState([]);
@@ -14,15 +15,8 @@ const MessageScreen = ({navigation}) => {
   const renderButton = (itemId, check) => (
     <Pressable
       onPress={() => showAlert(itemId)}
-      style={[
-        MessageScreenStyles.deleteButton,
-        check == 'left' && {backgroundColor: 'green'},
-      ]}>
-      {check == 'left' ? (
-        <Entypo name="swarm" size={30} color={'white'} />
-      ) : (
-        <MaterialIcons name="delete" size={30} color={'white'} />
-      )}
+      style={MessageScreenStyles.deleteButton}>
+      <MaterialIcons name="delete" size={30} color={'white'} />
     </Pressable>
   );
 
@@ -63,6 +57,34 @@ const MessageScreen = ({navigation}) => {
 
   return (
     <View style={MessageScreenStyles.container}>
+      <View
+        style={{
+          marginTop: 15,
+          flexDirection: 'row',
+          marginHorizontal: '5%',
+          alignItems: 'center',
+          marginBottom: '2%',
+        }}>
+        <Image
+          style={{
+            width: 50,
+            height: 50,
+            borderWidth: 1,
+            borderColor: 'green',
+            borderRadius: 20,
+          }}
+          source={imagePath.logo}
+        />
+        <Text
+          style={{
+            left: '20%',
+            fontSize: 22,
+            color: 'black',
+            fontWeight: '600',
+          }}>
+          Chat box
+        </Text>
+      </View>
       <FlatList
         data={data}
         keyExtractor={item => item?.chat?._id}
@@ -75,8 +97,6 @@ const MessageScreen = ({navigation}) => {
                 avatar: item?.user?.user_avatar,
               });
             }}
-            containerStyle={{marginBottom: 1}}
-            leftContent={() => renderButton(item?._id, 'left')}
             rightContent={() => renderButton(item?._id, 'right')}
             bottomDivider>
             <Avatar
