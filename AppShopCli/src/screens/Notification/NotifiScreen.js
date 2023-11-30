@@ -1,6 +1,4 @@
 import {
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -9,7 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import {thongbao} from './data';
 
@@ -60,7 +58,6 @@ const NotifiScreen = ({navigation}) => {
         />
         <View style={styles.notificationTextContainer}>
           <Text style={styles.notificationTitle}>{item.title}</Text>
-          <Text style={styles.notificationContent}>{item.content}</Text>
           <Text style={styles.notificationTime}>{timeAgo}</Text>
         </View>
       </TouchableOpacity>
@@ -68,14 +65,42 @@ const NotifiScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginHorizontal: '5%',
+          marginBottom: '2%',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text
+          style={{
+            left: '30%',
+            fontSize: 22,
+            color: 'black',
+            fontWeight: '600',
+          }}>
+          Notification
+        </Text>
+      </View>
       <FlatList
         data={thongbao}
         keyExtractor={item => item.id.toString()}
         renderItem={renderItem}
-        style={styles.notificationList}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -86,34 +111,31 @@ const styles = StyleSheet.create({
   },
   notificationItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: 16,
+    alignItems: 'center',
+    padding: 10,
+    marginHorizontal: '3%',
     borderBottomWidth: 1,
-    borderBottomColor: '#dddddd',
+    borderColor: '#ddd',
+    marginBottom: '1%',
   },
   notificationImage: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
+    borderRadius: 10,
   },
   notificationTextContainer: {
     flex: 1,
     marginLeft: 16,
   },
   notificationTitle: {
-    fontSize: 15,
+    fontSize: 16,
+    fontWeight: '500',
     color: 'black',
-  },
-  notificationContent: {
-    fontSize: 13,
-    color: '#333333',
-    marginVertical: 10,
   },
   notificationTime: {
     fontSize: 12,
-    color: '#666666',
-  },
-  notificationList: {
-    flex: 1,
+    marginTop: '2%',
+    color: 'black',
   },
 });
 

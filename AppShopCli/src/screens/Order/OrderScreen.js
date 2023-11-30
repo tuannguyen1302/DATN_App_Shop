@@ -13,7 +13,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import imagePath from '../../constants/imagePath';
 import {apiGet, apiPatch} from '../../utils/utils';
 import {API_BASE_URL, ORDER_API} from '../../config/urls';
-import {OrderScrStyle} from './styles';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -41,6 +40,7 @@ const OrderScreen = () => {
     <View style={OrderScrStyle.container}>
       <View
         style={{
+          marginTop: 15,
           flexDirection: 'row',
           marginHorizontal: '5%',
           alignItems: 'center',
@@ -252,5 +252,90 @@ const renderItem = (orderItem, navigation) => (
     </View>
   </Pressable>
 );
+
+import {StyleSheet} from 'react-native';
+
+const OrderScrStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  itemContainer: {
+    elevation: 3,
+    height: 120,
+    padding: '2%',
+    marginHorizontal: '3%',
+    marginVertical: '2%',
+    borderRadius: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    borderRadius: 10,
+  },
+  productInfo: {
+    left: '1%',
+    width: '55%',
+  },
+  productName: {
+    fontSize: 19,
+    margin: '2%',
+    color: 'black',
+    fontWeight: '600',
+  },
+  colorInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  infoText: {
+    margin: '2%',
+    color: 'black',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  underline: {
+    textDecorationLine: 'underline',
+  },
+  quantityAndStatus: {
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  quantityBadge: {
+    width: 25,
+    height: 25,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#D9D9D9',
+  },
+  statusBadge: {
+    width: 70,
+    height: 25,
+    borderRadius: 10,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 10,
+  },
+  image: {
+    width: '50%',
+    height: '50%',
+    resizeMode: 'contain',
+    position: 'absolute',
+    zIndex: -1,
+    bottom: 0,
+    alignSelf: 'center',
+  },
+});
 
 export default OrderScreen;

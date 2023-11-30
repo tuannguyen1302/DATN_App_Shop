@@ -34,10 +34,6 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.NOTIFI}
         component={Screens.NotifiScreen}
-        options={{
-          headerShown: true,
-          title: 'Thông báo',
-        }}
       />
       <Stack.Screen
         name={navigationStrings.SEARCH}
