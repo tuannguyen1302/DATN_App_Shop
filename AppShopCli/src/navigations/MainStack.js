@@ -106,6 +106,9 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.DISCOUNT_UPDATE}
         component={Screens.UpdateDiscount}
+      /><Stack.Screen
+        name={navigationStrings.Setting}
+        component={Screens.Setting}
       />
     </>
   );
