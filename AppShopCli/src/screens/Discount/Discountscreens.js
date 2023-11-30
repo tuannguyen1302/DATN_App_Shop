@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   ToastAndroid,
+  TouchableOpacity,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -98,17 +99,12 @@ const DiscountCodeScreen = ({navigation}) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={24} color={'white'} />
-        </Pressable>
-        <Text style={styles.headerText}>Mã Giảm Giá </Text>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('AddDiscount');
-          }}
-          style={styles.addButton}>
-          <AntDesign name="plus" size={24} color={'white'} />
-        </Pressable>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text style={styles.titleText}>Discount</Text>
       </View>
       <FlatList
         data={data}
@@ -116,6 +112,24 @@ const DiscountCodeScreen = ({navigation}) => {
         renderItem={renderDiscountItem}
         contentContainerStyle={{marginHorizontal: '3%'}}
       />
+      <TouchableOpacity
+        onPress={() => navigation.navigate('AddDiscount')}
+        style={{
+          width: '80%',
+          height: 55,
+          alignSelf: 'center',
+          borderRadius: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'black',
+          marginHorizontal: '5%',
+          position: 'absolute',
+          bottom: '5%',
+        }}>
+        <Text style={{color: 'white', fontWeight: '700', fontSize: 15}}>
+          Add Discount
+        </Text>
+      </TouchableOpacity>
     </GestureHandlerRootView>
   );
 };
@@ -123,21 +137,26 @@ const DiscountCodeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 50,
-    marginBottom: 10,
-    paddingHorizontal: '5%',
-    backgroundColor: '#9999FF',
+    padding: 15,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+  },
+  titleText: {
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '600',
+    left: 10,
   },
   discountItem: {
     flexDirection: 'row',
@@ -146,8 +165,8 @@ const styles = StyleSheet.create({
     padding: '1%',
     alignItems: 'center',
 
-    borderWidth: 0.5,
-    borderColor: 'gray',
+    borderWidth: 1,
+    borderColor: '#aaa',
     backgroundColor: 'white', // Màu nền của mỗi item
   },
   discountImage: {

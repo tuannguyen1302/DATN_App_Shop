@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {Text, ToastAndroid, View, ScrollView, StyleSheet} from 'react-native';
+import {
+  Text,
+  ToastAndroid,
+  View,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -81,19 +88,12 @@ const UpdateDiscount = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <AntDesign
+        <TouchableOpacity
           onPress={() => navigation.goBack()}
-          name="arrowleft"
-          size={30}
-          color={'#FFF'}
-        />
-        <Text style={styles.headerText}>Sửa Giảm Giá</Text>
-        <AntDesign
-          onPress={postDiscountApi}
-          name="check"
-          size={30}
-          color={'#FFF'}
-        />
+          style={styles.backButton}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text style={styles.titleText}>Update Discount</Text>
       </View>
       <ScrollView style={styles.contentContainer}>
         <Text style={styles.label}>Áp dụng</Text>
@@ -261,16 +261,21 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 50,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#9999FF',
+    padding: 15,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFF',
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+  },
+  titleText: {
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '600',
+    left: 10,
   },
   contentContainer: {
     marginBottom: 20,

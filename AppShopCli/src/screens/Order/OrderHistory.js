@@ -18,8 +18,8 @@ import {apiPatch} from '../../utils/utils';
 const statusTranslations = {
   pending: 'Phê duyệt',
   shipped: 'Đang vận chuyển',
-  cancelled: 'Đã hủy',
   delivered: 'Đã giao hàng',
+  cancelled: 'Đã hủy',
 };
 
 const UpdatedOrderHistory = ({route}) => {
@@ -37,9 +37,9 @@ const UpdatedOrderHistory = ({route}) => {
           status: 'shipped',
         },
       );
-      navigation.navigate('OrderScreen', {
-        screen: ischeck ? 'Đang giao' : 'Đã hủy',
-      });
+      // navigation.navigate('OrderScreen', {
+      //   screen: ischeck ? 'Đang giao' : 'Đã hủy',
+      // });
       ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
     } catch (error) {
       console.log('Patch api: ', error.message);
@@ -54,7 +54,7 @@ const UpdatedOrderHistory = ({route}) => {
           style={styles.backButton}>
           <AntDesign name="left" size={20} color={'black'} />
         </TouchableOpacity>
-        <Text style={styles.titleText}>Thông tin đơn hàng</Text>
+        <Text style={styles.titleText}>Information Order</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.productInfoContainer}>
@@ -78,12 +78,33 @@ const UpdatedOrderHistory = ({route}) => {
           </View>
         </View>
         <View style={styles.separator} />
-        <TouchableOpacity
-          style={styles.statusButton}
-          // onPress={() => handleApproval(false)}
-        >
-          <Text style={[styles.buttonText, {color: 'red'}]}>Hủy đơn</Text>
-        </TouchableOpacity>
+
+        {orderItem?.status === 'pending' && (
+          <TouchableOpacity
+            style={styles.statusButton}
+            onPress={() => handleApproval(false)}>
+            <Text style={[styles.buttonText, {color: 'orange'}]}>Hủy đơn</Text>
+          </TouchableOpacity>
+        )}
+        {orderItem?.status === 'shipped' && (
+          <View style={[styles.statusButton, {backgroundColor: '#eee'}]}>
+            <Text style={[styles.buttonText, {color: '#6666FF'}]}>
+              Đang giao
+            </Text>
+          </View>
+        )}
+        {orderItem?.status === 'delivered' && (
+          <View style={[styles.statusButton, {backgroundColor: '#CCFFCC'}]}>
+            <Text style={[styles.buttonText, {color: 'green'}]}>Hủy đơn</Text>
+          </View>
+        )}
+        {orderItem?.status === 'cancelled' && (
+          <View
+            style={[styles.statusButton, {backgroundColor: '#FFE4E1'}]}
+            onPress={() => handleApproval(false)}>
+            <Text style={[styles.buttonText, {color: 'red'}]}>Đã hủy</Text>
+          </View>
+        )}
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Khách hàng:</Text>
@@ -145,11 +166,6 @@ const UpdatedOrderHistory = ({route}) => {
               {statusTranslations[orderItem?.status]}
             </Text>
           </TouchableOpacity>
-          // <TouchableOpacity
-          //   style={styles.cancelButton}
-          //   onPress={() => handleApproval(false)}>
-          //   <Text style={styles.buttonText}>Hủy</Text>
-          // </TouchableOpacity>
         )}
       </ScrollView>
     </View>
@@ -176,6 +192,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 22,
+    left: 20,
     color: 'black',
     fontWeight: '600',
   },
@@ -216,7 +233,7 @@ const styles = StyleSheet.create({
   },
   statusButton: {
     height: 30,
-    backgroundColor: '#FFE4E1',
+    backgroundColor: '#FFEFD5',
     marginHorizontal: '5%',
     marginVertical: '2%',
     borderRadius: 10,

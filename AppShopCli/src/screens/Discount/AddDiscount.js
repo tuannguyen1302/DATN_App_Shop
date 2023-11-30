@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import {TextInput} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -32,11 +32,19 @@ const SALE_OPTIONS = [
   {id: 1, name: 'Giá tiền'},
 ];
 
-const renderTextInput = (label, value, field, keyboardType = 'default') => {
+const renderTextInput = (
+  label,
+  value,
+  field,
+  keyboardType = 'default',
+  handleTextChange,
+  multiline = false,
+) => {
   return (
     <TextInput
       label={label}
       value={value}
+      multiline={multiline}
       style={styles.input}
       keyboardType={keyboardType}
       onChangeText={text => handleTextChange(text, field)}
@@ -111,18 +119,20 @@ const AddDiscount = ({navigation}) => {
         return;
       }
 
-      if (
-        new Date(discountData.start_date) >= new Date(discountData.end_date)
-      ) {
-        ToastAndroid.show(
-          'Ngày bắt đầu phải trước ngày kết thúc.',
-          ToastAndroid.SHORT,
-        );
-        return;
-      }
+      console.log(discountData);
 
-      await apiPost(DISCOUNT_API, discountData);
-      ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
+      // if (
+      //   new Date(discountData.start_date) >= new Date(discountData.end_date)
+      // ) {
+      //   ToastAndroid.show(
+      //     'Ngày bắt đầu phải trước ngày kết thúc.',
+      //     ToastAndroid.SHORT,
+      //   );
+      //   return;
+      // }
+
+      // await apiPost(DISCOUNT_API, discountData);
+      // ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -156,19 +166,12 @@ const AddDiscount = ({navigation}) => {
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
         <View style={styles.header}>
-          <AntDesign
+          <TouchableOpacity
             onPress={() => navigation.goBack()}
-            name="arrowleft"
-            size={30}
-            color={'#FFF'}
-          />
-          <Text style={styles.headerText}>Thêm Giảm Giá</Text>
-          <AntDesign
-            onPress={postDiscountApi}
-            name="check"
-            size={30}
-            color={'#FFF'}
-          />
+            style={styles.backButton}>
+            <AntDesign name="left" size={20} color={'black'} />
+          </TouchableOpacity>
+          <Text style={styles.titleText}>Add Discount</Text>
         </View>
         <ScrollView style={styles.contentContainer}>
           <Text style={styles.label}>Áp dụng</Text>
@@ -196,13 +199,22 @@ const AddDiscount = ({navigation}) => {
             discountData['name'],
             'name',
             'default',
+            handleTextChange,
           )}
-          {renderTextInput('Mô tả', discountData['des'], 'des', 'default')}
+          {renderTextInput(
+            'Mô tả',
+            discountData['des'],
+            'des',
+            'default',
+            handleTextChange,
+            true,
+          )}
           {renderTextInput(
             'Mã giảm giá',
             discountData['code'],
             'code',
             'default',
+            handleTextChange,
           )}
           {discountData.type === 'percentage' &&
             renderTextInput(
@@ -210,37 +222,57 @@ const AddDiscount = ({navigation}) => {
               discountData['value'],
               'value',
               'numeric',
+              handleTextChange,
             )}
           {renderTextInput(
             'Số tiền giảm tối đa',
             discountData['min_order_value'],
             'min_order_value',
             'numeric',
+            handleTextChange,
           )}
           {renderTextInput(
             'Số lượng sử dụng',
             discountData['max_uses'],
             'max_uses',
             'numeric',
+            handleTextChange,
           )}
           {renderTextInput(
             'Giới hạn sử dụng',
             discountData['max_uses_per_user'],
             'max_uses_per_user',
             'numeric',
+            handleTextChange,
           )}
-          {renderTextInput(
-            'Ngày bắt đầu',
-            discountData['start_date'] + '',
-            'start_date',
-            'default',
-          )}
-          {renderTextInput(
-            'Ngày kết thúc',
-            discountData['end_date'] + '',
-            'end_date',
-            'default',
-          )}
+          <TextInput
+            label="Ngày bắt đầu"
+            editable={false}
+            style={styles.input}
+            value={discountData['start_date'] + ''}
+            left={
+              <TextInput.Icon
+                onPress={() => {
+                  setStartDate(true), setDatePickerOpen(true);
+                }}
+                icon={() => <Fontisto name="date" size={24} />}
+              />
+            }
+          />
+          <TextInput
+            label="Ngày kết thúc"
+            value={discountData['end_date'] + ''}
+            editable={false}
+            style={styles.input}
+            left={
+              <TextInput.Icon
+                onPress={() => {
+                  setStartDate(false), setDatePickerOpen(true);
+                }}
+                icon={() => <Fontisto name="date" size={24} />}
+              />
+            }
+          />
 
           <DatePicker
             title={`Thời gian ${isStartDate ? 'bắt đầu' : 'kết thúc'}`}
@@ -303,7 +335,7 @@ const AddDiscount = ({navigation}) => {
                       height: 60,
                       borderWidth: 1,
                       borderColor: discountData?.product_ids.includes(item?._id)
-                        ? 'blue'
+                        ? 'red'
                         : 'gray',
                       marginHorizontal: '5%',
                       marginTop: '2%',
@@ -336,6 +368,24 @@ const AddDiscount = ({navigation}) => {
             </View>
           </BottomSheetModal>
         </ScrollView>
+        <TouchableOpacity
+          onPress={postDiscountApi}
+          style={{
+            width: 55,
+            position: 'absolute',
+            bottom: '3%',
+            height: 55,
+            borderRadius: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'black',
+            right: 0,
+            marginHorizontal: '5%',
+          }}>
+          <Text style={{color: 'white', fontWeight: '700', fontSize: 15}}>
+            Save
+          </Text>
+        </TouchableOpacity>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
@@ -349,19 +399,23 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 50,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    backgroundColor: '#9999FF',
+    padding: 15,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFF',
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+  },
+  titleText: {
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '600',
+    left: 10,
   },
   contentContainer: {
-    marginBottom: 20,
     paddingHorizontal: 20,
   },
   label: {

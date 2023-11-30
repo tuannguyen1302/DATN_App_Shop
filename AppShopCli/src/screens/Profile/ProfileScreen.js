@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   Pressable,
@@ -12,6 +12,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Spinner from 'react-native-loading-spinner-overlay';
 import imagePath from '../../constants/imagePath';
 import {apiDelete, clearAllItem} from '../../utils/utils';
 import ProfileStyles from './styles';
@@ -22,11 +23,20 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const ProfileSceen = ({navigation}) => {
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
+
   const logout = async () => {
-    await apiDelete(SIGNOUT_API);
-    clearAllItem();
-    socketServices.emit('logout');
-    navigation.replace('Login2');
+    setButtonDisabled(true);
+    try {
+      await apiDelete(SIGNOUT_API);
+      clearAllItem();
+      socketServices.emit('logout');
+      setButtonDisabled(false);
+      navigation.replace('Login2');
+    } catch (error) {
+      setButtonDisabled(false);
+      console.log('Logout: ', error);
+    }
   };
 
   return (
@@ -151,6 +161,11 @@ const ProfileSceen = ({navigation}) => {
           </View>
         </Pressable>
       </View>
+      <Spinner
+        visible={isButtonDisabled}
+        textContent={'Đang đăng xuất...'}
+        textStyle={{color: '#FFF'}}
+      />
     </ScrollView>
   );
 };
