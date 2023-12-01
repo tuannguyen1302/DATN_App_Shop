@@ -10,7 +10,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const Nganhsp = ({ navigation }) => {
+const Nganhsp = ({ navigation, route }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const click = category => {
@@ -27,11 +27,22 @@ const Nganhsp = ({ navigation }) => {
       return <FontAwesome name="circle" size={20} color="black" />;
     }
   };
+  const { destinationScreen } = route.params || {};
   const handleDone = () => {
     if (selectedCategory) {
 
+      const isAddScreen = destinationScreen === 'AddProduct';
 
-      navigation.navigate('AddProduct', { selectedCategory });
+      if (isAddScreen) {
+        navigation.navigate('AddProduct', { selectedCategory });
+      } else {
+        navigation.navigate('UpdateProduct', { selectedCategory });
+      }
+
+      // navigation.navigate(isAddScreen ? 'AddProduct' : 'UpdateProduct', {
+      //   selectedCategory,
+      // });
+      // navigation.navigate('AddProduct', { selectedCategory });
 
     } else {
       Alert.alert(
