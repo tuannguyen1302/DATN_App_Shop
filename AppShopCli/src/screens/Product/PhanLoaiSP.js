@@ -406,8 +406,7 @@ const PhanLoaiSP = ({ navigation }) => {
             </Modal>
         </View>
     );
-};
-
+}
 export default PhanLoaiSP;
 
 const styles = StyleSheet.create({

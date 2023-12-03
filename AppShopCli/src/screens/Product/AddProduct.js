@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   FlatList,
@@ -15,23 +15,21 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { PRODUCT_API } from '../../../src/config/urls';
-import { apiPost } from '../../../src/utils/utils';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {PRODUCT_API} from '../../../src/config/urls';
+import {apiPost} from '../../../src/utils/utils';
 
 const AddProduct = () => {
   const navigation = useNavigation();
-
   const [selectedImages, setSelectedImages] = useState([]);
-
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
   const route = useRoute();
 
-  const { buil } = route.params || {};
-  const { selectedCategory } = route.params || {};
+  const {buil} = route.params || {};
+  const {selectedCategory} = route.params || {};
 
   const clearField = setField => setField('');
 
@@ -40,12 +38,12 @@ const AddProduct = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const result = isFrontCamera
-        ? await launchCamera({ mediaType: 'photo' })
-        : await launchImageLibrary({ mediaType: 'photo' });
+        ? await launchCamera({mediaType: 'photo'})
+        : await launchImageLibrary({mediaType: 'photo'});
 
       setSelectedImages([
         ...selectedImages,
-        { id: Date.now().toString(), uri: result.assets[0] },
+        {id: Date.now().toString(), uri: result.assets[0]},
       ]);
       console.log(selectedImages);
     } catch (error) {
@@ -58,7 +56,7 @@ const AddProduct = () => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn xóa ảnh này?',
       [
-        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
+        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
         {
           text: 'Xóa',
           onPress: () =>
@@ -67,7 +65,7 @@ const AddProduct = () => {
             ),
         },
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -76,18 +74,14 @@ const AddProduct = () => {
       'Thông báo',
       'Bạn muốn lấy ảnh từ?',
       [
-        { text: 'Chụp ảnh ', onPress: () => openCamera(true) },
-        { text: 'Thư viện ', onPress: () => openCamera(false) },
+        {text: 'Chụp ảnh ', onPress: () => openCamera(true)},
+        {text: 'Thư viện ', onPress: () => openCamera(false)},
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
-  const hienthui = () => {
-    console.log(buil);
-    // console.log(selectedCategory);
-  };
+
   const postApi = async () => {
-    console.log('đang đăng sản phẩm ');
     try {
       if (
         !selectedImages ||
@@ -103,7 +97,6 @@ const AddProduct = () => {
       }
 
       const productAttributes = [buil];
-      //const product_attributes = JSON.parse(productAttributes);
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
@@ -118,22 +111,18 @@ const AddProduct = () => {
         });
       });
 
-      const res = await apiPost(`${PRODUCT_API}/createProduct`, formData, {
+      await apiPost(`${PRODUCT_API}/createProduct`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      console.log(
-        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + JSON.stringify(res.message),
-      );
       navigation.goBack();
-      console.log(formData);
     } catch (error) {
-      console.log('Post api: ', error.message);
+      console.log('Post api: ', error.response);
     }
   };
 
   const dataWithButton =
     selectedImages.length < 8
-      ? [{ id: 'button', isButton: true }, ...selectedImages]
+      ? [{id: 'button', isButton: true}, ...selectedImages]
       : selectedImages;
 
   return (
@@ -146,14 +135,14 @@ const AddProduct = () => {
           <Text style={styles.headerText}>Thêm Sản Phẩm</Text>
         </View>
       </View>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{flex: 1}}>
         <View style={styles.imageContainer}>
           <FlatList
             numColumns={4}
             data={dataWithButton}
             scrollEnabled={false}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <View style={styles.imageItem}>
                 {item.isButton ? (
                   <TouchableOpacity
@@ -163,7 +152,7 @@ const AddProduct = () => {
                   </TouchableOpacity>
                 ) : (
                   <>
-                    <Image style={styles.image} source={{ uri: item.uri.uri }} />
+                    <Image style={styles.image} source={{uri: item.uri.uri}} />
                     <TouchableOpacity
                       onPress={() => handleDeleteImage(item.id)}
                       style={styles.closeButton}>
@@ -192,41 +181,37 @@ const AddProduct = () => {
           ].map((item, index) => (
             <View key={index} style={styles.inputContainer}>
               <View style={styles.inputRow}>
-                <View >
-                  <Text style={styles.inputLabel}>{item.label}</Text>
-                  <View style={{
+                <Text style={styles.inputLabel}>{item.label}</Text>
+                <View
+                  style={{
                     borderWidth: 1,
                     borderRadius: 10,
                     marginVertical: 5,
                     flexDirection: 'row',
                     paddingHorizontal: 10,
-                    justifyContent: "space-between"
+                    justifyContent: 'space-between',
                   }}>
-                    <TextInput
-                      style={styles.inputField}
-                      value={item.state}
-                      multiline={true}
-                      onChangeText={item.setState}
-                      maxLength={item.maxLength}
-                      placeholder={`Nhập ${item.label.toLowerCase()}`}
-                    />
-                    <View style={styles.inputStatus}>
-                      <Text>
-                        {item.state.length}/{item.maxLength}
-                      </Text>
-                      <Pressable
-                        onPress={() => clearField(item.setState)}>
-                        <AntDesign
-                          name="closesquareo"
-                          size={20}
-                          color={item.state ? 'red' : 'gray'}
-                        />
-                      </Pressable>
-                    </View>
+                  <TextInput
+                    style={styles.inputField}
+                    value={item.state}
+                    multiline={true}
+                    onChangeText={item.setState}
+                    maxLength={item.maxLength}
+                    placeholder={`Nhập ${item.label.toLowerCase()}`}
+                  />
+                  <View style={styles.inputStatus}>
+                    <Text>
+                      {item.state.length}/{item.maxLength}
+                    </Text>
+                    <Pressable onPress={() => clearField(item.setState)}>
+                      <AntDesign
+                        name="closesquareo"
+                        size={20}
+                        color={item.state ? 'red' : 'gray'}
+                      />
+                    </Pressable>
                   </View>
-
                 </View>
-
               </View>
             </View>
           ))}
@@ -238,14 +223,13 @@ const AddProduct = () => {
               state: productPrice.toString(),
               setState: setProductPrice,
             },
-
           ].map((item, index) => (
             <View key={index} style={styles.priceAndInventoryContainer}>
               <View style={styles.iconAndLabelContainer}>
                 <MaterialIcons name={item.icon} size={25} />
                 <Text style={styles.inputLabel}>{item.label}</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput
                   style={styles.priceAndInventoryInput}
                   maxLength={10}
@@ -254,7 +238,7 @@ const AddProduct = () => {
                   placeholder={`0`}
                 />
                 {item.label === 'Giá sản phẩm 🕸️' && (
-                  <Text style={{ fontSize: 18 }}>đ</Text>
+                  <Text style={{fontSize: 18}}>đ</Text>
                 )}
               </View>
             </View>
@@ -265,7 +249,7 @@ const AddProduct = () => {
             navigation.navigate('Nganhsp');
           }}
           style={styles.nganhsp}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
             Ngành hàng sản phẩm
           </Text>
           <AntDesign name="right" size={20} />
@@ -279,7 +263,7 @@ const AddProduct = () => {
             paddingHorizontal: 25,
             marginTop: 5,
             borderWidth: 1,
-            borderColor: '#5F5F5F'
+            borderColor: '#5F5F5F',
           }}>
           Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
         </Text>
@@ -288,31 +272,30 @@ const AddProduct = () => {
             navigation.navigate('Phanloaisp');
           }}
           style={styles.nganhsp}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
             Phân loại sản phẩm{' '}
           </Text>
           <AntDesign name="right" size={20} />
         </Pressable>
-      </ScrollView >
+      </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={postApi}>
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={hienthui}
-          style={[styles.button, { backgroundColor: '#000000' }]}>
-          <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
+          onPress={() => console.log(buil)}
+          style={[styles.button, {backgroundColor: '#000000'}]}>
+          <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
         </TouchableOpacity>
       </View>
-    </View >
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginBottom: 6,
-    backgroundColor: '#C7C7C7',
+    backgroundColor: '#eee',
   },
   header: {
     height: 70,
@@ -370,20 +353,16 @@ const styles = StyleSheet.create({
     marginVertical: '1%',
     backgroundColor: 'white',
     justifyContent: 'center',
-
   },
   inputRow: {
     marginVertical: '3%',
     paddingHorizontal: 20,
-    flexDirection: 'row',
     justifyContent: 'space-between',
-
   },
   inputLabel: {
     fontSize: 18,
     color: 'black',
     fontWeight: '600',
-
   },
   inputField: {
     width: 305,
@@ -401,12 +380,11 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   iconAndLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   priceAndInventoryInput: {
     fontSize: 15,
@@ -435,12 +413,12 @@ const styles = StyleSheet.create({
     height: 45,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', // Để căn chỉnh theo chiều dọc
-    paddingHorizontal: 26, // Khoảng cách đều 2 bên
-    borderWidth: 1,
+    alignItems: 'center',
+    paddingHorizontal: 26,
+    borderWidth: 0.5,
     borderColor: '#5F5F5F',
     marginBottom: 1,
-    marginTop: 5
+    marginTop: 5,
   },
 });
 

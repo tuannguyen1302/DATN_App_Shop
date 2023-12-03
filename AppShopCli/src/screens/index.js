@@ -27,7 +27,10 @@ export { default as Discountscreens } from './Discount/Discountscreens';
 export { default as DiscountItem } from './Discount/DiscountItem ';
 export { default as AddDiscount } from './Discount/AddDiscount';
 export { default as UpdateDiscount } from './Discount/UpdateDiscount';
-export { default as Password } from './Profile/Password';
-export { default as Setting } from './Setting/Setting';
 export { default as NGANH_SPUPDATE } from './Product/Nganhspupdate';
 export { default as NotifiScreen } from './Notification/NotifiScreen';
+export { default as Password } from './Setting/Password';
+export { default as SettingScreen } from './Setting/SettingScreen';
+export { default as ContactSup } from './Setting/ContactSup';
+
+

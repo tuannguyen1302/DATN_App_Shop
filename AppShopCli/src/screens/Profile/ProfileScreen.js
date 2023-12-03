@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   Image,
   Pressable,
@@ -5,44 +6,37 @@ import {
   Text,
   View,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import React, { useState } from 'react';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { apiGet } from '../../../src/utils/utils';
-import { API_BASE_URL, SHOP_API } from '../../../src/config/urls';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Spinner from 'react-native-loading-spinner-overlay';
 import imagePath from '../../constants/imagePath';
-import { TouchableOpacity } from 'react-native';
+import {apiGet} from '../../../src/utils/utils';
+import {API_BASE_URL, SHOP_API} from '../../../src/config/urls';
 
-// const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
+const ProfileScreen = () => {
+  const [shopData, setShopData] = useState({
+    name: '',
+    description: '',
+    address: '',
+    phone: '',
+    email: '',
+    avatar: '',
+  });
 
-const ProfileSceen = () => {
-
-
-
-  const [shopName, setShopName] = useState('');
-  const [shopDescription, setShopDescription] = useState('');
-  const [shopAddress, setShopAddress] = useState('');
-  const [shopPhone, setShopPhone] = useState('');
-  const [shopEmail, setShopEmail] = useState('');
-  const [avatarSource, setAvatarSource] = useState([]);
   const navigation = useNavigation();
+
   const getApi = async () => {
     try {
       const res = await apiGet(`${SHOP_API}/getShopForShop`);
-      //console.log(res);
-      setShopName(res?.message?.nameShop);
-      setShopDescription(res?.message?.des);
-      setShopAddress(res?.message?.address);
-      setShopPhone(res?.message?.phoneNumberShop.toString());
-      setShopEmail(res?.message?.emailShop);
-      setAvatarSource({
-        uri: `${API_BASE_URL}${res?.message?.avatarShop}`,
+      setShopData({
+        name: res?.message?.nameShop,
+        description: res?.message?.des,
+        address: res?.message?.address,
+        phone: res?.message?.phoneNumberShop.toString(),
+        email: res?.message?.emailShop,
+        avatar: `${API_BASE_URL}${res?.message?.avatarShop}`,
       });
     } catch (error) {
       console.log('Post api: ', error.message);
@@ -55,105 +49,72 @@ const ProfileSceen = () => {
     }, []),
   );
 
+  const navigateToSettings = () => {
+    navigation.navigate('SettingScreen');
+  };
+
+  const navigateToShopUpdate = () => {
+    navigation.navigate('ShopUpdate');
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginHorizontal: '5%',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop: 20
-
-        }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image
-            style={{
-              width: 50,
-              height: 50,
-              borderWidth: 1,
-              borderColor: 'green',
-              borderRadius: 20,
-            }}
-            source={imagePath.logo}
-          />
-          <Text
-            style={{
-              left: '20%',
-              fontSize: 22,
-              color: 'black',
-              fontWeight: '600',
-            }}>
-            Profile
-          </Text>
+      <View style={styles.header}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image style={styles.logo} source={imagePath.logo} />
+          <Text style={styles.titleText}>Profile</Text>
         </View>
         <TouchableOpacity
-          onPress={() => { navigation.navigate('Setting') }}
-          style={{
-            width: 50,
-            height: 50,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#EEEEEE',
-            borderRadius: 15,
-          }}>
+          onPress={navigateToSettings}
+          style={styles.settingsButton}>
           <Ionicons name="settings-sharp" size={30} color="#333" />
         </TouchableOpacity>
       </View>
       <View style={styles.avatarSection}>
-        <View>
-          {avatarSource?.uri ? (
-            <Image style={styles.avatar} source={{ uri: avatarSource?.uri }} />
+        <Pressable onPress={navigateToShopUpdate}>
+          {shopData?.avatar ? (
+            <Image style={styles.avatar} source={{uri: shopData?.avatar}} />
           ) : (
             <Image
               style={styles.avatar}
               source={{
-                uri: 'https://i.ytimg.com/vi/Sj0NENb2nT4/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBk8S6cRMKFRWzWWGT8hOL1e0LO3w',
+                uri: 'https://i.ytimg.com/vi/GtwwuEdteQA/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLA2jBhYe_W7tSjVU4dEpXDTzPIhdQ',
               }}
             />
           )}
-          <Pressable
-            onPress={() => {
-              navigation.navigate('ShopUpdate');
-            }}
-            style={{ width: 30, height: 30, borderRadius: 20, backgroundColor: '#474747', marginLeft: 80, marginTop: -30, justifyContent: 'center', alignItems: 'center' }} >
+
+          <View style={styles.editButton}>
             <Feather color={'white'} name="edit-3" size={20} />
-          </Pressable>
-        </View>
-        <View style={{ marginHorizontal: 10, paddingVertical: 5 }}>
-          <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'black' }} > {shopName} </Text>
-          <Text style={{ fontSize: 20, color: '#575656' }} > {shopEmail} </Text>
-          <Text style={{ fontSize: 20, color: '#575656' }} > {shopPhone} </Text>
-        </View>
-
-      </View>
-      <View style={styles.hori}>
-      </View>
-      <View style={{ marginBottom: 20 }}>
-
-        <View style={styles.viewname}>
-          <Text style={styles.text}> Tên Cửa Hàng: </Text>
-          <Text style={styles.otxt} > {shopName} </Text>
-        </View>
-        <View style={styles.viewname}>
-          <Text style={styles.text} > Địa chỉ cửa hàng:</Text>
-          <Text style={styles.otxt}> {shopAddress} </Text>
-        </View>
-        <View style={styles.viewname}>
-          <Text style={styles.text} > SĐT cửa hàng:</Text>
-          <Text style={styles.otxt}> {shopPhone} </Text>
-        </View>
-        <View style={styles.viewname}>
-          <Text style={styles.text} > Email cửa hàng:</Text>
-          <Text style={styles.otxt}> {shopEmail} </Text>
-        </View>
-        <View style={styles.viewname}>
-          <Text style={styles.text} > Mô tả cửa hàng:</Text>
-          <Text style={styles.otxt}> {shopDescription} </Text>
+          </View>
+        </Pressable>
+        <View style={{left: '5%'}}>
+          <Text style={styles.nameText}> {shopData?.name} </Text>
+          <Text style={styles.infoText}> {shopData?.email} </Text>
+          <Text style={styles.infoText}> {shopData?.phone} </Text>
         </View>
       </View>
-
-
+      <View style={{marginHorizontal: '5%'}}>
+        <View style={styles.infoItem}>
+          <Text style={styles.labelText}>Tên Cửa Hàng:</Text>
+          <Text style={styles.valueText}> {shopData?.name} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.labelText}>Địa chỉ cửa hàng:</Text>
+          <Text style={styles.valueText}> {shopData?.address} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.labelText}>SĐT cửa hàng:</Text>
+          <Text style={styles.valueText}> {shopData?.phone} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.labelText}>Email cửa hàng:</Text>
+          <Text style={styles.valueText}> {shopData?.email} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.labelText}>Mô tả cửa hàng:</Text>
+          <Text style={styles.valueText}> {shopData?.description} </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 };
@@ -162,70 +123,87 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     flex: 1,
-
   },
   header: {
     height: 60,
-    justifyContent: 'center',
     marginTop: 10,
-  },
-  rowHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: '5%',
   },
+  logo: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: 'green',
+    borderRadius: 20,
+  },
   titleText: {
-    fontSize: 24,
+    left: '20%',
+    fontSize: 22,
     color: 'black',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  saveText: {
-    color: '#3498db',
-    fontSize: 18,
-    fontWeight: 'bold',
+  settingsButton: {
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
   },
-
   avatarSection: {
-    alignItems: 'flex-start',
-    justifyContent: 'ceter',
-    marginTop: 20,
-    marginBottom: 25,
-    marginLeft: 30,
-    flexDirection: 'row'
+    alignItems: 'center',
+    marginHorizontal: '8%',
+    marginVertical: '5%',
+    flexDirection: 'row',
   },
   avatar: {
-    width: 100,
-    height: 100,
+    width: 110,
+    height: 110,
     borderRadius: 100,
   },
-  viewname: {
-    marginTop: 20,
-    marginHorizontal: 30,
-
+  editButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    backgroundColor: '#474747',
+    marginLeft: 80,
+    marginTop: -30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
-  hori: {
-    height: 1,
-    borderWidth: 1,
-    borderColor: '#BBBBBB80',
-    marginHorizontal: 30
-
-  }, otxt: {
-    fontSize: 20,
-
+  nameText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  infoText: {
+    fontSize: 19,
+    color: 'black',
+  },
+  infoItem: {
+    marginTop: '4%',
+  },
+  labelText: {
+    fontSize: 19,
+    left: '4%',
+    fontWeight: '600',
+    color: 'black',
+  },
+  valueText: {
+    fontSize: 18,
     borderRadius: 10,
-    backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#9E9E9E7A',
+    borderColor: '#ddd',
     height: 50,
     textAlignVertical: 'center',
     paddingLeft: 10,
     marginTop: 5,
     color: '#000000',
     marginHorizontal: 10,
-
   },
-  text: { fontSize: 20, marginLeft: 20, fontWeight: 'bold', color: 'black' }
 });
-export default ProfileSceen;
+
+export default ProfileScreen;

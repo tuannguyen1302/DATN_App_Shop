@@ -96,7 +96,6 @@ const UpdateProduct = ({ navigation, route }) => {
         !productName ||
         !productDescription ||
         !productPrice
-
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -135,60 +134,37 @@ const UpdateProduct = ({ navigation, route }) => {
   const renderInputField = ({ label, state, setState, maxLength }, index) => (
     <View key={index} style={styles.inputContainer}>
       <View style={styles.inputRow}>
-        <View>
-          <Text style={styles.inputLabel}>{label} 🕸️</Text>
-          <View style={{
+        <Text style={styles.inputLabel}>{label} 🕸️</Text>
+        <View
+          style={{
             borderWidth: 1,
             borderRadius: 10,
             marginVertical: 5,
             flexDirection: 'row',
             paddingHorizontal: 10,
-            justifyContent: "space-between"
+            justifyContent: 'space-between',
           }}>
-            <TextInput
-              style={styles.inputField}
-              value={state}
-              onChangeText={setState}
-              maxLength={maxLength}
-              placeholder={`Nhập ${label.toLowerCase()}`}
-            />
-            <View style={styles.inputStatus}>
-              <Text>
-                {state.length}/{maxLength}
-              </Text>
-              <Pressable onPress={() => clearField(state, setState)}>
-                <AntDesign
-                  name="closesquareo"
-                  size={20}
-                  color={state ? 'red' : 'gray'}
-                />
-              </Pressable>
-            </View>
+          <TextInput
+            style={styles.inputField}
+            value={state}
+            onChangeText={setState}
+            maxLength={maxLength}
+            placeholder={`Nhập ${label.toLowerCase()}`}
+          />
+          <View style={styles.inputStatus}>
+            <Text>
+              {state.length}/{maxLength}
+            </Text>
+            <Pressable onPress={() => clearField(setState)}>
+              <AntDesign
+                name="closesquareo"
+                size={20}
+                color={state ? 'red' : 'gray'}
+              />
+            </Pressable>
           </View>
-
         </View>
-
       </View>
-    </View>
-  );
-
-  const renderPriceAndInventoryField = (
-    { icon, label, state, setState },
-    index,
-  ) => (
-    <View key={index} style={styles.priceAndInventoryContainer}>
-      <View style={styles.iconAndLabelContainer}>
-        <MaterialIcons name={icon} size={25} />
-        <Text style={styles.inputLabel}>{label} 🕸️</Text>
-      </View>
-      <TextInput
-        style={styles.priceAndInventoryInput}
-        maxLength={10}
-        value={state}
-        keyboardType="number-pad"
-        onChangeText={setState}
-        placeholder={`Nhập ${label.toLowerCase()}`}
-      />
     </View>
   );
 
@@ -248,9 +224,6 @@ const UpdateProduct = ({ navigation, route }) => {
           />
         </View>
         <View>
-
-
-
           {[
             {
               label: 'Tên sản phẩm',
@@ -272,13 +245,11 @@ const UpdateProduct = ({ navigation, route }) => {
               state: productPrice.toString(),
               setState: setProductPrice,
             },
-
           ].map((item, index) => (
             <View key={index} style={styles.priceAndInventoryContainer}>
               <View style={styles.iconAndLabelContainer}>
                 <MaterialIcons name={item.icon} size={25} />
                 <Text style={styles.inputLabel}>{item.label}</Text>
-
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TextInput
@@ -314,7 +285,7 @@ const UpdateProduct = ({ navigation, route }) => {
             paddingHorizontal: 25,
             marginTop: 5,
             borderWidth: 1,
-            borderColor: '#5F5F5F'
+            borderColor: '#5F5F5F',
           }}>
           Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
         </Text>
@@ -409,18 +380,14 @@ const styles = StyleSheet.create({
     height: 'auto',
   },
   inputRow: {
-
     marginVertical: '3%',
     marginHorizontal: '3%',
-    flexDirection: 'row',
     justifyContent: 'space-between',
-
   },
   inputLabel: {
     fontSize: 18,
     color: 'black',
     fontWeight: '600',
-
   },
   inputField: {
     width: 320,
@@ -444,7 +411,6 @@ const styles = StyleSheet.create({
   },
   priceAndInventoryInput: {
     fontSize: 15,
-
   },
   footer: {
     backgroundColor: '#ffffff',
@@ -464,7 +430,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     color: '#000000',
-  }, nganhsp: {
+  },
+  nganhsp: {
     backgroundColor: '#ffffff',
     height: 45,
     flexDirection: 'row',
@@ -474,7 +441,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#5F5F5F',
     marginBottom: 1,
-    marginTop: 5
+    marginTop: 5,
   },
 });
 
