@@ -38,7 +38,7 @@ const Nganhsp = ({ navigation, route }) => {
       // } else {
       //   navigation.navigate('UpdateProduct', { selectedCategory });
       // }
-      navigation.navigate('AddProduct', { selectedCategory });
+      navigation.navigate('UpdateProduct', { selectedCategory });
 
     } else {
       Alert.alert(

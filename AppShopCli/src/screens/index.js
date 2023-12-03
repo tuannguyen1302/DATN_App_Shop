@@ -16,6 +16,7 @@ export { default as ProductScreen } from './Product/ProductScreen';
 export { default as AddProduct } from './Product/AddProduct';
 export { default as Nganhsp } from './Product/Nganhsp';
 export { default as PhanLoaiSP } from './Product/PhanLoaiSP';
+export { default as PhanloaispUPDATE } from './Product/PhanLoaiSPupdate';
 export { default as UpdateProduct } from './Product/UpdateProduct';
 export { default as OrderHistory } from './Order/OrderHistory';
 export { default as ShopScreen } from './Shop/ShopScreen';
@@ -28,5 +29,5 @@ export { default as AddDiscount } from './Discount/AddDiscount';
 export { default as UpdateDiscount } from './Discount/UpdateDiscount';
 export { default as Password } from './Profile/Password';
 export { default as Setting } from './Setting/Setting';
-
+export { default as NGANH_SPUPDATE } from './Product/Nganhspupdate';
 export { default as NotifiScreen } from './Notification/NotifiScreen';

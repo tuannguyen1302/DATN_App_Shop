@@ -138,7 +138,7 @@ const Setting = ({ navigation }) => {
                 </Text>
                 <Pressable
                     style={ProfileStyles.buttonView}
-                    onPress={() => navigation.navigate('InventoryScreen')}>
+                    onPress={() => navigation.navigate('Password')}>
                     <View style={ProfileStyles.rowButton}>
                         <View style={ProfileStyles.iconTextContainer}>
                             <MaterialIcons

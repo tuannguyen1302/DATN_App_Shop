@@ -18,10 +18,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { API_BASE_URL, PRODUCT_API } from '../../config/urls';
 import { apiGet, apiPut } from '../../utils/utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UpdateProduct = ({ navigation, route }) => {
   const { item } = route.params;
-
+  //console.log(item?.productAttributes);
   const [selectedImages, setSelectedImages] = useState([]);
   const [productName, setProductName] = useState(item?.product_name);
   const [productDescription, setProductDescription] = useState(
@@ -29,8 +30,11 @@ const UpdateProduct = ({ navigation, route }) => {
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
   const { selectedCategory } = route.params || {};
+  const { buil, newid } = route.params || {};
 
+  //console.log(newid);
   const clearField = setField => setField('');
+
 
   const openCamera = async isFrontCamera => {
     try {
@@ -79,8 +83,13 @@ const UpdateProduct = ({ navigation, route }) => {
       { cancelable: true },
     );
   };
+  const hienthi = () => {
+    console.log(buil);
+
+  }
 
   const postApi = async () => {
+
     try {
       if (
         !selectedImages ||
@@ -96,35 +105,15 @@ const UpdateProduct = ({ navigation, route }) => {
         return;
       }
 
-      const productAttributes = [
-        {
-          color: 'Xanh',
-          size: ['XL', 'S'],
-          quantity: 1,
-        },
-        {
-          color: 'Đỏ',
-          size: ['XL', 'S'],
-          quantity: 10,
-        },
-        {
-          color: 'Den',
-          size: ['XL', 'S'],
-          quantity: 100,
-        },
-        {
-          color: 'Trắng',
-          size: ['XL', 'S'],
-          quantity: 1,
-        },
-      ];
-
+      const productAttributes = [buil];
+      //console.log(JSON.stringify(buil));
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
       formData.append('product_price', productPrice);
       formData.append('category', '654e4dccab5f7e26f673b45f');
-      formData.append('product_attributes', JSON.stringify(productAttributes));
+      formData.append('product_attributes', productAttributes);
+      //console.log(JSON.stringify(formData) + "=======================");
       selectedImages.forEach(image => {
         let localUri = image?.uri;
         let filename = localUri.split('/').pop();
@@ -132,10 +121,11 @@ const UpdateProduct = ({ navigation, route }) => {
         let type = match ? `image/${match[1]}` : `image`;
         formData.append('thumbs', { uri: localUri, name: filename, type });
       });
-
-      await apiPut(`${PRODUCT_API}/editProduct/${item?._id}`, formData, {
+      //console.log(`${PRODUCT_API}/editProduct/${newid}`);
+      await apiPut(`${PRODUCT_API}/editProduct/${newid}`, formData, {
         'Content-Type': 'multipart/form-data',
       });
+      console.log("sửa thành công ");
       navigation.navigate('HomeScreen');
     } catch (error) {
       console.log('Post api: ', error.message);
@@ -307,7 +297,7 @@ const UpdateProduct = ({ navigation, route }) => {
         </View>
         <Pressable
           onPress={() => {
-            navigation.navigate('Nganhsp');
+            navigation.navigate('NganhspUPDATE');
           }}
           style={styles.nganhsp}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -330,7 +320,8 @@ const UpdateProduct = ({ navigation, route }) => {
         </Text>
         <Pressable
           onPress={() => {
-            navigation.navigate('Phanloaisp');
+            navigation.navigate('PhanloaispUPDATE', { newid: item?._id, item: item });
+
           }}
           style={styles.nganhsp}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -343,7 +334,9 @@ const UpdateProduct = ({ navigation, route }) => {
         <TouchableOpacity style={styles.button} onPress={postApi}>
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#000000' }]}>
+        <TouchableOpacity
+          onPress={hienthi}
+          style={[styles.button, { backgroundColor: '#000000' }]}>
           <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
         </TouchableOpacity>
       </View>
