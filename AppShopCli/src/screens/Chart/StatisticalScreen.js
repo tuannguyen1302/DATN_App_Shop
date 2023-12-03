@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {Dimensions, FlatList, Image, Text, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Dropdown} from 'react-native-element-dropdown';
 import {BarChart} from 'react-native-chart-kit';
 import {StaticStyle} from './styles';
@@ -18,7 +26,7 @@ const AVAILABILITY_OPTIONS = [
   {id: 6, name: 'Năm nay'},
 ];
 
-const StatisticalScreen = () => {
+const StatisticalScreen = ({navigation}) => {
   const [selectedCategory, setSelectedCategory] = useState(CHART_CATEGORIES[0]);
   const [selectedAvailability, setSelectedAvailability] = useState(
     AVAILABILITY_OPTIONS[0],
@@ -133,6 +141,35 @@ const StatisticalScreen = () => {
 
   return (
     <View style={StaticStyle.container}>
+      <View
+        style={{
+          flexDirection: 'row',
+          padding: 15,
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text
+          style={{
+            left: '30%',
+            fontSize: 22,
+            color: 'black',
+            fontWeight: '600',
+          }}>
+          Statistics
+        </Text>
+      </View>
+
       <InventoryInfo />
 
       <View style={StaticStyle.footerContainer}>

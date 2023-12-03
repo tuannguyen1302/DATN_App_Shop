@@ -22,9 +22,7 @@ import {apiPost} from '../../../src/utils/utils';
 
 const AddProduct = () => {
   const navigation = useNavigation();
-
   const [selectedImages, setSelectedImages] = useState([]);
-
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
@@ -82,12 +80,8 @@ const AddProduct = () => {
       {cancelable: true},
     );
   };
-  const hienthui = () => {
-    console.log(buil);
-    // console.log(selectedCategory);
-  };
+
   const postApi = async () => {
-    console.log('đang đăng sản phẩm ');
     try {
       if (
         !selectedImages ||
@@ -103,7 +97,6 @@ const AddProduct = () => {
       }
 
       const productAttributes = [buil];
-      //const product_attributes = JSON.parse(productAttributes);
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
@@ -118,16 +111,12 @@ const AddProduct = () => {
         });
       });
 
-      const res = await apiPost(`${PRODUCT_API}/createProduct`, formData, {
+      await apiPost(`${PRODUCT_API}/createProduct`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      console.log(
-        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' + JSON.stringify(res.message),
-      );
       navigation.goBack();
-      console.log(formData);
     } catch (error) {
-      console.log('Post api: ', error.message);
+      console.log('Post api: ', error.response);
     }
   };
 
@@ -192,8 +181,16 @@ const AddProduct = () => {
           ].map((item, index) => (
             <View key={index} style={styles.inputContainer}>
               <View style={styles.inputRow}>
-                <View>
-                  <Text style={styles.inputLabel}>{item.label}</Text>
+                <Text style={styles.inputLabel}>{item.label}</Text>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    marginVertical: 5,
+                    flexDirection: 'row',
+                    paddingHorizontal: 10,
+                    justifyContent: 'space-between',
+                  }}>
                   <TextInput
                     style={styles.inputField}
                     value={item.state}
@@ -202,19 +199,18 @@ const AddProduct = () => {
                     maxLength={item.maxLength}
                     placeholder={`Nhập ${item.label.toLowerCase()}`}
                   />
-                </View>
-                <View style={styles.inputStatus}>
-                  <Text>
-                    {item.state.length}/{item.maxLength}
-                  </Text>
-                  <Pressable
-                    onPress={() => clearField(item.state, item.setState)}>
-                    <AntDesign
-                      name="closesquareo"
-                      size={20}
-                      color={item.state ? 'red' : 'gray'}
-                    />
-                  </Pressable>
+                  <View style={styles.inputStatus}>
+                    <Text>
+                      {item.state.length}/{item.maxLength}
+                    </Text>
+                    <Pressable onPress={() => clearField(item.setState)}>
+                      <AntDesign
+                        name="closesquareo"
+                        size={20}
+                        color={item.state ? 'red' : 'gray'}
+                      />
+                    </Pressable>
+                  </View>
                 </View>
               </View>
             </View>
@@ -227,12 +223,6 @@ const AddProduct = () => {
               state: productPrice.toString(),
               setState: setProductPrice,
             },
-            // {
-            //   icon: 'warehouse',
-            //   label: 'Kho hàng',
-            //   state: productInventory.toString(),
-            //   setState: setProductInventory,
-            // },
           ].map((item, index) => (
             <View key={index} style={styles.priceAndInventoryContainer}>
               <View style={styles.iconAndLabelContainer}>
@@ -270,7 +260,10 @@ const AddProduct = () => {
             color: 'black',
             padding: 5,
             backgroundColor: 'white',
-            paddingLeft: 20,
+            paddingHorizontal: 25,
+            marginTop: 5,
+            borderWidth: 1,
+            borderColor: '#5F5F5F',
           }}>
           Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
         </Text>
@@ -290,7 +283,7 @@ const AddProduct = () => {
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={hienthui}
+          onPress={() => console.log(buil)}
           style={[styles.button, {backgroundColor: '#000000'}]}>
           <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
         </TouchableOpacity>
@@ -302,8 +295,7 @@ const AddProduct = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginBottom: 6,
-    backgroundColor: '#eeeeee',
+    backgroundColor: '#eee',
   },
   header: {
     height: 70,
@@ -364,8 +356,7 @@ const styles = StyleSheet.create({
   },
   inputRow: {
     marginVertical: '3%',
-    marginHorizontal: '3%',
-    flexDirection: 'row',
+    paddingHorizontal: 20,
     justifyContent: 'space-between',
   },
   inputLabel: {
@@ -374,9 +365,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputField: {
-    width: 340,
+    width: 305,
     flexWrap: 'nowrap',
-    fontSize: 18,
   },
   inputStatus: {
     justifyContent: 'space-around',
@@ -390,6 +380,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
   iconAndLabelContainer: {
     flexDirection: 'row',
@@ -422,10 +413,12 @@ const styles = StyleSheet.create({
     height: 45,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', // Để căn chỉnh theo chiều dọc
-    paddingHorizontal: 26, // Khoảng cách đều 2 bên
-    borderWidth: 1,
+    alignItems: 'center',
+    paddingHorizontal: 26,
+    borderWidth: 0.5,
+    borderColor: '#5F5F5F',
     marginBottom: 1,
+    marginTop: 5,
   },
 });
 

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {FlatList, Image, Text, View} from 'react-native';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Dropdown} from 'react-native-element-dropdown';
 import {InvenStyle} from './styles';
 
@@ -23,7 +24,7 @@ const AVAILABILITY_OPTIONS = [
   {id: 2, name: 'Hết hàng'},
 ];
 
-const InventoryScreen = () => {
+const InventoryScreen = ({navigation}) => {
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [selectedAvailability, setSelectedAvailability] = useState(1);
 
@@ -96,6 +97,35 @@ const InventoryScreen = () => {
 
   return (
     <View style={InvenStyle.container}>
+      <View
+        style={{
+          flexDirection: 'row',
+          padding: 15,
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <AntDesign name="left" size={20} color={'black'} />
+        </TouchableOpacity>
+        <Text
+          style={{
+            left: '30%',
+            fontSize: 22,
+            color: 'black',
+            fontWeight: '600',
+          }}>
+          Ware House
+        </Text>
+      </View>
+
       <InventoryInfo />
 
       <View style={InvenStyle.footerContainer}>

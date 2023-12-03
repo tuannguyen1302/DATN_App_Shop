@@ -66,18 +66,10 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.STATIS}
         component={Screens.StatisticalScreen}
-        options={{
-          headerShown: true,
-          title: 'Thống kê',
-        }}
       />
       <Stack.Screen
         name={navigationStrings.INVENTORY}
         component={Screens.InventoryScreen}
-        options={{
-          headerShown: true,
-          title: 'Kho hàng',
-        }}
       />
       <Stack.Screen
         name={navigationStrings.PASSWORD}
@@ -88,8 +80,16 @@ export default function (Stack) {
         component={Screens.Nganhsp}
       />
       <Stack.Screen
+        name={navigationStrings.NGANH_SPUPDATE}
+        component={Screens.NGANH_SPUPDATE}
+      />
+      <Stack.Screen
         name={navigationStrings.PHAN_LOAI_SP}
         component={Screens.PhanLoaiSP}
+      />
+      <Stack.Screen
+        name={navigationStrings.PHAN_LOAI_SPUPDATE}
+        component={Screens.PhanloaispUPDATE}
       />
       <Stack.Screen
         name={navigationStrings.DISCOUNT}
@@ -106,9 +106,14 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.DISCOUNT_UPDATE}
         component={Screens.UpdateDiscount}
-      /><Stack.Screen
-        name={navigationStrings.Setting}
-        component={Screens.Setting}
+      />
+      <Stack.Screen
+        name={navigationStrings.SETTING}
+        component={Screens.SettingScreen}
+      />
+      <Stack.Screen
+        name={navigationStrings.CONTACT}
+        component={Screens.ContactSup}
       />
     </>
   );

@@ -37,9 +37,7 @@ const UpdatedOrderHistory = ({route}) => {
           status: 'shipped',
         },
       );
-      // navigation.navigate('OrderScreen', {
-      //   screen: ischeck ? 'Đang giao' : 'Đã hủy',
-      // });
+      navigation.navigate('Order', {screen: ischeck ? 'Đang giao' : 'Đã hủy'});
       ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
     } catch (error) {
       console.log('Patch api: ', error.message);

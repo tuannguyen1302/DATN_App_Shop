@@ -11,7 +11,6 @@ const InvenStyle = StyleSheet.create({
     borderRadius: 10,
     padding: '2%',
     marginHorizontal: '4%',
-    marginTop: '5%',
     elevation: 5,
     marginBottom: '2%',
   },
@@ -130,14 +129,13 @@ const InvenStyle = StyleSheet.create({
 const StaticStyle = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F6F6F6',
+    backgroundColor: 'white',
   },
   mainContainer: {
     height: 120,
     backgroundColor: '#D9E1FF',
     borderRadius: 10,
     marginHorizontal: '3%',
-    marginTop: '5%',
     padding: '2%',
     elevation: 2,
     marginBottom: '2%',

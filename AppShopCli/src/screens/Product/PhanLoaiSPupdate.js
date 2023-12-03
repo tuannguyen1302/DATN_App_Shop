@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, TextInput } from 'react-native';
 import { FlatList } from 'react-native';
 import { Alert } from 'react-native';
@@ -7,15 +7,48 @@ import { Modal } from 'react-native';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const PhanLoaiSP = ({ navigation }) => {
+const PhanLoaiSP = ({ navigation, route }) => {
     const [isDialogVisible, setDialogVisible] = useState(false);
     const [isButtonPressed, setButtonPressed] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [data, setData] = useState([]);
     const [data1, setData1] = useState([]);
+    const { newid, item } = route.params || {};
+
+
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedItems1, setSelectedItems1] = useState([]);
+    const product_attributes = item.product_attributes;
+    // console.log(product_attributes);
+    useEffect(() => {
+        // Tạo mảng data từ product_attributes có thuộc tính là color
+        const colorData = product_attributes.map(attr => ({ id: attr._id, text: attr.color }));
+        setData(colorData);
+        // Tạo mảng data1 từ product_attributes có thuộc tính là options
+        const optionsData = product_attributes.map(attr => ({
+            id: attr._id,
+            color: attr.color,
+            sizes: attr.options.map(option => option.size),
+        }));
+
+        // Lấy duy nhất các giá trị size từ optionsData
+        const uniqueSizes = [...new Set(optionsData.flatMap(item => item.sizes))];
+
+        // Tạo mảng data1 từ uniqueSizes
+        const data1 = uniqueSizes.map((size, index) => ({
+            id: index.toString(),  // Bạn có thể sử dụng id theo cách bạn muốn
+            size: size,
+
+        }));
+
+        // Đặt data1 vào state
+        setData1(data1);
+    }, [product_attributes]);
+
+
+
+
 
     const toggleDialog = () => {
         setDialogVisible(!isDialogVisible);
@@ -114,9 +147,18 @@ const PhanLoaiSP = ({ navigation }) => {
             if (newItem && prevSelectedItems.some(item => item.id === id)) {
                 return prevSelectedItems.filter(item => item.id !== id);
             } else if (newItem) {
+                const sizeInfo = product_attributes.find(attr =>
+                    attr.options.some(option => option.size === newItem.size)
+                );
+
+                // Lấy giá trị options_quantity từ sizeInfo
+                const options_quantity = sizeInfo
+                    ? sizeInfo.options.find(option => option.size === newItem.size)?.options_quantity || 0
+                    : 0;
+
                 return [
                     ...prevSelectedItems,
-                    { id, size: newItem.size, options_quantity: 0 },
+                    { id, size: newItem.size, options_quantity: options_quantity },
                 ];
             }
             return prevSelectedItems;
@@ -125,16 +167,15 @@ const PhanLoaiSP = ({ navigation }) => {
 
     const handleQuantityChange = (id, text) => {
         setSelectedItems1(prev => {
-            const index = prev.findIndex(item => item.id === id);
-            if (index !== -1) {
-                const updatedItems = [...prev];
-                updatedItems[index] = { ...updatedItems[index], options_quantity: text };
-                return updatedItems;
-            }
-            return prev;
+            const updatedItems = prev.map(item => {
+                if (item.id === id) {
+                    return { ...item, options_quantity: text };
+                }
+                return item;
+            });
+            return updatedItems;
         });
     };
-
     const dataWithButton =
         data.length < 8 ? [{ id: 1, isButton: true }, ...data] : data;
     const dataWithButton1 =
@@ -156,7 +197,8 @@ const PhanLoaiSP = ({ navigation }) => {
         if (data.length != 0) {
             const buil = JSON.stringify(data);
             console.log(buil);
-            navigation.navigate('AddProduct', { buil });
+
+            navigation.navigate('UpdateProduct', { buil, newid });
         }
     };
 
@@ -361,6 +403,7 @@ const PhanLoaiSP = ({ navigation }) => {
                                                     maxLength={10}
                                                     keyboardType="numeric"
                                                     placeholder={'Nhập số lượng hàng loạt'}
+                                                    // value={value.options_quantity.toString()}
                                                     onChangeText={text => {
                                                         handleQuantityChange(value.id, text);
                                                     }}
@@ -406,7 +449,8 @@ const PhanLoaiSP = ({ navigation }) => {
             </Modal>
         </View>
     );
-}
+};
+
 export default PhanLoaiSP;
 
 const styles = StyleSheet.create({
