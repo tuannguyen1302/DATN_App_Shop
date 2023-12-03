@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,17 +7,16 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
-import {thongbao} from './data';
+import {apiGet} from '../../utils/utils';
+import {NOTIFI_API} from '../../config/urls';
 
 const NotifiScreen = ({navigation}) => {
+  const [data, setData] = useState([]);
+
   const renderItem = ({item}) => {
-    const notificationDate = moment(
-      `${item.day}/${item.month}/${item.year} ${item.hour}:${item.minute}`,
-      'DD/MM/YYYY HH:mm',
-    );
+    const notificationDate = moment(item?.createdAt);
     const now = moment();
 
     const isToday = notificationDate.isSame(now, 'day');
@@ -52,52 +52,46 @@ const NotifiScreen = ({navigation}) => {
     return (
       <TouchableOpacity style={styles.notificationItem}>
         <Image
-          resizeMode="cover"
-          source={{uri: item.image}}
+          resizeMode="contain"
+          source={{
+            uri: 'https://th.bing.com/th/id/OIP.iZrlA44xilXu5howRorUOAHaE8?w=278&h=185&c=7&r=0&o=5&pid=1.7',
+          }}
           style={styles.notificationImage}
         />
         <View style={styles.notificationTextContainer}>
-          <Text style={styles.notificationTitle}>{item.title}</Text>
+          <Text style={styles.notificationTitle}>{item?.noti_content}</Text>
           <Text style={styles.notificationTime}>{timeAgo}</Text>
         </View>
       </TouchableOpacity>
     );
   };
 
+  const getAPI = async () => {
+    try {
+      const res = await apiGet(NOTIFI_API);
+      setData(res?.message.reverse());
+    } catch (error) {
+      console.log('Call api: ', error);
+    }
+  };
+
+  useEffect(() => {
+    getAPI();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginHorizontal: '5%',
-          marginBottom: '2%',
-          alignItems: 'center',
-        }}>
+      <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{
-            width: 40,
-            height: 40,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#EEEEEE',
-            borderRadius: 15,
-          }}>
+          style={styles.backButton}>
           <AntDesign name="left" size={20} color={'black'} />
         </TouchableOpacity>
-        <Text
-          style={{
-            left: '30%',
-            fontSize: 22,
-            color: 'black',
-            fontWeight: '600',
-          }}>
-          Notification
-        </Text>
+        <Text style={styles.title}>Notification</Text>
       </View>
       <FlatList
-        data={thongbao}
-        keyExtractor={item => item.id.toString()}
+        data={data}
+        keyExtractor={item => item?._id}
         renderItem={renderItem}
       />
     </View>
@@ -108,6 +102,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  header: {
+    flexDirection: 'row',
+    marginHorizontal: '5%',
+    marginBottom: '2%',
+    alignItems: 'center',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 15,
+  },
+  title: {
+    left: '30%',
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '600',
   },
   notificationItem: {
     flexDirection: 'row',

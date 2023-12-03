@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Pressable,
 } from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,7 +19,6 @@ import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-
 import {API_BASE_URL, DISCOUNT_API, PRODUCT_API} from '../../config/urls';
 import {apiGet, apiPost} from '../../utils/utils';
 
@@ -62,6 +62,10 @@ const AddDiscount = ({navigation}) => {
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [isStartDate, setStartDate] = useState(false);
   const bottomSheetModalRef = useRef(null);
+  const [selectedApplyOption, setSelectedApplyOption] = useState(
+    APPLY_OPTIONS[0],
+  );
+  const [selectedSaleOption, setSelectedSaleOption] = useState(SALE_OPTIONS[0]);
 
   const [discountData, setDiscountData] = useState({
     name: '',
@@ -79,13 +83,8 @@ const AddDiscount = ({navigation}) => {
     product_ids: [],
   });
 
-  const [selectedApplyOption, setSelectedApplyOption] = useState(
-    APPLY_OPTIONS[0],
-  );
-  const [selectedSaleOption, setSelectedSaleOption] = useState(SALE_OPTIONS[0]);
-
   const handleDropdownChange = (value, field) => {
-    value.id !== 0 && presentBottomSheet();
+    value.id !== 0 && bottomSheetModalRef.current?.present();
     setSelectedApplyOption(value);
     setDiscountData({
       ...discountData,
@@ -105,10 +104,6 @@ const AddDiscount = ({navigation}) => {
     setDiscountData({...discountData, [field]: text});
   };
 
-  const presentBottomSheet = () => {
-    bottomSheetModalRef.current?.present();
-  };
-
   const postDiscountApi = async () => {
     try {
       if (!isDataValid()) {
@@ -119,20 +114,18 @@ const AddDiscount = ({navigation}) => {
         return;
       }
 
-      console.log(discountData);
+      if (
+        new Date(discountData.start_date) >= new Date(discountData.end_date)
+      ) {
+        ToastAndroid.show(
+          'Ngày bắt đầu phải trước ngày kết thúc.',
+          ToastAndroid.SHORT,
+        );
+        return;
+      }
 
-      // if (
-      //   new Date(discountData.start_date) >= new Date(discountData.end_date)
-      // ) {
-      //   ToastAndroid.show(
-      //     'Ngày bắt đầu phải trước ngày kết thúc.',
-      //     ToastAndroid.SHORT,
-      //   );
-      //   return;
-      // }
-
-      // await apiPost(DISCOUNT_API, discountData);
-      // ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
+      await apiPost(DISCOUNT_API, discountData);
+      ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -165,209 +158,137 @@ const AddDiscount = ({navigation}) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <AntDesign name="left" size={20} color={'black'} />
-          </TouchableOpacity>
-          <Text style={styles.titleText}>Add Discount</Text>
-        </View>
-        <ScrollView style={styles.contentContainer}>
-          <Text style={styles.label}>Áp dụng</Text>
-          <Dropdown
-            placeholder="Chọn loại áp dụng"
-            data={APPLY_OPTIONS}
-            labelField="name"
-            valueField="id"
-            style={styles.dropdown}
-            value={selectedApplyOption}
-            onChange={value => handleDropdownChange(value, 'applies_to')}
-          />
-          <Text style={styles.label}>Giảm</Text>
-          <Dropdown
-            placeholder="Chọn loại giảm giá"
-            data={SALE_OPTIONS}
-            labelField="name"
-            valueField="id"
-            style={styles.dropdown}
-            value={selectedSaleOption}
-            onChange={value => handleSaleOptionChange(value, 'type')}
-          />
-          {renderTextInput(
-            'Tên chương trình',
-            discountData['name'],
-            'name',
-            'default',
-            handleTextChange,
-          )}
-          {renderTextInput(
-            'Mô tả',
-            discountData['des'],
-            'des',
-            'default',
-            handleTextChange,
-            true,
-          )}
-          {renderTextInput(
-            'Mã giảm giá',
-            discountData['code'],
-            'code',
-            'default',
-            handleTextChange,
-          )}
-          {discountData.type === 'percentage' &&
-            renderTextInput(
-              'Phần trăm giảm',
-              discountData['value'],
-              'value',
+        <Pressable
+          style={{flex: 1}}
+          onPress={() => bottomSheetModalRef.current?.close()}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}>
+              <AntDesign name="left" size={20} color={'black'} />
+            </TouchableOpacity>
+            <Text style={styles.titleText}>Add Discount</Text>
+          </View>
+          <ScrollView style={styles.contentContainer}>
+            <Text style={styles.label}>Áp dụng</Text>
+            <Dropdown
+              placeholder="Chọn loại áp dụng"
+              data={APPLY_OPTIONS}
+              labelField="name"
+              valueField="id"
+              style={styles.dropdown}
+              value={selectedApplyOption}
+              onChange={value => handleDropdownChange(value, 'applies_to')}
+            />
+            <Text style={styles.label}>Giảm</Text>
+            <Dropdown
+              placeholder="Chọn loại giảm giá"
+              data={SALE_OPTIONS}
+              labelField="name"
+              valueField="id"
+              style={styles.dropdown}
+              value={selectedSaleOption}
+              onChange={value => handleSaleOptionChange(value, 'type')}
+            />
+            {renderTextInput(
+              'Tên chương trình',
+              discountData['name'],
+              'name',
+              'default',
+              handleTextChange,
+            )}
+            {renderTextInput(
+              'Mô tả',
+              discountData['des'],
+              'des',
+              'default',
+              handleTextChange,
+              true,
+            )}
+            {renderTextInput(
+              'Mã giảm giá',
+              discountData['code'],
+              'code',
+              'default',
+              handleTextChange,
+            )}
+            {discountData.type === 'percentage' &&
+              renderTextInput(
+                'Phần trăm giảm',
+                discountData['value'],
+                'value',
+                'numeric',
+                handleTextChange,
+              )}
+            {renderTextInput(
+              'Số tiền giảm tối đa',
+              discountData['min_order_value'],
+              'min_order_value',
               'numeric',
               handleTextChange,
             )}
-          {renderTextInput(
-            'Số tiền giảm tối đa',
-            discountData['min_order_value'],
-            'min_order_value',
-            'numeric',
-            handleTextChange,
-          )}
-          {renderTextInput(
-            'Số lượng sử dụng',
-            discountData['max_uses'],
-            'max_uses',
-            'numeric',
-            handleTextChange,
-          )}
-          {renderTextInput(
-            'Giới hạn sử dụng',
-            discountData['max_uses_per_user'],
-            'max_uses_per_user',
-            'numeric',
-            handleTextChange,
-          )}
-          <TextInput
-            label="Ngày bắt đầu"
-            editable={false}
-            style={styles.input}
-            value={discountData['start_date'] + ''}
-            left={
-              <TextInput.Icon
-                onPress={() => {
-                  setStartDate(true), setDatePickerOpen(true);
-                }}
-                icon={() => <Fontisto name="date" size={24} />}
-              />
-            }
-          />
-          <TextInput
-            label="Ngày kết thúc"
-            value={discountData['end_date'] + ''}
-            editable={false}
-            style={styles.input}
-            left={
-              <TextInput.Icon
-                onPress={() => {
-                  setStartDate(false), setDatePickerOpen(true);
-                }}
-                icon={() => <Fontisto name="date" size={24} />}
-              />
-            }
-          />
+            {renderTextInput(
+              'Số lượng sử dụng',
+              discountData['max_uses'],
+              'max_uses',
+              'numeric',
+              handleTextChange,
+            )}
+            {renderTextInput(
+              'Giới hạn sử dụng',
+              discountData['max_uses_per_user'],
+              'max_uses_per_user',
+              'numeric',
+              handleTextChange,
+            )}
+            <TextInput
+              label="Ngày bắt đầu"
+              editable={false}
+              style={styles.input}
+              value={discountData['start_date'] + ''}
+              left={
+                <TextInput.Icon
+                  onPress={() => {
+                    setStartDate(true), setDatePickerOpen(true);
+                  }}
+                  icon={() => <Fontisto name="date" size={24} />}
+                />
+              }
+            />
+            <TextInput
+              label="Ngày kết thúc"
+              value={discountData['end_date'] + ''}
+              editable={false}
+              style={styles.input}
+              left={
+                <TextInput.Icon
+                  onPress={() => {
+                    setStartDate(false), setDatePickerOpen(true);
+                  }}
+                  icon={() => <Fontisto name="date" size={24} />}
+                />
+              }
+            />
 
-          <DatePicker
-            title={`Thời gian ${isStartDate ? 'bắt đầu' : 'kết thúc'}`}
-            mode="datetime"
-            modal
-            open={isDatePickerOpen}
-            date={new Date()}
-            confirmText="Xác nhận"
-            onConfirm={date => {
-              setDiscountData({
-                ...discountData,
-                [isStartDate ? 'start_date' : 'end_date']: date,
-              });
-              setDatePickerOpen(false);
-            }}
-            cancelText="Hủy"
-            onCancel={() => setDatePickerOpen(false)}
-          />
-
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={1}
-            snapPoints={['25%', '50%']}
-            backgroundStyle={{
-              borderRadius: 25,
-              borderWidth: 0.5,
-            }}>
-            <View style={{flex: 1}}>
-              <Text
-                style={{
-                  fontSize: 25,
-                  color: 'black',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  marginVertical: '1%',
-                }}>
-                Chọn sản phẩm
-              </Text>
-              <FlatList
-                data={productList}
-                keyExtractor={item => item?._id}
-                renderItem={({item}) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (!discountData?.product_ids.includes(item?._id)) {
-                        setDiscountData(prevData => ({
-                          ...prevData,
-                          product_ids: [...prevData.product_ids, item?._id],
-                        }));
-                      } else {
-                        setDiscountData(prevData => ({
-                          ...prevData,
-                          product_ids: prevData.product_ids.filter(
-                            id => id !== item?._id,
-                          ),
-                        }));
-                      }
-                    }}
-                    style={{
-                      height: 60,
-                      borderWidth: 1,
-                      borderColor: discountData?.product_ids.includes(item?._id)
-                        ? 'red'
-                        : 'gray',
-                      marginHorizontal: '5%',
-                      marginTop: '2%',
-                      borderRadius: 10,
-                      alignItems: 'center',
-                      padding: '2%',
-                      flexDirection: 'row',
-                    }}>
-                    <Image
-                      style={{width: 50, height: 50, borderRadius: 5}}
-                      source={{
-                        uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`,
-                      }}
-                    />
-                    <View style={{left: 5}}>
-                      <Text style={styles.productName} numberOfLines={1}>
-                        {item?.product_name}
-                      </Text>
-                      <Text style={styles.productPrice}>
-                        Giá:{' '}
-                        {item?.product_price
-                          .toLocaleString()
-                          .replace(/,/g, '.')}{' '}
-                        VND
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </BottomSheetModal>
-        </ScrollView>
+            <DatePicker
+              title={`Thời gian ${isStartDate ? 'bắt đầu' : 'kết thúc'}`}
+              mode="datetime"
+              modal
+              open={isDatePickerOpen}
+              date={new Date()}
+              confirmText="Xác nhận"
+              onConfirm={date => {
+                setDiscountData({
+                  ...discountData,
+                  [isStartDate ? 'start_date' : 'end_date']: date,
+                });
+                setDatePickerOpen(false);
+              }}
+              cancelText="Hủy"
+              onCancel={() => setDatePickerOpen(false)}
+            />
+          </ScrollView>
+        </Pressable>
         <TouchableOpacity
           onPress={postDiscountApi}
           style={{
@@ -386,6 +307,80 @@ const AddDiscount = ({navigation}) => {
             Save
           </Text>
         </TouchableOpacity>
+
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={1}
+          snapPoints={['25%', '50%', '100%']}
+          backgroundStyle={{
+            borderRadius: 25,
+            borderWidth: 0.5,
+          }}>
+          <View style={{flex: 1}}>
+            <Text
+              style={{
+                fontSize: 25,
+                color: 'black',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginVertical: '1%',
+              }}>
+              Chọn sản phẩm
+            </Text>
+            <FlatList
+              data={productList}
+              keyExtractor={item => item?._id}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (!discountData?.product_ids.includes(item?._id)) {
+                      setDiscountData(prevData => ({
+                        ...prevData,
+                        product_ids: [...prevData.product_ids, item?._id],
+                      }));
+                    } else {
+                      setDiscountData(prevData => ({
+                        ...prevData,
+                        product_ids: prevData.product_ids.filter(
+                          id => id !== item?._id,
+                        ),
+                      }));
+                    }
+                  }}
+                  style={{
+                    height: 60,
+                    borderWidth: 1,
+                    borderColor: discountData?.product_ids.includes(item?._id)
+                      ? 'red'
+                      : 'gray',
+                    marginHorizontal: '5%',
+                    marginTop: '2%',
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    padding: '2%',
+                    flexDirection: 'row',
+                  }}>
+                  <Image
+                    style={{width: 50, height: 50, borderRadius: 5}}
+                    source={{
+                      uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`,
+                    }}
+                  />
+                  <View style={{left: 5}}>
+                    <Text style={styles.productName} numberOfLines={1}>
+                      {item?.product_name}
+                    </Text>
+                    <Text style={styles.productPrice}>
+                      Giá:{' '}
+                      {item?.product_price.toLocaleString().replace(/,/g, '.')}{' '}
+                      VND
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </BottomSheetModal>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );

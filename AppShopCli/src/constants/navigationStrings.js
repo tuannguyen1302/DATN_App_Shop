@@ -25,7 +25,8 @@ export default {
   DISCOUNT_ADD: 'AddDiscount',
   DISCOUNT_UPDATE: 'UpdateDiscount',
   PASSWORD: 'Password',
-  Setting: 'Setting',
+  SETTING: 'SettingScreen',
+  CONTACT: 'ContactSup',
   NOTIFI: 'NotifiScreen',
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',

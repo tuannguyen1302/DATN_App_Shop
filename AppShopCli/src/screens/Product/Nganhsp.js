@@ -1,38 +1,36 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const Nganhsp = ({ navigation }) => {
+const CategoryItem = ({category, isSelected, onPress}) => (
+  <TouchableOpacity
+    style={[styles.categoryContainer, isSelected && styles.selectedCategory]}
+    onPress={onPress}>
+    <Text style={styles.categoryText}>{category}</Text>
+    <FontAwesome
+      name={isSelected ? 'check-circle' : 'circle'}
+      size={20}
+      color={isSelected ? 'green' : 'black'}
+    />
+  </TouchableOpacity>
+);
+
+const Nganhsp = ({navigation, route}) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const click = category => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-    }
+  const handleCategoryPress = category => {
+    setSelectedCategory(prev => (prev === category ? null : category));
   };
-  const renderIcon = category => {
-    if (selectedCategory === category) {
-      return <FontAwesome name="check-circle" size={20} color="green" />;
-    } else {
-      return <FontAwesome name="circle" size={20} color="black" />;
-    }
-  };
+
   const handleDone = () => {
     if (selectedCategory) {
-
-
-      navigation.navigate('AddProduct', { selectedCategory });
-
+      // const isAddScreen = route.params?.destinationScreen === 'AddProduct';
+      // if (isAddScreen) {
+      navigation.navigate('AddProduct', {selectedCategory});
+      // } else {
+      //   navigation.navigate('UpdateProduct', {selectedCategory});
+      // }
     } else {
       Alert.alert(
         'Cảnh báo',
@@ -40,83 +38,34 @@ const Nganhsp = ({ navigation }) => {
       );
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <AntDesign name="arrowleft" size={30} color={'black'} />
-          </Pressable>
-          <Text style={styles.headerText}>Ngành Sản Phẩm</Text>
-        </View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={30} color={'black'} />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Ngành Sản Phẩm</Text>
       </View>
       <View style={styles.horizontalLine} />
 
-      <TouchableOpacity
-        style={[styles.form, selectedCategory === 'Áo' && styles.selectedText]}
-        onPress={() => click('Áo')}>
-        <Text style={styles.textfrom}>Áo</Text>
-        <View style={styles.icon}>{renderIcon('Áo')}</View>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[
-          styles.form,
-          selectedCategory === 'Quần' && styles.selectedText,
-        ]}
-        onPress={() => click('Quần')}>
-        <Text style={styles.textfrom}>Quần</Text>
-        <View style={styles.icon}>{renderIcon('Quần')}</View>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.form, selectedCategory === 'Mũ' && styles.selectedText]}
-        onPress={() => click('Mũ')}>
-        <Text style={styles.textfrom}>Mũ</Text>
-        <View style={styles.icon}>{renderIcon('Mũ')}</View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.form,
-          selectedCategory === 'Trang sức' && styles.selectedText,
-        ]}
-        onPress={() => click('Trang sức')}>
-        <Text style={styles.textfrom}>Trang sức </Text>
-        <View style={styles.icon}>{renderIcon('Trang sức')}</View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.form, selectedCategory === 'Túi' && styles.selectedText]}
-        onPress={() => click('Túi')}>
-        <Text style={styles.textfrom}>Túi</Text>
-        <View style={styles.icon}>{renderIcon('Túi')}</View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.form,
-          selectedCategory === 'Đồng Hồ' && styles.selectedText,
-        ]}
-        onPress={() => click('Đồng Hồ')}>
-        <Text style={styles.textfrom}>Đồng Hồ </Text>
-        <View style={styles.icon}>{renderIcon('Đồng Hồ')}</View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.form,
-          selectedCategory === 'Nước Hoa' && styles.selectedText,
-        ]}
-        onPress={() => click('Nước Hoa')}>
-        <Text style={styles.textfrom}>Nước Hoa </Text>
-        <View style={styles.icon}>{renderIcon('Nước Hoa')}</View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.form,
-          selectedCategory === 'Giầy' && styles.selectedText,
-        ]}
-        onPress={() => click('Giầy')}>
-        <Text style={styles.textfrom}>Giầy </Text>
-        <View style={styles.icon}>{renderIcon('Giầy')}</View>
-      </TouchableOpacity>
+      {[
+        'Áo',
+        'Quần',
+        'Mũ',
+        'Trang sức',
+        'Túi',
+        'Đồng Hồ',
+        'Nước Hoa',
+        'Giầy',
+      ].map(category => (
+        <CategoryItem
+          key={category}
+          category={category}
+          isSelected={selectedCategory === category}
+          onPress={() => handleCategoryPress(category)}
+        />
+      ))}
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={handleDone}>
@@ -127,29 +76,22 @@ const Nganhsp = ({ navigation }) => {
   );
 };
 
-export default Nganhsp;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
   header: {
-    height: 70,
-    justifyContent: 'space-around',
-    //backgroundColor: '#FFFFFF',
-  },
-  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
     marginHorizontal: '5%',
+    marginTop: 10,
   },
   headerText: {
+    left: 20,
     fontSize: 30,
     fontWeight: 'bold',
     color: '#000000',
-    marginLeft: '15%',
   },
   horizontalLine: {
     width: '75%',
@@ -158,28 +100,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 10,
   },
-  form: {
+  categoryContainer: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     height: 50,
-    width: 360, // Ví dụ: 40 là tổng khoảng cách từ cả hai bên
+    width: '90%',
     borderWidth: 1,
     borderRadius: 8,
-    marginTop: 15, // Đặt khoảng cách từ horizontalLine
-    marginLeft: 30, // Cách trái
-    marginRight: 30, // Cách phải
-    flexDirection: 'row', // Đặt hướng dòng là dọc để cách đều trên và dưới
-    alignItems: 'center', // Đặt căn chỉnh theo trục ngang để căn giữa
+    marginTop: 15,
+    marginLeft: '5%',
+    marginRight: '5%',
+    alignItems: 'center',
     borderColor: '#000000',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10,
   },
-  selectedText: {
-    borderColor: 'red', // Màu viền khi được chọn
-    borderWidth: 1, // Độ rộng viền khi được chọn
+  selectedCategory: {
+    borderColor: 'red',
+    borderWidth: 1,
   },
-  textfrom: {
+  categoryText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#000000',
-    marginLeft: 29,
   },
   footer: {
     backgroundColor: '#ffffff',
@@ -190,23 +133,23 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    flex: 1, // Sử dụng flex để nút chiếm hết chiều rộng của footer
+    flex: 1,
     height: 50,
     borderWidth: 1,
     borderRadius: 8,
-    marginLeft: 29, // Cách trái
-    marginRight: 29, // Cách phải
+    marginLeft: '5%',
+    marginRight: '5%',
     marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
+    backgroundColor: '#000',
   },
   buttonText: {
     fontSize: 25,
-    color: '#000000',
-  },
-  icon: {
-    marginRight: 10,
+    color: '#FFFFFF',
   },
 });
+
+export default Nganhsp;

@@ -1,21 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {View, Pressable, FlatList, Alert, Image, Text} from 'react-native';
+import {
+  View,
+  Pressable,
+  FlatList,
+  Alert,
+  Image,
+  Text,
+  StyleSheet,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import {ListItem, Avatar} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
 import {API_BASE_URL, CHAT_API} from '../../config/urls';
 import {apiGet} from '../../utils/utils';
-import {MessageScreenStyles} from './styles';
 import imagePath from '../../constants/imagePath';
 
 const MessageScreen = ({navigation}) => {
   const [data, setData] = useState([]);
 
-  const renderButton = (itemId, check) => (
-    <Pressable
-      onPress={() => showAlert(itemId)}
-      style={MessageScreenStyles.deleteButton}>
+  const renderButton = itemId => (
+    <Pressable onPress={() => showAlert(itemId)} style={styles.deleteButton}>
       <MaterialIcons name="delete" size={30} color={'white'} />
     </Pressable>
   );
@@ -56,34 +60,10 @@ const MessageScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={MessageScreenStyles.container}>
-      <View
-        style={{
-          marginTop: 15,
-          flexDirection: 'row',
-          marginHorizontal: '5%',
-          alignItems: 'center',
-          marginBottom: '2%',
-        }}>
-        <Image
-          style={{
-            width: 50,
-            height: 50,
-            borderWidth: 1,
-            borderColor: 'green',
-            borderRadius: 20,
-          }}
-          source={imagePath.logo}
-        />
-        <Text
-          style={{
-            left: '20%',
-            fontSize: 22,
-            color: 'black',
-            fontWeight: '600',
-          }}>
-          Chat box
-        </Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image style={styles.logo} source={imagePath.logo} />
+        <Text style={styles.title}>Chat box</Text>
       </View>
       <FlatList
         data={data}
@@ -97,7 +77,7 @@ const MessageScreen = ({navigation}) => {
                 avatar: item?.user?.user_avatar,
               });
             }}
-            rightContent={() => renderButton(item?._id, 'right')}
+            rightContent={() => renderButton(item?._id)}
             bottomDivider>
             <Avatar
               size={70}
@@ -111,7 +91,7 @@ const MessageScreen = ({navigation}) => {
                   type="font-awesome"
                   color="green"
                   size={16}
-                  containerStyle={MessageScreenStyles.statusIcon}
+                  containerStyle={styles.statusIcon}
                 />
               )}
               {item?.user?.user_status === 'inactive' && (
@@ -120,19 +100,17 @@ const MessageScreen = ({navigation}) => {
                   type="font-awesome"
                   color="red"
                   size={13}
-                  containerStyle={MessageScreenStyles.statusIcon}
+                  containerStyle={styles.statusIcon}
                 />
               )}
             </Avatar>
             <ListItem.Content>
-              <View style={MessageScreenStyles.titleContainer}>
-                <ListItem.Title
-                  numberOfLines={1}
-                  style={MessageScreenStyles.title}>
+              <View style={styles.titleContainer}>
+                <ListItem.Title numberOfLines={1} style={styles.txtName}>
                   {item?.user?.user_name}
                 </ListItem.Title>
 
-                <ListItem.Subtitle style={MessageScreenStyles.timeText}>
+                <ListItem.Subtitle style={styles.timeText}>
                   12:00
                 </ListItem.Subtitle>
               </View>
@@ -148,5 +126,59 @@ const MessageScreen = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  header: {
+    marginTop: 15,
+    flexDirection: 'row',
+    marginHorizontal: '5%',
+    alignItems: 'center',
+    marginBottom: '2%',
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: 'green',
+    borderRadius: 20,
+  },
+  title: {
+    left: '20%',
+    fontSize: 22,
+    color: 'black',
+    fontWeight: '700',
+  },
+  txtName: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: '600',
+  },
+  titleContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  timeText: {
+    fontSize: 15,
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  statusIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+});
 
 export default MessageScreen;

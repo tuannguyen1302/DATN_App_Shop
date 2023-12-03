@@ -1,6 +1,6 @@
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 
-const requestCameraPermission = async () => {
+const requestPermission = async () => {
   if (Platform.OS !== 'android' || Platform.Version <= 22) {
     return true;
   }
@@ -9,7 +9,7 @@ const requestCameraPermission = async () => {
     const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     ];
 
     const granted = await PermissionsAndroid.requestMultiple(permissions);
@@ -33,4 +33,4 @@ const showPermissionAlert = () => {
   Alert.alert('Alert', 'Permission', [{text: 'OK'}], {cancelable: true});
 };
 
-export default requestCameraPermission;
+export default requestPermission;

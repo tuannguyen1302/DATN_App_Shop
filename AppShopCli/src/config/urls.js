@@ -10,3 +10,5 @@ export const CHAT_API = getApiUrl('v1/api/chat');
 export const ORDER_API = getApiUrl('v1/api/checkout');
 export const SHOP_API = getApiUrl('v1/api/shop');
 export const DISCOUNT_API = getApiUrl('v1/api/discount');
+export const NOTIFI_API = getApiUrl('v1/api/notification');
+export const USER_API = getApiUrl('v1/api/user');

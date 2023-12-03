@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   FlatList,
@@ -17,10 +17,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
-import {apiGet, apiPut} from '../../utils/utils';
+import {apiPut} from '../../utils/utils';
 
-const UpdateProduct = ({ navigation, route }) => {
-  const { item } = route.params;
+const UpdateProduct = ({navigation, route}) => {
+  const {item} = route.params;
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [productName, setProductName] = useState(item?.product_name);
@@ -28,7 +28,7 @@ const UpdateProduct = ({ navigation, route }) => {
     item?.product_description,
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
-  const [productInventory, setProductInventory] = useState(item?.product_price);
+  const {selectedCategory} = route.params || {};
 
   const clearField = setField => setField('');
 
@@ -37,12 +37,12 @@ const UpdateProduct = ({ navigation, route }) => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const result = isFrontCamera
-        ? await launchCamera({ mediaType: 'photo', cameraType: 'front' })
-        : await launchImageLibrary({ mediaType: 'photo' });
+        ? await launchCamera({mediaType: 'photo', cameraType: 'front'})
+        : await launchImageLibrary({mediaType: 'photo'});
 
       setSelectedImages([
         ...selectedImages,
-        { id: Date.now().toString(), uri: result.assets[0].uri },
+        {id: Date.now().toString(), uri: result.assets[0].uri},
       ]);
     } catch (error) {
       console.log(error);
@@ -54,7 +54,7 @@ const UpdateProduct = ({ navigation, route }) => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn xóa ảnh này?',
       [
-        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
+        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
         {
           text: 'Xóa',
           onPress: () => {
@@ -64,7 +64,7 @@ const UpdateProduct = ({ navigation, route }) => {
           },
         },
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -73,10 +73,10 @@ const UpdateProduct = ({ navigation, route }) => {
       'Thông báo',
       'Bạn muốn lấy ảnh từ?',
       [
-        { text: 'Chụp ảnh ', onPress: () => openCamera(true) },
-        { text: 'Thư viện ', onPress: () => openCamera(false) },
+        {text: 'Chụp ảnh ', onPress: () => openCamera(true)},
+        {text: 'Thư viện ', onPress: () => openCamera(false)},
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -86,8 +86,7 @@ const UpdateProduct = ({ navigation, route }) => {
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice ||
-        !productInventory
+        !productPrice
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -98,24 +97,20 @@ const UpdateProduct = ({ navigation, route }) => {
 
       const productAttributes = [
         {
-          color: 'Xanh',
-          size: ['XL', 'S'],
-          quantity: 1,
+          color: 'Blue',
+          options: [
+            {size: 'Xl', options_quantity: '11'},
+            {size: 'S', options_quantity: '15'},
+            {size: 'M', options_quantity: '13'},
+          ],
         },
         {
-          color: 'Đỏ',
-          size: ['XL', 'S'],
-          quantity: 10,
-        },
-        {
-          color: 'Den',
-          size: ['XL', 'S'],
-          quantity: 100,
-        },
-        {
-          color: 'Trắng',
-          size: ['XL', 'S'],
-          quantity: 1,
+          color: 'Red',
+          options: [
+            {size: 'Xl', options_quantity: '11'},
+            {size: 'S', options_quantity: '15'},
+            {size: 'M', options_quantity: '13'},
+          ],
         },
       ];
 
@@ -130,23 +125,30 @@ const UpdateProduct = ({ navigation, route }) => {
         let filename = localUri.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
-        formData.append('thumbs', { uri: localUri, name: filename, type });
+        formData.append('thumbs', {uri: localUri, name: filename, type});
       });
-
       await apiPut(`${PRODUCT_API}/editProduct/${item?._id}`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      navigation.goBack();
+      navigation.navigate('HomeScreen');
     } catch (error) {
       console.log('Post api: ', error.message);
     }
   };
 
-  const renderInputField = ({ label, state, setState, maxLength }, index) => (
+  const renderInputField = ({label, state, setState, maxLength}, index) => (
     <View key={index} style={styles.inputContainer}>
       <View style={styles.inputRow}>
-        <View>
-          <Text style={styles.inputLabel}>{label} 🕸️</Text>
+        <Text style={styles.inputLabel}>{label} 🕸️</Text>
+        <View
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            marginVertical: 5,
+            flexDirection: 'row',
+            paddingHorizontal: 10,
+            justifyContent: 'space-between',
+          }}>
           <TextInput
             style={styles.inputField}
             value={state}
@@ -154,40 +156,20 @@ const UpdateProduct = ({ navigation, route }) => {
             maxLength={maxLength}
             placeholder={`Nhập ${label.toLowerCase()}`}
           />
-        </View>
-        <View style={styles.inputStatus}>
-          <Text>
-            {state.length}/{maxLength}
-          </Text>
-          <Pressable onPress={() => clearField(state, setState)}>
-            <AntDesign
-              name="closesquareo"
-              size={20}
-              color={state ? 'red' : 'gray'}
-            />
-          </Pressable>
+          <View style={styles.inputStatus}>
+            <Text>
+              {state.length}/{maxLength}
+            </Text>
+            <Pressable onPress={() => clearField(setState)}>
+              <AntDesign
+                name="closesquareo"
+                size={20}
+                color={state ? 'red' : 'gray'}
+              />
+            </Pressable>
+          </View>
         </View>
       </View>
-    </View>
-  );
-
-  const renderPriceAndInventoryField = (
-    { icon, label, state, setState },
-    index,
-  ) => (
-    <View key={index} style={styles.priceAndInventoryContainer}>
-      <View style={styles.iconAndLabelContainer}>
-        <MaterialIcons name={icon} size={25} />
-        <Text style={styles.inputLabel}>{label} 🕸️</Text>
-      </View>
-      <TextInput
-        style={styles.priceAndInventoryInput}
-        maxLength={10}
-        value={state}
-        keyboardType="number-pad"
-        onChangeText={setState}
-        placeholder={`Nhập ${label.toLowerCase()}`}
-      />
     </View>
   );
 
@@ -202,7 +184,7 @@ const UpdateProduct = ({ navigation, route }) => {
 
   const dataWithButton =
     selectedImages.length < 8
-      ? [{ id: 'button', isButton: true }, ...selectedImages]
+      ? [{id: 'button', isButton: true}, ...selectedImages]
       : selectedImages;
 
   return (
@@ -222,7 +204,7 @@ const UpdateProduct = ({ navigation, route }) => {
             data={dataWithButton}
             scrollEnabled={false}
             keyExtractor={item => item?.id}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <View style={styles.imageItem}>
                 {item.isButton ? (
                   <TouchableOpacity
@@ -232,7 +214,7 @@ const UpdateProduct = ({ navigation, route }) => {
                   </TouchableOpacity>
                 ) : (
                   <>
-                    <Image style={styles.image} source={{ uri: item?.uri }} />
+                    <Image style={styles.image} source={{uri: item?.uri}} />
                     <TouchableOpacity
                       onPress={() => {
                         console.log(item), handleDeleteImage(item?.id);
@@ -247,9 +229,6 @@ const UpdateProduct = ({ navigation, route }) => {
           />
         </View>
         <View>
-
-
-
           {[
             {
               label: 'Tên sản phẩm',
@@ -271,19 +250,13 @@ const UpdateProduct = ({ navigation, route }) => {
               state: productPrice.toString(),
               setState: setProductPrice,
             },
-            {
-              icon: 'warehouse',
-              label: 'Kho hàng',
-              state: productInventory.toString(),
-              setState: setProductInventory,
-            },
           ].map((item, index) => (
             <View key={index} style={styles.priceAndInventoryContainer}>
               <View style={styles.iconAndLabelContainer}>
                 <MaterialIcons name={item.icon} size={25} />
                 <Text style={styles.inputLabel}>{item.label}</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput
                   style={styles.priceAndInventoryInput}
                   maxLength={10}
@@ -292,45 +265,52 @@ const UpdateProduct = ({ navigation, route }) => {
                   placeholder={`0`}
                 />
                 {item.label === 'Giá sản phẩm 🕸️' && (
-                  <Text style={{ fontSize: 18 }}>đ</Text>
+                  <Text style={{fontSize: 18}}>đ</Text>
                 )}
               </View>
             </View>
           ))}
         </View>
-        <Pressable onPress={() => {
-          navigation.navigate('Nganhsp');
-        }}
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Nganhsp');
+          }}
           style={styles.nganhsp}>
-          <Text
-            style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
-            Ngành sản phẩm{' '}
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
+            Ngành hàng sản phẩm
           </Text>
-          <AntDesign
-            name="right"
-            size={20}
-
-          />
+          <AntDesign name="right" size={20} />
         </Pressable>
-        <Pressable onPress={() => {
-          navigation.navigate('Phanloaisp');
-        }} style={styles.nganhsp}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: 'black',
+            padding: 5,
+            backgroundColor: 'white',
+            paddingHorizontal: 25,
+            marginTop: 5,
+            borderWidth: 1,
+            borderColor: '#5F5F5F',
+          }}>
+          Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
+        </Text>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Phanloaisp');
+          }}
+          style={styles.nganhsp}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
             Phân loại sản phẩm{' '}
           </Text>
-          <AntDesign
-            name="right"
-            size={20}
-
-          />
+          <AntDesign name="right" size={20} />
         </Pressable>
       </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={postApi}>
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#000000' }]}>
-          <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
+        <TouchableOpacity style={[styles.button, {backgroundColor: '#000000'}]}>
+          <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -399,11 +379,11 @@ const styles = StyleSheet.create({
     marginVertical: '1%',
     backgroundColor: 'white',
     justifyContent: 'center',
+    height: 'auto',
   },
   inputRow: {
     marginVertical: '3%',
     marginHorizontal: '3%',
-    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   inputLabel: {
@@ -412,7 +392,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputField: {
-    width: 340,
+    width: 320,
   },
   inputStatus: {
     justifyContent: 'space-around',
@@ -452,7 +432,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     color: '#000000',
-  }, nganhsp: {
+  },
+  nganhsp: {
     backgroundColor: '#ffffff',
     height: 45,
     flexDirection: 'row',
@@ -460,7 +441,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Để căn chỉnh theo chiều dọc
     paddingHorizontal: 26, // Khoảng cách đều 2 bên
     borderWidth: 1,
+    borderColor: '#5F5F5F',
     marginBottom: 1,
+    marginTop: 5,
   },
 });
 
