@@ -3,7 +3,18 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-
+const CategoryItem = ({ category, isSelected, onPress }) => (
+  <TouchableOpacity
+    style={[styles.categoryContainer, isSelected && styles.selectedCategory]}
+    onPress={onPress}>
+    <Text style={styles.categoryText}>{category}</Text>
+    <FontAwesome
+      name={isSelected ? 'check-circle' : 'circle'}
+      size={20}
+      color={isSelected ? 'green' : 'black'}
+    />
+  </TouchableOpacity>
+);
 
 const Nganhsp = ({ navigation, route }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);

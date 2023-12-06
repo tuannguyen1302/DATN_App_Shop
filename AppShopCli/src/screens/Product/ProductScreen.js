@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,17 +16,17 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import imagePath from '../../constants/imagePath';
-import {apiGet, apiPut} from '../../utils/utils';
-import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
+import { apiGet, apiPut } from '../../utils/utils';
+import { API_BASE_URL, PRODUCT_API } from '../../config/urls';
 
 const TAB_ITEMS = [
-  {status: 'All'},
-  {status: 'Còn hàng'},
-  {status: 'Hết hàng'},
-  {status: 'Bị ẩn'},
+  { status: 'All' },
+  { status: 'Còn hàng' },
+  { status: 'Hết hàng' },
+  { status: 'Bị ẩn' },
 ];
 
 export const formatCurrency = value => {
@@ -41,10 +41,10 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
     <TouchableOpacity onPress={() => toggleHideProduct(item)}>
       <FastImage
         style={styles.productImage}
-        source={{uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`}}
+        source={{ uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}` }}
         resizeMode={FastImage.resizeMode.cover}
       />
-      <View style={{position: 'absolute', right: 0}}>
+      <View style={{ position: 'absolute', right: 0 }}>
         <Octicons
           name={item?.isDraft ? 'eye-closed' : 'eye'}
           size={20}
@@ -53,34 +53,36 @@ export const renderProductItem = (item, navigation, toggleHideProduct) => (
       </View>
     </TouchableOpacity>
 
-    <View style={{flex: 1}}>
+    <Pressable
+      onPress={() => navigation.navigate('ChitietProduct')}
+      style={{ flex: 1 }}>
       <Text style={styles.productName} numberOfLines={1}>
         {item?.product_name}
       </Text>
       <Text style={styles.txt}>
         Trạng thái:{' '}
-        <Text style={{color: item?.product_quantity ? 'green' : 'red'}}>
+        <Text style={{ color: item?.product_quantity ? 'green' : 'red' }}>
           {item?.product_quantity ? 'còn hàng' : 'hết hàng'}
         </Text>
       </Text>
       <Text style={styles.txt}>
         Kho: {item?.product_quantity} | Bán: {item?.product_sold}
       </Text>
-    </View>
+    </Pressable>
     <View style={styles.itemActions}>
       <TouchableOpacity
         style={styles.actionButton}
-        onPress={() => navigation.navigate('UpdateProduct', {item})}>
+        onPress={() => navigation.navigate('UpdateProduct', { item })}>
         <FontAwesome name="edit" size={20} color={'black'} />
       </TouchableOpacity>
-      <Text style={[styles.txt, {color: 'red', fontWeight: '700'}]}>
+      <Text style={[styles.txt, { color: 'red', fontWeight: '700' }]}>
         {formatCurrency(item?.product_price)}
       </Text>
     </View>
   </Pressable>
 );
 
-const ProductScreen = ({navigation}) => {
+const ProductScreen = ({ navigation }) => {
   const [status, setStatus] = useState('All');
   const [productList, setProductList] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState(5);
@@ -101,9 +103,8 @@ const ProductScreen = ({navigation}) => {
       {
         text: 'Xác nhận',
         onPress: async () => {
-          const endpoint = `${PRODUCT_API}${
-            product?.isDraft ? '/unpublishById' : '/publishById'
-          }/${product?._id}`;
+          const endpoint = `${PRODUCT_API}${product?.isDraft ? '/unpublishById' : '/publishById'
+            }/${product?._id}`;
           await apiPut(endpoint);
           getTabStatus();
           ToastAndroid.show(
@@ -161,19 +162,19 @@ const ProductScreen = ({navigation}) => {
     setVisibleProducts(prevVisibleProducts => prevVisibleProducts + 5);
   };
 
-  const renderTabItem = ({item, index}) => (
+  const renderTabItem = ({ item, index }) => (
     <Pressable
       style={[
         styles.tabItem,
-        item?.status === status && {backgroundColor: '#EEEEEE'},
+        item?.status === status && { backgroundColor: '#EEEEEE' },
       ]}
       onPress={() => {
         setLoading(true);
         setStatus(item?.status);
-        flatListRef.current.scrollToIndex({index});
+        flatListRef.current.scrollToIndex({ index });
       }}>
       <Text
-        style={[styles.tabText, item?.status === status && {color: 'black'}]}>
+        style={[styles.tabText, item?.status === status && { color: 'black' }]}>
         {item?.status}
       </Text>
     </Pressable>
@@ -195,9 +196,9 @@ const ProductScreen = ({navigation}) => {
               backgroundColor: '#EEEEEE',
             }}
             onPress={() => navigation.navigate('SearchScreen')}>
-            <Text style={{left: 20}}>Search</Text>
+            <Text style={{ left: 20 }}>Search</Text>
             <AntDesign
-              style={{right: 20}}
+              style={{ right: 20 }}
               name="search1"
               size={24}
               color={'gray'}
@@ -226,7 +227,7 @@ const ProductScreen = ({navigation}) => {
           <FlatList
             scrollEnabled={false}
             data={productList?.slice(0, visibleProducts)}
-            renderItem={({item}) =>
+            renderItem={({ item }) =>
               renderProductItem(item, navigation, toggleHideProduct)
             }
             keyExtractor={item => item?._id}
@@ -254,6 +255,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   tabItem: {
     width: 95,

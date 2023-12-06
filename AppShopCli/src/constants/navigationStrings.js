@@ -35,4 +35,6 @@ export default {
   HomeScreen: 'HomeScreen',
   ORDER: 'Order',
   PROFILE: 'Profile',
+  ChitietProduct: 'ChitietProduct',
+  OTPScreen: 'OTPScreen',
 };

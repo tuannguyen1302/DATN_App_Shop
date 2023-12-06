@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -9,13 +9,13 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from '../Product/ProductScreen';
-import {API_BASE_URL, SHOP_API} from '../../config/urls';
-import {apiGet} from '../../utils/utils';
+import { API_BASE_URL, SHOP_API } from '../../config/urls';
+import { apiGet } from '../../utils/utils';
 import HomeStyle from './styles';
 import socketServices from '../../utils/socketService';
-import {Notifications} from 'react-native-notifications';
+import { Notifications } from 'react-native-notifications';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const [account, setAccount] = useState();
 
   const handlePress = async () => {
@@ -52,7 +52,7 @@ const HomeScreen = ({navigation}) => {
       <View style={HomeStyle.header}>
         <Image
           style={HomeStyle.avatarShop}
-          source={{uri: `${API_BASE_URL}${account?.avatarShop}`}}
+          source={{ uri: `${API_BASE_URL}${account?.avatarShop}` }}
         />
         <Text style={HomeStyle.name}>Hello, {account?.nameShop}!</Text>
         <TouchableOpacity

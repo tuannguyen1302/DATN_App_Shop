@@ -115,6 +115,14 @@ export default function (Stack) {
         name={navigationStrings.CONTACT}
         component={Screens.ContactSup}
       />
+      <Stack.Screen
+        name={navigationStrings.ChitietProduct}
+        component={Screens.ChitietProduct}
+      />
+      <Stack.Screen
+        name={navigationStrings.OTPScreen}
+        component={Screens.OTPScreen}
+      />
     </>
   );
 }

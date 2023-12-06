@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {apiGet} from '../../utils/utils';
-import {API_BASE_URL, CHAT_API} from '../../config/urls';
-import {GiftedChat, Send} from 'react-native-gifted-chat';
+import { apiGet } from '../../utils/utils';
+import { API_BASE_URL, CHAT_API } from '../../config/urls';
+import { GiftedChat, Send } from 'react-native-gifted-chat';
 import socketServices from '../../utils/socketService';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 
-const MessageItem = ({navigation, route}) => {
-  const {_id, name, avatar} = route.params;
+const MessageItem = ({ navigation, route }) => {
+  const { _id, name, avatar } = route.params;
   const [messages, setMessages] = useState([]);
   const [shopId, setShopId] = useState();
 
@@ -35,7 +35,7 @@ const MessageItem = ({navigation, route}) => {
 
   const openImagePicker = async () => {
     try {
-      const result = await launchImageLibrary({mediaType: 'photo'});
+      const result = await launchImageLibrary({ mediaType: 'photo' });
 
       if (!result.cancelled) {
         const imageMessage = {
@@ -83,7 +83,9 @@ const MessageItem = ({navigation, route}) => {
     <View style={MessageItemStyles.container}>
       <View style={MessageItemStyles.header}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            socketServices.emit('leaveRoom', _id), navigation.goBack();
+          }}
           style={{
             width: 40,
             height: 40,
@@ -96,12 +98,12 @@ const MessageItem = ({navigation, route}) => {
         </TouchableOpacity>
         <View style={MessageItemStyles.userInfo}>
           <Image
-            source={{uri: `${API_BASE_URL}${avatar}`}}
+            source={{ uri: `${API_BASE_URL}${avatar}` }}
             style={MessageItemStyles.userAvatar}
           />
           <Text style={MessageItemStyles.userName}>{name}</Text>
         </View>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => { }}>
           <AntDesign name="questioncircleo" size={25} color={'black'} />
         </TouchableOpacity>
       </View>
@@ -114,9 +116,9 @@ const MessageItem = ({navigation, route}) => {
         }}
         textInputStyle={MessageItemStyles.input}
         renderSend={props => (
-          <Send {...props} containerStyle={{justifyContent: 'center'}}>
+          <Send {...props} containerStyle={{ justifyContent: 'center' }}>
             <TouchableOpacity
-              onPress={() => props.onSend({text: props.text.trim()}, true)}
+              onPress={() => props.onSend({ text: props.text.trim() }, true)}
               style={MessageItemStyles.sendButton}>
               <MaterialIcons name="send" size={25} color={'white'} />
             </TouchableOpacity>
@@ -126,14 +128,14 @@ const MessageItem = ({navigation, route}) => {
         renderActions={() => (
           <TouchableOpacity
             onPress={openImagePicker}
-            style={{alignSelf: 'center', marginLeft: '3%'}}>
+            style={{ alignSelf: 'center', marginLeft: '3%' }}>
             <Feather name="camera" size={25} color="#333" />
           </TouchableOpacity>
         )}
         renderMessageImage={props => (
           <Image
-            source={{uri: props.currentMessage.image}}
-            style={{width: 200, height: 150}}
+            source={{ uri: props.currentMessage.image }}
+            style={{ width: 200, height: 150 }}
           />
         )}
       />

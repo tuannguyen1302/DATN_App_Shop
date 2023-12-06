@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -11,11 +11,11 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
-import {SIGNUP_API} from '../../config/urls';
+import { useNavigation } from '@react-navigation/native';
+import { SIGNUP_API } from '../../config/urls';
 import imagePath from '../../constants/imagePath';
-import {apiPost} from '../../utils/utils';
-import {SignUpStyle} from './styles';
+import { apiPost } from '../../utils/utils';
+import { SignUpStyle } from './styles';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const isValidEmail = email =>
@@ -35,6 +35,8 @@ const SignUp = () => {
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const checkLogin = async () => {
+
+    const role = 'Shop';
     setError('');
 
     if (!email) setError('Email không được để trống');
@@ -53,12 +55,16 @@ const SignUp = () => {
         await apiPost(SIGNUP_API, {
           email: email,
           password: password,
-          role: 'Shop',
+          role: role,
         });
-
-        console.log('Đăng ký thành công');
+        const params = {
+          email: email,
+          password: password,
+          role: role,
+        };
+        navigation.navigate('OTPScreen', params);
         setButtonDisabled(false);
-        navigation.navigate('Login2');
+
       } catch (error) {
         setButtonDisabled(false);
         console.log(error);
@@ -73,7 +79,7 @@ const SignUp = () => {
       <ScrollView contentContainerStyle={SignUpStyle.scrollViewContainer}>
         <Text style={SignUpStyle.title}>Create your Account</Text>
 
-        <View style={{marginTop: '10%'}}>
+        <View style={{ marginTop: '10%' }}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
             value={email}
@@ -120,7 +126,7 @@ const SignUp = () => {
         <Spinner
           visible={isButtonDisabled}
           textContent={'Loading...'}
-          textStyle={{color: '#FFF'}}
+          textStyle={{ color: '#FFF' }}
         />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -176,13 +182,13 @@ const SocialLoginButtons = () => (
   </>
 );
 
-const SocialButton = ({imageSource, onPress}) => (
+const SocialButton = ({ imageSource, onPress }) => (
   <TouchableOpacity style={SignUpStyle.button} onPress={onPress}>
     <Image source={imageSource} style={SignUpStyle.icon} />
   </TouchableOpacity>
 );
 
-const SignInLink = ({onPress}) => (
+const SignInLink = ({ onPress }) => (
   <View style={SignUpStyle.signUpLinkContainer}>
     <Text style={SignUpStyle.signUpLinkText}>Already have an account? </Text>
     <Text style={SignUpStyle.signUpLink} onPress={onPress}>
