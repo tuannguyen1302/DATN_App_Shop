@@ -1,22 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import {
   Image,
   PermissionsAndroid,
   Text,
   TouchableOpacity,
   View,
+
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from '../Product/ProductScreen';
-import {API_BASE_URL, SHOP_API} from '../../config/urls';
-import {apiGet} from '../../utils/utils';
+import { API_BASE_URL } from '../../config/urls';
 import HomeStyle from './styles';
-import socketServices from '../../utils/socketService';
-import {Notifications} from 'react-native-notifications';
+import { Notifications } from 'react-native-notifications';
+import { useSelector } from 'react-redux';
+import { saveUserData } from '../../redux/actions/user';
 
-const HomeScreen = ({navigation}) => {
-  const [account, setAccount] = useState();
+const HomeScreen = ({ navigation }) => {
+  const userAccount = useSelector(state => state?.user?.userData);
 
   const handlePress = async () => {
     try {
@@ -33,28 +34,20 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  const getApi = async () => {
-    try {
-      const res = await apiGet(`${SHOP_API}/getShopForShop`);
-      setAccount(res?.message);
-      socketServices.emit('new-user-add', res?.message?._id);
-    } catch (error) {
-      console.log('Post api: ', error.message);
-    }
-  };
-
   useEffect(() => {
-    getApi();
+    saveUserData();
   }, []);
 
   return (
-    <View style={HomeStyle.container}>
+    <View style={HomeStyle.container}
+    >
+
       <View style={HomeStyle.header}>
         <Image
           style={HomeStyle.avatarShop}
-          source={{uri: `${API_BASE_URL}${account?.avatarShop}`}}
+          source={{ uri: `${API_BASE_URL}${userAccount?.avatarShop}` }}
         />
-        <Text style={HomeStyle.name}>Hello, {account?.nameShop}!</Text>
+        <Text style={HomeStyle.name}>Hello, {userAccount?.nameShop}!</Text>
         <TouchableOpacity
           style={HomeStyle.button}
           onPress={() => navigation.navigate('NotifiScreen')}>

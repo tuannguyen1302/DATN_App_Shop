@@ -36,6 +36,10 @@ export default function (Stack) {
         component={Screens.NotifiScreen}
       />
       <Stack.Screen
+        name={navigationStrings.NOTIFI_ITEM}
+        component={Screens.NotiItem}
+      />
+      <Stack.Screen
         name={navigationStrings.SEARCH}
         component={Screens.SearchScreen}
       />
@@ -114,6 +118,14 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.CONTACT}
         component={Screens.ContactSup}
+      />
+      <Stack.Screen
+        name={navigationStrings.ChitietProduct}
+        component={Screens.ChitietProduct}
+      />
+      <Stack.Screen
+        name={navigationStrings.OTPScreen}
+        component={Screens.OTPScreen}
       />
     </>
   );

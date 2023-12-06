@@ -15,7 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {apiDelete, apiGet} from '../../utils/utils';
 import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
-import {formatDate} from './DiscountItem ';
+import {formatNotificationTime} from '../../components/DateTime';
 
 const DiscountCodeScreen = ({navigation}) => {
   const [data, setData] = useState([]);
@@ -85,7 +85,7 @@ const DiscountCodeScreen = ({navigation}) => {
               {item?.discount_name}
             </Text>
             <Text numberOfLines={1} style={styles.discountText}>
-              HSD: {formatDate(item?.discount_end_date)}
+              HSD: {formatNotificationTime(item?.discount_end_date)}
             </Text>
             <Text numberOfLines={1} style={styles.discountText}>
               Áp dụng tối thiểu {item?.discount_min_order_value} VND

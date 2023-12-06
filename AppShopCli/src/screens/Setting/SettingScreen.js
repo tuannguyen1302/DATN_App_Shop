@@ -95,7 +95,7 @@ const SettingScreen = ({ navigation }) => {
                     size={windowWidth * 0.08}
                     color={'#333333'}
                   />
-                  <Text style={SettingStyles.text}>Tồn kho</Text>
+                  <Text style={SettingStyles.text}>Kho hàng</Text>
                 </View>
                 <AntDesign name="right" size={windowWidth * 0.03} />
               </View>

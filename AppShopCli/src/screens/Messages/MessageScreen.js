@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Pressable,
@@ -9,55 +9,101 @@ import {
   StyleSheet,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {ListItem, Avatar} from '@rneui/themed';
-import {Icon} from 'react-native-elements';
-import {API_BASE_URL, CHAT_API} from '../../config/urls';
-import {apiGet} from '../../utils/utils';
+import { ListItem, Avatar } from '@rneui/themed';
+import { Icon } from 'react-native-elements';
+import { useSelector } from 'react-redux';
+import { API_BASE_URL } from '../../config/urls';
 import imagePath from '../../constants/imagePath';
+import { formatMessageTime } from '../../components/DateTime';
+import { saveChatData } from '../../redux/actions/chat';
 
-const MessageScreen = ({navigation}) => {
-  const [data, setData] = useState([]);
+import { useFocusEffect } from '@react-navigation/native';
 
-  const renderButton = itemId => (
-    <Pressable onPress={() => showAlert(itemId)} style={styles.deleteButton}>
-      <MaterialIcons name="delete" size={30} color={'white'} />
-    </Pressable>
+
+const MessageScreen = ({ navigation }) => {
+  const data = useSelector(state => state?.chat?.chatData);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // console.log("đang gọi đến message");
+      saveChatData(); // Gọi hàm lấy dữ liệu khi màn hình được focus
+    }, [])
   );
-
   const showAlert = itemId => {
     Alert.alert(
       'Xác nhận',
       'Bạn có chắc chắn muốn xóa tin nhắn này?',
       [
-        {
-          text: 'Hủy',
-          style: 'cancel',
-        },
-        {
-          text: 'Xóa',
-          onPress: () => handleDelete(itemId),
-        },
+        { text: 'Hủy', style: 'cancel' },
+        { text: 'Xóa', onPress: () => { } },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
-  const handleDelete = itemId => {
-    console.log(`Xóa tin nhắn có ID: ${itemId}`);
+  const renderItem = ({ item }) => (
+    <ListItem.Swipeable
+      onPress={() => navigateToMessItem(item)}
+      rightContent={() => renderDeleteButton(item._id)}
+      bottomDivider>
+      <Avatar
+        size={70}
+        rounded
+        source={{ uri: `${API_BASE_URL}${item?.user?.user_avatar}` }}>
+        <Icon
+          name="circle"
+          type="font-awesome"
+          color={item?.user?.user_status === 'active' ? 'green' : 'red'}
+          size={15}
+          containerStyle={styles.statusIcon}
+        />
+      </Avatar>
+      <ListItem.Content>
+        <View style={styles.titleContainer}>
+          <ListItem.Title numberOfLines={1} style={styles.txtName}>
+            {item?.user?.user_name}
+          </ListItem.Title>
+          {renderUnreadBadge(item)}
+        </View>
+        <View style={styles.titleContainer}>
+          <ListItem.Subtitle style={styles.subtitle}>
+            {item?.chat?.messagers[item?.chat?.messagers.length - 1]}
+          </ListItem.Subtitle>
+          <ListItem.Subtitle style={styles.timeText}>
+            {formatMessageTime(item?.user?.updatedAt)}
+          </ListItem.Subtitle>
+        </View>
+      </ListItem.Content>
+    </ListItem.Swipeable>
+  );
+
+  const renderUnreadBadge = item => {
+    const count = item?.chat?.isRead?.shop?.countNew || 0;
+    return (
+      count > 0 && (
+        <View style={styles.unreadBadge}>
+          <Text style={styles.unreadText}>{count}</Text>
+        </View>
+      )
+    );
   };
 
-  const getApi = async () => {
-    try {
-      const res = await apiGet(`${CHAT_API}/getConvarsationsForShop`);
-      setData(res?.message);
-    } catch (error) {
-      console.log('Call api: ', error.message);
-    }
+  const navigateToMessItem = item => {
+    navigation.navigate('MessItem', {
+      data: {
+        idRoom: item?.chat?._id,
+        idShop: item?.chat?.shopId,
+        useName: item?.user?.user_name,
+        avatar: item?.user?.user_avatar,
+      },
+    });
   };
 
-  useEffect(() => {
-    getApi();
-  }, []);
+  const renderDeleteButton = itemId => (
+    <Pressable onPress={() => showAlert(itemId)} style={styles.deleteButton}>
+      <MaterialIcons name="delete" size={30} color={'white'} />
+    </Pressable>
+  );
 
   return (
     <View style={styles.container}>
@@ -68,60 +114,7 @@ const MessageScreen = ({navigation}) => {
       <FlatList
         data={data}
         keyExtractor={item => item?.chat?._id}
-        renderItem={({item}) => (
-          <ListItem.Swipeable
-            onPress={() => {
-              navigation.navigate('MessItem', {
-                _id: item?.chat?._id,
-                name: item?.user?.user_name,
-                avatar: item?.user?.user_avatar,
-              });
-            }}
-            rightContent={() => renderButton(item?._id)}
-            bottomDivider>
-            <Avatar
-              size={70}
-              rounded
-              source={{
-                uri: `${API_BASE_URL}${item?.user?.user_avatar}`,
-              }}>
-              {item?.user?.user_status === 'active' && (
-                <Icon
-                  name="circle"
-                  type="font-awesome"
-                  color="green"
-                  size={16}
-                  containerStyle={styles.statusIcon}
-                />
-              )}
-              {item?.user?.user_status === 'inactive' && (
-                <Icon
-                  name="circle"
-                  type="font-awesome"
-                  color="red"
-                  size={13}
-                  containerStyle={styles.statusIcon}
-                />
-              )}
-            </Avatar>
-            <ListItem.Content>
-              <View style={styles.titleContainer}>
-                <ListItem.Title numberOfLines={1} style={styles.txtName}>
-                  {item?.user?.user_name}
-                </ListItem.Title>
-
-                <ListItem.Subtitle style={styles.timeText}>
-                  12:00
-                </ListItem.Subtitle>
-              </View>
-              <ListItem.Subtitle
-                style={{width: '70%', color: '#19B9EC'}}
-                numberOfLines={1}>
-                {item?.chat?.messagers[0]}
-              </ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem.Swipeable>
-        )}
+        renderItem={renderItem}
       />
     </View>
   );
@@ -153,6 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   txtName: {
+    width: '80%',
     fontSize: 20,
     color: 'black',
     fontWeight: '600',
@@ -163,6 +157,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
+  },
+  subtitle: {
+    width: '80%',
+    color: '#19B9EC',
   },
   timeText: {
     fontSize: 15,
@@ -178,6 +176,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
+  },
+  unreadBadge: {
+    width: 23,
+    height: 23,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    backgroundColor: '#536EFF',
+  },
+  unreadText: {
+    color: 'white',
   },
 });
 

@@ -94,7 +94,7 @@ const Password = () => {
           <Text style={{color: 'red', marginBottom: '5%'}}>{error}</Text>
         )}
         <Button
-          title="Lưu"
+          title="Save"
           onPress={handleSave}
           containerStyle={styles.buttonContainer}
           buttonStyle={styles.saveButton}

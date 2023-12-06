@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Image,
   Pressable,
@@ -8,46 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import imagePath from '../../constants/imagePath';
-import {apiGet} from '../../../src/utils/utils';
-import {API_BASE_URL, SHOP_API} from '../../../src/config/urls';
+import {useSelector} from 'react-redux';
+import {API_BASE_URL} from '../../config/urls';
 
-const ProfileScreen = () => {
-  const [shopData, setShopData] = useState({
-    name: '',
-    description: '',
-    address: '',
-    phone: '',
-    email: '',
-    avatar: '',
-  });
-
-  const navigation = useNavigation();
-
-  const getApi = async () => {
-    try {
-      const res = await apiGet(`${SHOP_API}/getShopForShop`);
-      setShopData({
-        name: res?.message?.nameShop,
-        description: res?.message?.des,
-        address: res?.message?.address,
-        phone: res?.message?.phoneNumberShop.toString(),
-        email: res?.message?.emailShop,
-        avatar: `${API_BASE_URL}${res?.message?.avatarShop}`,
-      });
-    } catch (error) {
-      console.log('Post api: ', error.message);
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getApi();
-    }, []),
-  );
+const ProfileScreen = ({navigation}) => {
+  const account = useSelector(state => state?.user?.userData);
 
   const navigateToSettings = () => {
     navigation.navigate('SettingScreen');
@@ -72,47 +40,40 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.avatarSection}>
         <Pressable onPress={navigateToShopUpdate}>
-          {shopData?.avatar ? (
-            <Image style={styles.avatar} source={{uri: shopData?.avatar}} />
-          ) : (
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: 'https://i.ytimg.com/vi/GtwwuEdteQA/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLA2jBhYe_W7tSjVU4dEpXDTzPIhdQ',
-              }}
-            />
-          )}
-
+          <Image
+            style={styles.avatar}
+            source={{uri: `${API_BASE_URL}${account?.avatarShop}`}}
+          />
           <View style={styles.editButton}>
             <Feather color={'white'} name="edit-3" size={20} />
           </View>
         </Pressable>
         <View style={{left: '5%'}}>
-          <Text style={styles.nameText}> {shopData?.name} </Text>
-          <Text style={styles.infoText}> {shopData?.email} </Text>
-          <Text style={styles.infoText}> {shopData?.phone} </Text>
+          <Text style={styles.nameText}> {account?.nameShop} </Text>
+          <Text style={styles.infoText}> {account?.emailShop} </Text>
+          <Text style={styles.infoText}> {account?.phoneNumberShop} </Text>
         </View>
       </View>
       <View style={{marginHorizontal: '5%'}}>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>Tên Cửa Hàng:</Text>
-          <Text style={styles.valueText}> {shopData?.name} </Text>
+          <Text style={styles.valueText}> {account?.nameShop} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>Địa chỉ cửa hàng:</Text>
-          <Text style={styles.valueText}> {shopData?.address} </Text>
+          <Text style={styles.valueText}> {account?.address} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>SĐT cửa hàng:</Text>
-          <Text style={styles.valueText}> {shopData?.phone} </Text>
+          <Text style={styles.valueText}> {account?.phoneNumberShop} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>Email cửa hàng:</Text>
-          <Text style={styles.valueText}> {shopData?.email} </Text>
+          <Text style={styles.valueText}> {account?.emailShop} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>Mô tả cửa hàng:</Text>
-          <Text style={styles.valueText}> {shopData?.description} </Text>
+          <Text style={styles.valueText}> {account?.des} </Text>
         </View>
       </View>
     </ScrollView>

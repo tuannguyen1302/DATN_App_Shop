@@ -163,9 +163,18 @@ const PhanLoaiSP = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Pressable onPress={() => navigation.goBack()}>
-                    <AntDesign name="arrowleft" size={30} color={'black'} />
-                </Pressable>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={{
+                        width: 40,
+                        height: 40,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#EEEEEE',
+                        borderRadius: 15,
+                    }}>
+                    <AntDesign name="left" size={30} color={'black'} />
+                </TouchableOpacity>
                 <Text style={styles.headerText}>Phân loại sản phẩm</Text>
             </View>
             <ScrollView>
@@ -421,6 +430,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 0.5,
+
     },
     headerText: {
         fontSize: 25,
