@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {API_BASE_URL} from '../../config/urls';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {formatNotificationTime} from '../../components/DateTime';
 
 const DiscountItem = ({navigation, route}) => {
   const {discount} = route.params;
@@ -64,13 +65,13 @@ const DiscountItem = ({navigation, route}) => {
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Ngày bắt đầu:</Text>
           <Text style={styles.detail}>
-            {formatDate(discount?.discount_start_date)}
+            {formatNotificationTime(discount?.discount_start_date)}
           </Text>
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Ngày kết thúc:</Text>
           <Text style={styles.detail}>
-            {formatDate(discount?.discount_end_date)}
+            {formatNotificationTime(discount?.discount_end_date)}
           </Text>
         </View>
         <View style={styles.infoContainer}>
@@ -106,13 +107,6 @@ const DiscountItem = ({navigation, route}) => {
       </ScrollView>
     </View>
   );
-};
-
-export const formatDate = dateString => {
-  const date = new Date(dateString);
-  return `${date.getDate()}/${
-    date.getMonth() + 1
-  }/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 };
 
 const styles = StyleSheet.create({

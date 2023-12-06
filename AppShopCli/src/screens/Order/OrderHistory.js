@@ -8,12 +8,12 @@ import {
   ToastAndroid,
   StyleSheet,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import moment from 'moment';
-import {API_BASE_URL, ORDER_API} from '../../config/urls';
-import {apiPatch} from '../../utils/utils';
+import {API_BASE_URL} from '../../config/urls';
+import {formatCurrency} from '../Product/ProductScreen';
+import {formatNotificationTime} from '../../components/DateTime';
+import {updateOrderData} from '../../redux/actions/order';
 
 const statusTranslations = {
   pending: 'Phê duyệt',
@@ -22,25 +22,21 @@ const statusTranslations = {
   cancelled: 'Đã hủy',
 };
 
-const UpdatedOrderHistory = ({route}) => {
-  const navigation = useNavigation();
+const UpdatedOrderHistory = ({navigation, route}) => {
   const {orderItem} = route.params;
 
-  const handleApproval = async ischeck => {
+  const handleApproval = async text => {
     try {
-      await apiPatch(
-        `${ORDER_API}/${
-          ischeck ? 'changeStatus' : `cancelByShop/${orderItem?.oderId}`
-        }`,
-        ischeck && {
-          order_id: orderItem?.oderId,
-          status: 'shipped',
-        },
-      );
-      navigation.navigate('Order', {screen: ischeck ? 'Đang giao' : 'Đã hủy'});
+      await updateOrderData({
+        value: text,
+        oderId: orderItem.oderId,
+      });
+      navigation.navigate('Order', {
+        screen: text === 'shipped' ? 'Đang giao' : 'Đã hủy',
+      });
       ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
     } catch (error) {
-      console.log('Patch api: ', error.message);
+      throw error;
     }
   };
 
@@ -80,7 +76,7 @@ const UpdatedOrderHistory = ({route}) => {
         {orderItem?.status === 'pending' && (
           <TouchableOpacity
             style={styles.statusButton}
-            onPress={() => handleApproval(false)}>
+            onPress={() => handleApproval('cancelled')}>
             <Text style={[styles.buttonText, {color: 'orange'}]}>Hủy đơn</Text>
           </TouchableOpacity>
         )}
@@ -93,13 +89,11 @@ const UpdatedOrderHistory = ({route}) => {
         )}
         {orderItem?.status === 'delivered' && (
           <View style={[styles.statusButton, {backgroundColor: '#CCFFCC'}]}>
-            <Text style={[styles.buttonText, {color: 'green'}]}>Hủy đơn</Text>
+            <Text style={[styles.buttonText, {color: 'green'}]}>Đã giao</Text>
           </View>
         )}
         {orderItem?.status === 'cancelled' && (
-          <View
-            style={[styles.statusButton, {backgroundColor: '#FFE4E1'}]}
-            onPress={() => handleApproval(false)}>
+          <View style={[styles.statusButton, {backgroundColor: '#FFE4E1'}]}>
             <Text style={[styles.buttonText, {color: 'red'}]}>Đã hủy</Text>
           </View>
         )}
@@ -123,26 +117,26 @@ const UpdatedOrderHistory = ({route}) => {
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Giá: </Text>
-            <Text style={styles.infoText}>
-              {orderItem?.order_checkout?.totalPrice}
+            <Text style={[styles.infoText, {color: 'red'}]}>
+              {formatCurrency(orderItem?.order_checkout?.totalPrice)}
             </Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Phí ship:</Text>
-            <Text style={styles.infoText}>
-              {orderItem?.order_checkout?.feeShip}
+            <Text style={[styles.infoText, {color: 'red'}]}>
+              {formatCurrency(orderItem?.order_checkout?.feeShip)}
             </Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Giảm giá:</Text>
-            <Text style={styles.infoText}>
-              {orderItem?.order_checkout?.totalDiscount}
+            <Text style={[styles.infoText, {color: 'red'}]}>
+              {formatCurrency(orderItem?.order_checkout?.totalDiscount)}
             </Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Tổng:</Text>
-            <Text style={styles.infoText}>
-              {orderItem?.order_checkout?.totalCheckout}
+            <Text style={[styles.infoText, {color: 'red'}]}>
+              {formatCurrency(orderItem?.order_checkout?.totalCheckout)}
             </Text>
           </View>
         </View>
@@ -151,7 +145,7 @@ const UpdatedOrderHistory = ({route}) => {
           <View style={styles.infoRow}>
             <MaterialIcons name="event" size={25} color={'black'} />
             <Text style={styles.infoText}>
-              {moment(orderItem?.crateDate).format('DD/MM/YYYY HH:mm')}
+              {formatNotificationTime(orderItem?.crateDate)}
             </Text>
           </View>
         </View>
@@ -159,7 +153,7 @@ const UpdatedOrderHistory = ({route}) => {
         {orderItem?.status === 'pending' && (
           <TouchableOpacity
             style={styles.approvalButton}
-            onPress={() => handleApproval(true)}>
+            onPress={() => handleApproval('shipped')}>
             <Text style={styles.buttonText}>
               {statusTranslations[orderItem?.status]}
             </Text>

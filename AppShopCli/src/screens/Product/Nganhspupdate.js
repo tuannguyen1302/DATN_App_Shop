@@ -51,9 +51,18 @@ const Nganhsp = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <AntDesign name="arrowleft" size={30} color={'black'} />
-          </Pressable>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{
+              width: 40,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#EEEEEE',
+              borderRadius: 15,
+            }}>
+            <AntDesign name="left" size={30} color={'black'} />
+          </TouchableOpacity>
           <Text style={styles.headerText}>Ngành Sản Phẩm</Text>
         </View>
       </View>

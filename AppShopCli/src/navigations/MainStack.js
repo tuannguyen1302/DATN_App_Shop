@@ -36,6 +36,10 @@ export default function (Stack) {
         component={Screens.NotifiScreen}
       />
       <Stack.Screen
+        name={navigationStrings.NOTIFI_ITEM}
+        component={Screens.NotiItem}
+      />
+      <Stack.Screen
         name={navigationStrings.SEARCH}
         component={Screens.SearchScreen}
       />

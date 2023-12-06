@@ -20,7 +20,7 @@ import { Login2Style } from './styles';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const isValidEmail = email =>
-  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
+  /^[A-Z0-9._%+-]+@gmail\.com$/i.test(email);
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
@@ -53,7 +53,7 @@ const Login2 = ({ navigation }) => {
         navigation.replace('BottomTab');
         console.log(res.message);
       } catch (error) {
-        alert(error.message);
+        setError(error.message);
         setButtonDisabled(false);
       }
     }

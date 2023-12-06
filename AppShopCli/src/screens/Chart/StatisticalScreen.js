@@ -128,7 +128,7 @@ const StatisticalScreen = ({navigation}) => {
         yAxisLabel="$"
         yAxisSuffix="k"
         chartConfig={{
-          backgroundGradientFrom: '#fb8c00',
+          backgroundGradientFrom: '#ffa726',
           backgroundGradientTo: '#ffa726',
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,

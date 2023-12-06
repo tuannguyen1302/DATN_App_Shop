@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,10 +10,10 @@ import {
   View,
 } from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useFocusEffect} from '@react-navigation/native';
 import imagePath from '../../constants/imagePath';
-import {apiGet, apiPatch} from '../../utils/utils';
-import {API_BASE_URL, ORDER_API} from '../../config/urls';
+import {useSelector} from 'react-redux';
+import {API_BASE_URL} from '../../config/urls';
+import {saveOrderData, updateOrderData} from '../../redux/actions/order';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -37,6 +37,13 @@ const tabNavigatorOptions = route => ({
 });
 
 const OrderScreen = () => {
+  useEffect(() => {
+    saveOrderData('pending');
+    saveOrderData('shipped');
+    saveOrderData('delivered');
+    saveOrderData('cancelled');
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -55,35 +62,16 @@ const OrderScreen = () => {
   );
 };
 
-const fetchOrdersByStatus = async (setArray, text, setLoading) => {
-  try {
-    setLoading(true);
-    const res = await apiGet(`${ORDER_API}/getAllOrderForShop/${text}`);
-    setArray(res?.message?.orderRes?.user);
-    setLoading(false);
-  } catch (error) {
-    setLoading(false);
-    console.log('Call api: ', error);
-  }
-};
-
 const OrderListScreen = ({navigation}) => {
-  const [array, setArray] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrdersByStatus(setArray, 'pending', setLoading);
-    }, []),
-  );
+  const data = useSelector(state => state?.order?.orderData?.pending);
 
   return (
     <View style={styles.container}>
-      {loading ? (
+      {!data ? (
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : (
         <FlatList
-          data={array}
+          data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
@@ -93,22 +81,15 @@ const OrderListScreen = ({navigation}) => {
 };
 
 const InDeliveryScreen = ({navigation}) => {
-  const [array, setArray] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrdersByStatus(setArray, 'shipped', setLoading);
-    }, []),
-  );
+  const data = useSelector(state => state?.order?.orderData?.shipped);
 
   return (
     <View style={styles.container}>
-      {loading ? (
+      {!data ? (
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : (
         <FlatList
-          data={array}
+          data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
@@ -118,22 +99,15 @@ const InDeliveryScreen = ({navigation}) => {
 };
 
 const DeliveredScreen = ({navigation}) => {
-  const [array, setArray] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrdersByStatus(setArray, 'delivered', setLoading);
-    }, []),
-  );
+  const data = useSelector(state => state?.order?.orderData?.delivered);
 
   return (
     <View style={styles.container}>
-      {loading ? (
+      {!data ? (
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : (
         <FlatList
-          data={array}
+          data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
@@ -143,22 +117,15 @@ const DeliveredScreen = ({navigation}) => {
 };
 
 const CanceledScreen = ({navigation}) => {
-  const [array, setArray] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrdersByStatus(setArray, 'cancelled', setLoading);
-    }, []),
-  );
+  const data = useSelector(state => state?.order?.orderData?.cancelled);
 
   return (
     <View style={styles.container}>
-      {loading ? (
+      {!data ? (
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : (
         <FlatList
-          data={array}
+          data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
@@ -169,14 +136,14 @@ const CanceledScreen = ({navigation}) => {
 
 const patchApi = async (oderId, navigation) => {
   try {
-    await apiPatch(`${ORDER_API}/changeStatus`, {
-      order_id: oderId,
-      status: 'shipped',
+    await updateOrderData({
+      value: 'shipped',
+      oderId,
     });
     navigation.navigate('Order', {screen: 'Đang giao'});
     ToastAndroid.show('Duyệt thành công', ToastAndroid.show);
   } catch (error) {
-    console.log('Patch api: ', error.message);
+    throw error;
   }
 };
 
@@ -195,7 +162,8 @@ const renderItem = (orderItem, navigation) => (
         </Text>
         <View style={styles.colorInfo}>
           <Text style={styles.infoText}>
-            Màu | Size: {orderItem?.duct_attributes?.size}
+            Màu: {orderItem?.product_attributes?.color} | Size:{' '}
+            {orderItem?.product_attributes?.size}
           </Text>
         </View>
         <Text style={styles.infoText} numberOfLines={1}>
@@ -210,7 +178,7 @@ const renderItem = (orderItem, navigation) => (
           {orderItem?.product_attributes?.quantity}
         </Text>
       </View>
-      {orderItem?.order_status === 'pending' && (
+      {orderItem?.status === 'pending' && (
         <Pressable
           style={styles.statusBadge}
           onPress={() => patchApi(orderItem?.oderId, navigation)}>
