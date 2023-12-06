@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import imagePath from '../../constants/imagePath';
 import {apiGet, apiPut} from '../../utils/utils';
@@ -84,7 +83,6 @@ const ProductScreen = ({navigation}) => {
   const [status, setStatus] = useState('All');
   const [productList, setProductList] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState(5);
-  // const [sortOrder, setSortOrder] = useState('');
   const [loading, setLoading] = useState(true);
   const flatListRef = useRef();
 
@@ -101,15 +99,19 @@ const ProductScreen = ({navigation}) => {
       {
         text: 'Xác nhận',
         onPress: async () => {
-          const endpoint = `${PRODUCT_API}${
-            product?.isDraft ? '/unpublishById' : '/publishById'
-          }/${product?._id}`;
-          await apiPut(endpoint);
-          getTabStatus();
-          ToastAndroid.show(
-            `Thay đổi trạng thái ${action} thành công`,
-            ToastAndroid.show,
-          );
+          try {
+            const endpoint = `${PRODUCT_API}${
+              product?.isDraft ? '/unpublishById' : '/publishById'
+            }/${product?._id}`;
+            await apiPut(endpoint);
+            getTabStatus();
+            ToastAndroid.show(
+              `Thay đổi trạng thái ${action} thành công`,
+              ToastAndroid.show,
+            );
+          } catch (error) {
+            console.error('Xử lý lỗi API:', error);
+          }
         },
       },
     ]);
@@ -139,24 +141,6 @@ const ProductScreen = ({navigation}) => {
     }
   };
 
-  // const sortProducts = sort => {
-  //   setSortOrder(sort);
-  //   if (productList.length > 0) {
-  //     const sortedProducts = [...productList].sort((a, b) => {
-  //       const priceA = a.product_price;
-  //       const priceB = b.product_price;
-  //       return sort === '+' ? priceA - priceB : priceB - priceA;
-  //     });
-  //     setProductList(sortedProducts);
-  //   }
-  // };
-
-  useFocusEffect(
-    useCallback(() => {
-      getTabStatus();
-    }, [status]),
-  );
-
   const onEndReached = () => {
     setVisibleProducts(prevVisibleProducts => prevVisibleProducts + 5);
   };
@@ -178,6 +162,10 @@ const ProductScreen = ({navigation}) => {
       </Text>
     </Pressable>
   );
+
+  useEffect(() => {
+    getTabStatus();
+  }, [status]);
 
   return (
     <View style={styles.container}>
@@ -341,7 +329,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    marginTop: '10%',
     justifyContent: 'center',
     alignItems: 'center',
   },

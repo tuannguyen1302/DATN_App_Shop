@@ -1,21 +1,40 @@
 import React, {useRef, useEffect} from 'react';
 import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import {useSelector} from 'react-redux';
 
 const TabButton = ({item, onPress, accessibilityState}) => {
+  const data = useSelector(state => state?.chat?.chatData);
   const {selected: focused} = accessibilityState;
   const viewRef = useRef(null);
   const textViewRef = useRef(null);
 
   useEffect(() => {
+    const animationConfig = {0: {scale: 0}, 1: {scale: 1}};
+
     if (focused) {
-      viewRef.current.animate({0: {scale: 0}, 1: {scale: 1}});
-      textViewRef.current.animate({0: {scale: 0}, 1: {scale: 1}});
+      viewRef.current.animate(animationConfig);
+      textViewRef.current.animate(animationConfig);
     } else {
-      viewRef.current.animate({0: {scale: 1}, 1: {scale: 0}});
-      textViewRef.current.animate({0: {scale: 1}, 1: {scale: 0}});
+      viewRef.current.animate(animationConfig);
+      textViewRef.current.animate(animationConfig);
     }
   }, [focused]);
+
+  const notificationCount = data
+    ? data.reduce((count, item) => count + item.chat?.isRead?.shop?.countNew, 0)
+    : 0;
+
+  const renderNotificationBadge = () => {
+    if (item.label === 'Message') {
+      return (
+        <Animatable.View ref={textViewRef} style={styles.notificationBadge}>
+          <Text style={styles.notificationText}>{notificationCount}</Text>
+        </Animatable.View>
+      );
+    }
+    return null;
+  };
 
   return (
     <TouchableOpacity
@@ -31,6 +50,7 @@ const TabButton = ({item, onPress, accessibilityState}) => {
           <Animatable.View ref={textViewRef}>
             {focused && <Text style={styles.label}>{item.label}</Text>}
           </Animatable.View>
+          {notificationCount > 0 && renderNotificationBadge()}
         </View>
       </View>
     </TouchableOpacity>
@@ -62,6 +82,20 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '400',
     paddingHorizontal: 8,
+  },
+  notificationBadge: {
+    width: 20,
+    height: 20,
+    top: 0,
+    right: 0,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#536EFF',
+    position: 'absolute',
+  },
+  notificationText: {
+    color: 'white',
   },
 });
 

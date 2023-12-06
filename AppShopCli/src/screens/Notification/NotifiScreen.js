@@ -8,49 +8,18 @@ import {
   FlatList,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import moment from 'moment';
 import {apiGet} from '../../utils/utils';
 import {NOTIFI_API} from '../../config/urls';
+import {formatNotificationTime} from '../../components/DateTime';
 
 const NotifiScreen = ({navigation}) => {
   const [data, setData] = useState([]);
 
   const renderItem = ({item}) => {
-    const notificationDate = moment(item?.createdAt);
-    const now = moment();
-
-    const isToday = notificationDate.isSame(now, 'day');
-    const yearsDifference = now.diff(notificationDate, 'years');
-    const monthsDifference = now.diff(notificationDate, 'months');
-    const daysDifference = now.diff(notificationDate, 'days');
-    const hoursDifference = now.diff(notificationDate, 'hours');
-    const minutesDifference = now.diff(notificationDate, 'minutes');
-
-    let timeAgo = '';
-    if (isToday) {
-      timeAgo = `Hôm nay, ${notificationDate.format('HH:mm')}`;
-    } else if (yearsDifference > 0) {
-      timeAgo = notificationDate.format('HH:mm, DD/MM/YYYY');
-    } else if (monthsDifference > 0) {
-      if (monthsDifference >= 12) {
-        timeAgo = '1 năm trước';
-      } else {
-        timeAgo = `${monthsDifference} tháng trước`;
-      }
-    } else if (daysDifference >= 7) {
-      timeAgo = `${Math.floor(daysDifference / 7)} tuần trước`;
-    } else if (daysDifference > 0) {
-      timeAgo = `${daysDifference} ngày trước`;
-    } else if (hoursDifference > 0) {
-      timeAgo = `${hoursDifference} giờ trước`;
-    } else if (minutesDifference > 0) {
-      timeAgo = `${minutesDifference} phút trước`;
-    } else {
-      timeAgo = 'Vừa xong';
-    }
-
     return (
-      <TouchableOpacity style={styles.notificationItem}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('NotiItem')}
+        style={styles.notificationItem}>
         <Image
           resizeMode="contain"
           source={{
@@ -60,7 +29,9 @@ const NotifiScreen = ({navigation}) => {
         />
         <View style={styles.notificationTextContainer}>
           <Text style={styles.notificationTitle}>{item?.noti_content}</Text>
-          <Text style={styles.notificationTime}>{timeAgo}</Text>
+          <Text style={styles.notificationTime}>
+            {formatNotificationTime(item?.createdAt)}
+          </Text>
         </View>
       </TouchableOpacity>
     );

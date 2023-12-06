@@ -31,3 +31,4 @@ export {default as SettingScreen} from './Setting/SettingScreen';
 export {default as ContactSup} from './Setting/ContactSup';
 
 export {default as NotifiScreen} from './Notification/NotifiScreen';
+export {default as NotiItem} from './Notification/NotiItem';

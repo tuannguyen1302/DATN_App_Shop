@@ -28,6 +28,7 @@ export default {
   SETTING: 'SettingScreen',
   CONTACT: 'ContactSup',
   NOTIFI: 'NotifiScreen',
+  NOTIFI_ITEM: 'NotiItem',
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',
   HomeScreen: 'HomeScreen',
