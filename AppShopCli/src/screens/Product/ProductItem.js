@@ -2,10 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const NotiItem = ({navigation, route}) => {
-  const item = route.params;
-  console.log(item);
-
+const ProductItem = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -14,13 +11,13 @@ const NotiItem = ({navigation, route}) => {
           style={styles.backButton}>
           <AntDesign name="left" size={20} color={'black'} />
         </TouchableOpacity>
-        <Text style={styles.title}>Information Notification</Text>
+        <Text style={styles.title}>Information ProductScreen</Text>
       </View>
     </View>
   );
 };
 
-export default NotiItem;
+export default ProductItem;
 
 const styles = StyleSheet.create({
   container: {

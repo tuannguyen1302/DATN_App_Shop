@@ -23,6 +23,7 @@ import { apiPost } from '../../../src/utils/utils';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useSelector } from 'react-redux';
 
 const UpdateProduct = ({ navigation, route }) => {
   const bottomSheetModalRef = useRef(null);
@@ -34,11 +35,12 @@ const UpdateProduct = ({ navigation, route }) => {
     item?.product_description,
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
-  const { selectedCategory } = route.params || {};
-  const { buil, newid } = route.params || {};
+  const { selectedCategory, buil, newid, id } = route.params || {};
   const [productAttribute, setproductAttribute] = useState(item?.product_attributes);
-  //console.log(productAttributes);
-  //console.log(newid);
+  const typeProduct = useSelector(state => state?.product?.typeData);
+
+  const ngang = typeProduct.find(items => items._id === item.category);
+
   const clearField = setField => setField('');
   const defaultNewId = item?._id;
   const effectiveNewId = newid !== undefined ? newid : defaultNewId;
@@ -77,20 +79,8 @@ const UpdateProduct = ({ navigation, route }) => {
       { cancelable: true },
     );
   };
-
-  const selectImageOption = () => {
-    Alert.alert(
-      'Thông báo',
-      'Bạn muốn lấy ảnh từ?',
-      [
-        { text: 'Chụp ảnh ', onPress: () => openCamera(true) },
-        { text: 'Thư viện ', onPress: () => openCamera(false) },
-      ],
-      { cancelable: true },
-    );
-  };
   const hienthi = () => {
-    console.log(buil);
+    console.log(buil, selectedCategory, id);
 
   }
 
@@ -127,7 +117,7 @@ const UpdateProduct = ({ navigation, route }) => {
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
       formData.append('product_price', productPrice);
-      formData.append('category', '654e4dccab5f7e26f673b45f');
+      formData.append('category', id);
       formData.append('product_attributes', productAttributes);
       //console.log(JSON.stringify(formData) + "=======================");
       selectedImages.forEach(image => {
@@ -191,6 +181,11 @@ const UpdateProduct = ({ navigation, route }) => {
     const newImages = item?.product_thumb.map(uri => ({
       id: (idCounter++).toString(),
       uri: `${API_BASE_URL}uploads/${uri}`,
+
+
+
+
+
     }));
     setSelectedImages(prevImages => [...prevImages, ...newImages]);
   }, []);
@@ -296,7 +291,7 @@ const UpdateProduct = ({ navigation, route }) => {
           </View>
           <Pressable
             onPress={() => {
-              navigation.navigate('NganhspUPDATE');
+              navigation.navigate('NganhspUPDATE', { buil, newid: item?._id, item: item });
             }}
             style={styles.nganhsp}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -315,11 +310,11 @@ const UpdateProduct = ({ navigation, route }) => {
               borderWidth: 1,
               borderColor: '#5F5F5F',
             }}>
-            Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
+            Ngành hàng sản phẩm bạn đã chọn: {ngang?.category_name}
           </Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('PhanloaispUPDATE', { newid: item?._id, item: item });
+              navigation.navigate('PhanloaispUPDATE', { newid: item?._id, item: item, selectedCategory, id });
 
             }}
             style={styles.nganhsp}>

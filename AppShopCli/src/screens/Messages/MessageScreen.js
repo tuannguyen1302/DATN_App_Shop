@@ -80,11 +80,47 @@ const MessageScreen = ({ navigation }) => {
   const renderUnreadBadge = item => {
     const count = item?.chat?.isRead?.shop?.countNew || 0;
     return (
-      count > 0 && (
-        <View style={styles.unreadBadge}>
-          <Text style={styles.unreadText}>{count}</Text>
-        </View>
-      )
+      <ListItem.Swipeable
+        onPress={() => navigateToMessItem(item)}
+        rightContent={() => renderDeleteButton(item._id)}
+        bottomDivider>
+        <Avatar
+          size={70}
+          rounded
+          source={{ uri: `${API_BASE_URL}${item?.user?.user_avatar}` }}>
+          <Icon
+            name="circle"
+            type="font-awesome"
+            color={item?.user?.user_status === 'active' ? 'green' : 'red'}
+            size={15}
+            containerStyle={styles.statusIcon}
+          />
+        </Avatar>
+        <ListItem.Content>
+          <View style={styles.titleContainer}>
+            <ListItem.Title numberOfLines={1} style={styles.txtName}>
+              {item?.user?.user_name}
+            </ListItem.Title>
+            {count > 0 && (
+              <View style={styles.unreadBadge}>
+                <Text style={styles.unreadText}>{count}</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.titleContainer}>
+            <ListItem.Subtitle
+              style={[
+                styles.subtitle,
+                { color: count > 0 ? '#536EFF' : 'black' },
+              ]}>
+              {item?.chat?.messagers[item?.chat?.messagers.length - 1]}
+            </ListItem.Subtitle>
+            <ListItem.Subtitle style={styles.timeText}>
+              {formatMessageTime(item?.user?.updatedAt)}
+            </ListItem.Subtitle>
+          </View>
+        </ListItem.Content>
+      </ListItem.Swipeable>
     );
   };
 
@@ -160,7 +196,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     width: '80%',
-    color: '#19B9EC',
   },
   timeText: {
     fontSize: 15,

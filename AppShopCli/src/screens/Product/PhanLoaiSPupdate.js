@@ -13,8 +13,9 @@ const PhanLoaiSP = ({ navigation, route }) => {
     const [inputValue, setInputValue] = useState('');
     const [data, setData] = useState([]);
     const [data1, setData1] = useState([]);
-    const { newid, item } = route.params || {};
+    const { newid, item, selectedCategory, id } = route.params || {};
 
+    console.log(newid, item);
 
 
     const [selectedItems, setSelectedItems] = useState([]);
@@ -198,7 +199,7 @@ const PhanLoaiSP = ({ navigation, route }) => {
             const buil = JSON.stringify(data);
             console.log(buil);
 
-            navigation.navigate('UpdateProduct', { buil, newid });
+            navigation.navigate('UpdateProduct', { buil, newid, selectedCategory, id });
         }
     };
 

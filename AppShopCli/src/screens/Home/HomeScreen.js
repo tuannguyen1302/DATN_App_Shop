@@ -15,6 +15,8 @@ import HomeStyle from './styles';
 import { Notifications } from 'react-native-notifications';
 import { useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/actions/user';
+import { saveChatData } from '../../redux/actions/chat';
+import socketServices from '../../utils/socketService';
 
 const HomeScreen = ({ navigation }) => {
   const userAccount = useSelector(state => state?.user?.userData);
@@ -26,16 +28,21 @@ const HomeScreen = ({ navigation }) => {
       );
       Notifications.postLocalNotification({
         title: 'Thông báo',
-        body: 'Đây là một thông báo mẫu',
+        body: 'Bạn có một tin nhắn mới',
         extra: 'data',
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
   useEffect(() => {
     saveUserData();
+    saveChatData();
+    socketServices.on('newMessage', () => {
+      handlePress();
+      saveChatData();
+    });
   }, []);
 
   return (

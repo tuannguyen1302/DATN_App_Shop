@@ -11,9 +11,9 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {API_BASE_URL} from '../../config/urls';
-import {formatCurrency} from '../Product/ProductScreen';
 import {formatNotificationTime} from '../../components/DateTime';
 import {updateOrderData} from '../../redux/actions/order';
+import {formatCurrency} from '../../components/Price';
 
 const statusTranslations = {
   pending: 'Phê duyệt',
@@ -27,14 +27,16 @@ const UpdatedOrderHistory = ({navigation, route}) => {
 
   const handleApproval = async text => {
     try {
-      await updateOrderData({
+      const check = await updateOrderData({
         value: text,
         oderId: orderItem.oderId,
       });
-      navigation.navigate('Order', {
-        screen: text === 'shipped' ? 'Đang giao' : 'Đã hủy',
-      });
-      ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
+      if (check) {
+        navigation.navigate('Order', {
+          screen: text === 'shipped' ? 'Đang giao' : 'Đã hủy',
+        });
+        ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
+      }
     } catch (error) {
       throw error;
     }

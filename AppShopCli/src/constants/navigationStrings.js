@@ -9,6 +9,7 @@ export default {
   CHAT_MESSAGS: 'MessItem',
   SEARCH: 'SearchScreen',
   PRODUCT: 'Product',
+  PRODUCT_ITEM: 'ProductItem',
   ADD_PRODUCT: 'AddProduct',
   UPDATE_PRODUCT: 'UpdateProduct',
 

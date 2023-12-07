@@ -27,6 +27,7 @@ export const updateOrderData = async data => {
 
     await apiPatch(apiEndpoint, patchData);
     store.dispatch(updateStatus(data));
+    return true;
   } catch (error) {
     throw error;
   }

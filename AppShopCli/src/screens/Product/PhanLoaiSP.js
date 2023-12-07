@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native';
 import { Modal } from 'react-native';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
+import { useRoute } from '@react-navigation/native';
 const PhanLoaiSP = ({ navigation }) => {
     const [isDialogVisible, setDialogVisible] = useState(false);
     const [isButtonPressed, setButtonPressed] = useState(false);
@@ -16,7 +16,10 @@ const PhanLoaiSP = ({ navigation }) => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedItems1, setSelectedItems1] = useState([]);
+    const route = useRoute();
 
+    const { selectedCategory, id } = route.params || {};
+    //console.log(selectedCategory, id);
     const toggleDialog = () => {
         setDialogVisible(!isDialogVisible);
         setButtonPressed(false);
@@ -156,7 +159,7 @@ const PhanLoaiSP = ({ navigation }) => {
         if (data.length != 0) {
             const buil = JSON.stringify(data);
             console.log(buil);
-            navigation.navigate('AddProduct', { buil });
+            navigation.navigate('AddProduct', { buil, selectedCategory, id });
         }
     };
 

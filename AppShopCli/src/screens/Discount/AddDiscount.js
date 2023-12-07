@@ -19,8 +19,9 @@ import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {API_BASE_URL, DISCOUNT_API, PRODUCT_API} from '../../config/urls';
-import {apiGet, apiPost} from '../../utils/utils';
+import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
+import {apiPost} from '../../utils/utils';
+import {useSelector} from 'react-redux';
 
 const APPLY_OPTIONS = [
   {id: 0, name: 'Tất cả sản phẩm'},
@@ -58,7 +59,7 @@ const renderTextInput = (
 };
 
 const AddDiscount = ({navigation}) => {
-  const [productList, setProductList] = useState([]);
+  const productList = useSelector(state => state?.product?.productData?.all);
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [isStartDate, setStartDate] = useState(false);
   const bottomSheetModalRef = useRef(null);
@@ -141,19 +142,6 @@ const AddDiscount = ({navigation}) => {
       discountData.max_uses_per_user > 0
     );
   };
-
-  const getApi = async () => {
-    try {
-      const res = await apiGet(`${PRODUCT_API}/getAllProductByShop/con_hang`);
-      setProductList(res?.message);
-    } catch (error) {
-      console.log('Call api: ', error.response.data);
-    }
-  };
-
-  useEffect(() => {
-    getApi();
-  }, []);
 
   return (
     <GestureHandlerRootView style={styles.container}>

@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-const orderSlice = createSlice({
+const productSlice = createSlice({
   name: 'productData',
   initialState: {
     productData: {
@@ -9,6 +9,7 @@ const orderSlice = createSlice({
       het_hang: null,
       private: null,
     },
+    typeData: null,
   },
   reducers: {
     saveProduct: (state, action) => {
@@ -16,21 +17,24 @@ const orderSlice = createSlice({
       state.productData[value] = data;
     },
     updateStatus: (state, action) => {
-      const {productId, value} = action.payload;
+      const {isDraft, productId} = action.payload;
 
       const updatedProduct = state.productData.all.find(
-        product => product.productId === productId,
+        product => product._id === productId,
       );
 
       if (updatedProduct) {
         state.productData.pending = state.productData.pending.filter(
-          product => product.productId !== productId,
+          product => product._id !== productId,
         );
         state.productData[value].push({...updatedProduct, status: value});
       }
     },
+    saveType: (state, action) => {
+      state.typeData = action.payload;
+    },
   },
 });
 
-export const {saveProduct, updateStatus} = orderSlice.actions;
-export default orderSlice.reducer;
+export const {saveProduct, updateStatus, saveType} = productSlice.actions;
+export default productSlice.reducer;

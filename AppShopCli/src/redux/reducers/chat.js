@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-const orderSlice = createSlice({
+const chatSlice = createSlice({
   name: 'chatData',
   initialState: {
     chatData: null,
@@ -12,5 +12,5 @@ const orderSlice = createSlice({
   },
 });
 
-export const {saveChat} = orderSlice.actions;
-export default orderSlice.reducer;
+export const {saveChat} = chatSlice.actions;
+export default chatSlice.reducer;
