@@ -18,7 +18,7 @@ const NotifiScreen = ({navigation}) => {
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('NotiItem')}
+        onPress={() => navigation.navigate('NotiItem', {item})}
         style={styles.notificationItem}>
         <Image
           resizeMode="contain"
@@ -39,10 +39,10 @@ const NotifiScreen = ({navigation}) => {
 
   const getAPI = async () => {
     try {
-      const res = await apiGet(NOTIFI_API);
+      const res = await apiGet(`${NOTIFI_API}/shop`);
       setData(res?.message.reverse());
     } catch (error) {
-      console.log('Call api: ', error);
+      throw error;
     }
   };
 
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     marginHorizontal: '5%',
-    marginBottom: '2%',
+    marginVertical: '2%',
     alignItems: 'center',
   },
   backButton: {

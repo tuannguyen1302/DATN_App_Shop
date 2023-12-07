@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://192.168.0.103:3000/';
+export const API_BASE_URL = 'http://192.168.0.107:3000/';
 
 export const getApiUrl = endpoint => API_BASE_URL + endpoint;
 
@@ -12,3 +12,4 @@ export const SHOP_API = getApiUrl('v1/api/shop');
 export const DISCOUNT_API = getApiUrl('v1/api/discount');
 export const NOTIFI_API = getApiUrl('v1/api/notification');
 export const USER_API = getApiUrl('v1/api/user');
+export const CATERGORY_API = getApiUrl('v1/api/category');

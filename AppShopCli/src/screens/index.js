@@ -13,6 +13,7 @@ export {default as SignUp} from './Login/SignUp';
 export {default as MessItem} from './Messages/MessItem';
 export {default as SearchScreen} from './Search/SearchScreen';
 export {default as ProductScreen} from './Product/ProductScreen';
+export {default as ProductItem} from './Product/ProductItem';
 export {default as AddProduct} from './Product/AddProduct';
 export {default as Nganhsp} from './Product/Nganhsp';
 export {default as PhanLoaiSP} from './Product/PhanLoaiSP';

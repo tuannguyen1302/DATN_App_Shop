@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useSelector} from 'react-redux';
 
 const CategoryItem = ({category, isSelected, onPress}) => (
   <TouchableOpacity
@@ -17,6 +18,7 @@ const CategoryItem = ({category, isSelected, onPress}) => (
 );
 
 const Nganhsp = ({navigation, route}) => {
+  const typeProduct = useSelector(state => state?.product?.typeData);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleCategoryPress = category => {

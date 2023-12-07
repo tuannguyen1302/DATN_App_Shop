@@ -37,13 +37,6 @@ const tabNavigatorOptions = route => ({
 });
 
 const OrderScreen = () => {
-  useEffect(() => {
-    saveOrderData('pending');
-    saveOrderData('shipped');
-    saveOrderData('delivered');
-    saveOrderData('cancelled');
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -65,6 +58,10 @@ const OrderScreen = () => {
 const OrderListScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.pending);
 
+  useEffect(() => {
+    saveOrderData('pending');
+  }, []);
+
   return (
     <View style={styles.container}>
       {!data ? (
@@ -82,6 +79,9 @@ const OrderListScreen = ({navigation}) => {
 
 const InDeliveryScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.shipped);
+  useEffect(() => {
+    saveOrderData('shipped');
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -101,6 +101,10 @@ const InDeliveryScreen = ({navigation}) => {
 const DeliveredScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.delivered);
 
+  useEffect(() => {
+    saveOrderData('delivered');
+  }, []);
+
   return (
     <View style={styles.container}>
       {!data ? (
@@ -119,6 +123,10 @@ const DeliveredScreen = ({navigation}) => {
 const CanceledScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.cancelled);
 
+  useEffect(() => {
+    saveOrderData('cancelled');
+  }, []);
+
   return (
     <View style={styles.container}>
       {!data ? (
@@ -136,12 +144,14 @@ const CanceledScreen = ({navigation}) => {
 
 const patchApi = async (oderId, navigation) => {
   try {
-    await updateOrderData({
+    const check = await updateOrderData({
       value: 'shipped',
       oderId,
     });
-    navigation.navigate('Order', {screen: 'Đang giao'});
-    ToastAndroid.show('Duyệt thành công', ToastAndroid.show);
+    if (check) {
+      navigation.navigate('Order', {screen: 'Đang giao'});
+      ToastAndroid.show('Duyệt thành công', ToastAndroid.show);
+    }
   } catch (error) {
     throw error;
   }
