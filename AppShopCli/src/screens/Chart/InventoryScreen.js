@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Dropdown} from 'react-native-element-dropdown';
-import {InvenStyle} from './styles';
+import InvenStyle from './styles';
 
 const MONTHS = [
   {id: 1, name: 'Tháng 1'},

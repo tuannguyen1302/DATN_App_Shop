@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -9,18 +9,18 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import imagePath from '../../constants/imagePath';
-import {useSelector} from 'react-redux';
-import {API_BASE_URL} from '../../config/urls';
-import {saveOrderData, updateOrderData} from '../../redux/actions/order';
+import { useSelector } from 'react-redux';
+import { API_BASE_URL } from '../../config/urls';
+import { saveOrderData, updateOrderData } from '../../redux/actions/order';
 
 const Tab = createMaterialTopTabNavigator();
 
 const STATUS_TRANSLATIONS = {
   pending: 'Phê duyệt',
   shipped: 'Đang vận chuyển',
-  delivered: 'Đã giao hàng',
+  delivered: 'xác nhận',
   cancelled: 'Đã hủy',
 };
 
@@ -29,8 +29,8 @@ const tabNavigatorOptions = route => ({
     borderRadius: 10,
     marginHorizontal: '2%',
   },
-  tabBarLabel: ({focused}) => (
-    <Text style={{color: focused ? 'black' : 'grey', fontWeight: '500'}}>
+  tabBarLabel: ({ focused }) => (
+    <Text style={{ color: focused ? 'black' : 'grey', fontWeight: '500' }}>
       {route.name}
     </Text>
   ),
@@ -45,7 +45,7 @@ const OrderScreen = () => {
           <Text style={styles.titleText}>Order</Text>
         </View>
       </View>
-      <Tab.Navigator screenOptions={({route}) => tabNavigatorOptions(route)}>
+      <Tab.Navigator screenOptions={({ route }) => tabNavigatorOptions(route)}>
         <Tab.Screen name="Đơn hàng" component={OrderListScreen} />
         <Tab.Screen name="Đang giao" component={InDeliveryScreen} />
         <Tab.Screen name="Đã giao" component={DeliveredScreen} />
@@ -55,7 +55,7 @@ const OrderScreen = () => {
   );
 };
 
-const OrderListScreen = ({navigation}) => {
+const OrderListScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.pending);
 
   useEffect(() => {
@@ -70,14 +70,14 @@ const OrderListScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       )}
     </View>
   );
 };
 
-const InDeliveryScreen = ({navigation}) => {
+const InDeliveryScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.shipped);
   useEffect(() => {
     saveOrderData('shipped');
@@ -91,14 +91,14 @@ const InDeliveryScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       )}
     </View>
   );
 };
 
-const DeliveredScreen = ({navigation}) => {
+const DeliveredScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.delivered);
 
   useEffect(() => {
@@ -113,14 +113,14 @@ const DeliveredScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       )}
     </View>
   );
 };
 
-const CanceledScreen = ({navigation}) => {
+const CanceledScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.cancelled);
 
   useEffect(() => {
@@ -135,22 +135,25 @@ const CanceledScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       )}
     </View>
   );
 };
 
-const patchApi = async (oderId, navigation) => {
+const patchApi = async (oderId, status, navigation) => {
   try {
     const check = await updateOrderData({
-      value: 'shipped',
+      value: status,
       oderId,
     });
     if (check) {
-      navigation.navigate('Order', {screen: 'Đang giao'});
-      ToastAndroid.show('Duyệt thành công', ToastAndroid.show);
+      navigation.navigate('Order', { screen: 'Đang giao' });
+      ToastAndroid.show(
+        'Xác nhận đơn hàng thành công thành công',
+        ToastAndroid.show,
+      );
     }
   } catch (error) {
     throw error;
@@ -159,12 +162,12 @@ const patchApi = async (oderId, navigation) => {
 
 const renderItem = (orderItem, navigation) => (
   <Pressable
-    onPress={() => navigation.navigate('OrderHistory', {orderItem})}
+    onPress={() => navigation.navigate('OrderHistory', { orderItem })}
     style={styles.itemContainer}>
     <View style={styles.productContainer}>
       <Image
         style={styles.productImage}
-        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
+        source={{ uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}` }}
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={1}>
@@ -191,9 +194,18 @@ const renderItem = (orderItem, navigation) => (
       {orderItem?.status === 'pending' && (
         <Pressable
           style={styles.statusBadge}
-          onPress={() => patchApi(orderItem?.oderId, navigation)}>
+          onPress={() => patchApi(orderItem?.oderId, 'shipped', navigation)}>
           <Text style={[styles.infoText, styles.statusText]}>
-            {STATUS_TRANSLATIONS[orderItem?.status]}
+            {STATUS_TRANSLATIONS['pending']}
+          </Text>
+        </Pressable>
+      )}
+      {orderItem?.status === 'shipped' && (
+        <Pressable
+          style={[styles.statusBadge, { backgroundColor: 'green' }]}
+          onPress={() => patchApi(orderItem?.oderId, 'delivered', navigation)}>
+          <Text style={[styles.infoText, styles.statusText]}>
+            {STATUS_TRANSLATIONS['delivered']}
           </Text>
         </Pressable>
       )}

@@ -15,18 +15,33 @@ const orderSlice = createSlice({
       const {value, data} = action.payload;
       state.orderData[value] = data;
     },
+
     updateStatus: (state, action) => {
       const {oderId, value} = action.payload;
+      const findOrderByStatus = status =>
+        state.orderData[status].find(order => order.oderId === oderId);
 
-      const updatedOrder = state.orderData.pending.find(
-        order => order.oderId === oderId,
-      );
-
-      if (updatedOrder) {
-        state.orderData.pending = state.orderData.pending.filter(
+      const updateData = statusToRemove =>
+        state.orderData[statusToRemove].filter(
           order => order.oderId !== oderId,
         );
-        state.orderData[value].push({...updatedOrder, status: value});
+
+      const patchData = () => {
+        if (value === 'delivered') {
+          return findOrderByStatus('shipped');
+        }
+        return findOrderByStatus('pending');
+      };
+
+      const orderToUpdate = patchData();
+
+      if (orderToUpdate) {
+        if (value === 'delivered') {
+          state.orderData.shipped = updateData('shipped');
+        } else {
+          state.orderData.pending = updateData('pending');
+        }
+        state.orderData[value].push({...orderToUpdate, status: value});
       }
     },
   },

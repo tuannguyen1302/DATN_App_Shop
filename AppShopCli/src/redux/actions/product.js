@@ -1,6 +1,6 @@
 import {CATERGORY_API, PRODUCT_API} from '../../config/urls';
-import {apiGet} from '../../utils/utils';
-import {saveProduct, saveType} from '../reducers/product';
+import {apiGet, apiPut} from '../../utils/utils';
+import {saveProduct, saveType, updateStatus} from '../reducers/product';
 import store from '../store';
 
 export const saveProductData = async text => {
@@ -21,8 +21,7 @@ export const updateProductData = async data => {
       data?.isDraft ? '/unpublishById' : '/publishById'
     }/${data?.productId}`;
     await apiPut(endpoint);
-    store.dispatch(updateProductData(data));
-    return true;
+    return await saveProductData();
   } catch (error) {
     throw error;
   }

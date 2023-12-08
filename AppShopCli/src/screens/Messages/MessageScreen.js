@@ -70,7 +70,7 @@ const MessageScreen = ({ navigation }) => {
               {item?.chat?.messagers[item?.chat?.messagers.length - 1]}
             </ListItem.Subtitle>
             <ListItem.Subtitle style={styles.timeText}>
-              {formatMessageTime(item?.user?.updatedAt)}
+              {formatMessageTime(item?.chat?.updatedAt)}
             </ListItem.Subtitle>
           </View>
         </ListItem.Content>

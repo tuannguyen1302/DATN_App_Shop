@@ -8,6 +8,7 @@ import { API_BASE_URL, CHAT_API } from '../../config/urls';
 import { GiftedChat, Send } from 'react-native-gifted-chat';
 import socketServices from '../../utils/socketService';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { saveChatData } from '../../redux/actions/chat';
 
 const MessageItem = ({ navigation, route }) => {
   const { data } = route.params;
@@ -20,7 +21,7 @@ const MessageItem = ({ navigation, route }) => {
         ...message,
         user: {
           _id: message?.senderId,
-          name: message?.senderId === data?.idShop ? 'Me' : data.useName,
+          //name: message?.senderId === data?.idShop ? 'Me' : data.useName,
           avatar: `${API_BASE_URL}${data.avatar}`,
         },
       }));
@@ -85,6 +86,7 @@ const MessageItem = ({ navigation, route }) => {
               roomName: data?.idRoom,
               userId: data?.idShop,
             }),
+              saveChatData(),
               navigation.goBack();
           }}
           style={{

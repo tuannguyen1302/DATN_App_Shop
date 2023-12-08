@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   ToastAndroid,
   ScrollView,
-  TouchableOpacity,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -34,12 +33,19 @@ const TAB_ITEMS = [
   { status: 'private' },
 ];
 
+const TAB_TEXT = {
+  all: 'All',
+  con_hang: 'Còn hàng',
+  het_hang: 'Hết hàng',
+  private: 'Được ẩn',
+};
 const ProductScreen = ({ navigation }) => {
   const productList = useSelector(state => state?.product?.productData);
   const typeProduct = useSelector(state => state?.product?.typeData);
   const [status, setStatus] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState('');
+  const [sortByPrice, setSortByPrice] = useState('');
   const flatListRef = useRef();
   const bottomSheetModalRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -63,6 +69,7 @@ const ProductScreen = ({ navigation }) => {
               productId: product._id,
             });
             if (check) {
+              setStatus(product?.isDraft ? 'all' : 'private');
               ToastAndroid.show(
                 `Thay đổi trạng thái ${action} thành công`,
                 ToastAndroid.show,
@@ -105,7 +112,7 @@ const ProductScreen = ({ navigation }) => {
       }}>
       <Text
         style={[styles.tabText, item?.status === status && { color: 'black' }]}>
-        {item?.status}
+        {TAB_TEXT[item?.status]}
       </Text>
     </Pressable>
   );
@@ -125,14 +132,19 @@ const ProductScreen = ({ navigation }) => {
 
   const handleTypePress = typeId => {
     if (selectedTypes.includes(typeId)) {
-      setSelectedTypes(prevTypes => prevTypes.filter(id => id !== typeId));
+      setSelectedTypes('');
     } else {
-      setSelectedTypes(prevTypes => [...prevTypes, typeId]);
+      setSelectedTypes(typeId);
     }
+  };
+
+  const handlePricePress = type => {
+    setSortByPrice(type);
   };
 
   const handleClearSelection = () => {
     setSelectedTypes([]);
+    setSortByPrice('');
   };
 
   return (
@@ -201,9 +213,9 @@ const ProductScreen = ({ navigation }) => {
                 fontSize: 17,
                 fontWeight: 'bold',
               }}>
-              Product filler
+              Lọc sản phẩm
             </Text>
-            <Text style={bottomSheetStyles.subHeaderText}>Type</Text>
+            <Text style={bottomSheetStyles.subHeaderText}>Loại</Text>
             <View style={bottomSheetStyles.typeContainer}>
               {typeProduct && (
                 <FlatList
@@ -216,11 +228,15 @@ const ProductScreen = ({ navigation }) => {
                       style={[
                         bottomSheetStyles.typeItem,
                         selectedTypes.includes(item._id) && {
-                          backgroundColor: '#EEEEEE',
+                          backgroundColor: 'black',
                         },
                       ]}
                       onPress={() => handleTypePress(item._id)}>
-                      <Text style={bottomSheetStyles.typeText}>
+                      <Text
+                        style={[
+                          bottomSheetStyles.typeText,
+                          selectedTypes.includes(item._id) && { color: 'white' },
+                        ]}>
                         {item?.category_name}
                       </Text>
                     </Pressable>
@@ -228,38 +244,66 @@ const ProductScreen = ({ navigation }) => {
                 />
               )}
             </View>
-            <Text style={bottomSheetStyles.subHeaderText}>Price</Text>
+            <Text style={bottomSheetStyles.subHeaderText}>Giá</Text>
             <View style={styles.buttonRow}>
-              <Pressable style={bottomSheetStyles.priceButton}>
-                <Text style={bottomSheetStyles.typeText}>Tăng dần</Text>
+              <Pressable
+                style={[
+                  bottomSheetStyles.priceButton,
+                  sortByPrice === 'ascending' && { backgroundColor: 'black' },
+                ]}
+                onPress={() => handlePricePress('ascending')}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    sortByPrice === 'ascending' && { color: 'white' },
+                  ]}>
+                  Tăng dần
+                </Text>
               </Pressable>
-              <Pressable style={bottomSheetStyles.priceButton}>
-                <Text style={bottomSheetStyles.typeText}>Giảm dần</Text>
+              <Pressable
+                style={[
+                  bottomSheetStyles.priceButton,
+                  sortByPrice === 'descending' && { backgroundColor: 'black' },
+                ]}
+                onPress={() => handlePricePress('descending')}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    sortByPrice === 'descending' && { color: 'white' },
+                  ]}>
+                  Giảm dần
+                </Text>
               </Pressable>
             </View>
             <View style={bottomSheetStyles.applyButtonContainer}>
-              <TouchableOpacity
+              <Pressable
                 style={[
                   bottomSheetStyles.applyButton,
                   { backgroundColor: '#536EFF' },
                 ]}
                 onPress={() => {
-                  console.log('Đã áp dụng:', selectedTypes);
+                  console.log('Đã áp dụng:', selectedTypes, sortByPrice);
+                  bottomSheetModalRef.current?.close();
                 }}>
-                <Text style={[bottomSheetStyles.typeText, { color: 'white' }]}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    { color: 'white', fontWeight: 'bold' },
+                  ]}>
                   Áp dụng
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  bottomSheetStyles.applyButton,
-                  { backgroundColor: 'gray' },
-                ]}
+              </Pressable>
+              <Pressable
+                style={bottomSheetStyles.applyButton}
                 onPress={handleClearSelection}>
-                <Text style={[bottomSheetStyles.typeText, { color: 'white' }]}>
-                  Xóa bỏ
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    { color: '#536EFF', fontWeight: 'bold' },
+                  ]}>
+                  Clear
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </BottomSheetModal>
@@ -438,6 +482,7 @@ const bottomSheetStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
+    borderColor: '#ddd',
     borderRadius: 20,
   },
   typeText: {
@@ -449,7 +494,6 @@ const bottomSheetStyles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
     borderRadius: 20,
   },
   applyButtonContainer: {
@@ -462,6 +506,8 @@ const bottomSheetStyles = StyleSheet.create({
     height: 55,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#536EFF',
   },
 });
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { apiPost } from '../../utils/utils';
-import { OTP_API, SIGNUP_API } from '../../config/urls';
+import { apiPost, setItem } from '../../utils/utils';
+import { OTP_API, SIGNIN_API, SIGNUP_API } from '../../config/urls';
 import { useNavigation, useRoute } from '@react-navigation/native';
 const OTPScreen = () => {
 
@@ -9,10 +9,10 @@ const OTPScreen = () => {
 
     const navigation = useNavigation();
     const route = useRoute();
-    const [timer, setTimer] = useState(60);
+    const [timer, setTimer] = useState(5);
     const [showResendButton, setShowResendButton] = useState(false);
     const [error, setError] = useState('');
-
+    const [isChecked, setIsChecked] = useState(false);
 
     // Nhận dữ liệu từ tham số
     const { email, password, role } = route.params || {};
@@ -42,9 +42,9 @@ const OTPScreen = () => {
 
     const handleResendOTP = async () => {
         setTimer(60);
-        setShowResendButton(false);
-        setError("");
 
+        setError("");
+        setOtp(['', '', '', '', '', ''])
         const intervalId = setInterval(() => {
             setTimer((prevTimer) => {
                 if (prevTimer > 1) {
@@ -65,6 +65,7 @@ const OTPScreen = () => {
     };
 
     const handleVerifyOTP = async () => {
+        // navigation.navigate('Updateprofile');
         const enteredOtp = otp.join('');
         console.log(enteredOtp);
         try {
@@ -77,7 +78,23 @@ const OTPScreen = () => {
 
             if (res.status === 200) {
                 console.log("đăng kí thành công ");
-                navigation.navigate('ShopUpdate');
+                try {
+
+                    const res = await apiPost(SIGNIN_API, {
+                        email: email,
+                        password: password,
+                        role: 'Shop',
+                    });
+                    setItem('LoginUser', { ...res.message, isChecked });
+                    console.log(res.message);
+                    navigation.navigate('Updateprofile',);
+                } catch (error) {
+                    setError(error.message);
+
+                }
+
+
+
             } else {
                 setError(res.data.message);
                 console.log("===============");
