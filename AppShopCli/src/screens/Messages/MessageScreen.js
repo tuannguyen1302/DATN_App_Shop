@@ -15,20 +15,10 @@ import { useSelector } from 'react-redux';
 import { API_BASE_URL } from '../../config/urls';
 import imagePath from '../../constants/imagePath';
 import { formatMessageTime } from '../../components/DateTime';
-import { saveChatData } from '../../redux/actions/chat';
-
-import { useFocusEffect } from '@react-navigation/native';
-
 
 const MessageScreen = ({ navigation }) => {
   const data = useSelector(state => state?.chat?.chatData);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // console.log("đang gọi đến message");
-      saveChatData(); // Gọi hàm lấy dữ liệu khi màn hình được focus
-    }, [])
-  );
   const showAlert = itemId => {
     Alert.alert(
       'Xác nhận',
@@ -41,50 +31,50 @@ const MessageScreen = ({ navigation }) => {
     );
   };
 
-  const renderItem = ({ item }) => (
-    <ListItem.Swipeable
-      onPress={() => navigateToMessItem(item)}
-      rightContent={() => renderDeleteButton(item._id)}
-      bottomDivider>
-      <Avatar
-        size={70}
-        rounded
-        source={{ uri: `${API_BASE_URL}${item?.user?.user_avatar}` }}>
-        <Icon
-          name="circle"
-          type="font-awesome"
-          color={item?.user?.user_status === 'active' ? 'green' : 'red'}
-          size={15}
-          containerStyle={styles.statusIcon}
-        />
-      </Avatar>
-      <ListItem.Content>
-        <View style={styles.titleContainer}>
-          <ListItem.Title numberOfLines={1} style={styles.txtName}>
-            {item?.user?.user_name}
-          </ListItem.Title>
-          {renderUnreadBadge(item)}
-        </View>
-        <View style={styles.titleContainer}>
-          <ListItem.Subtitle style={styles.subtitle}>
-            {item?.chat?.messagers[item?.chat?.messagers.length - 1]}
-          </ListItem.Subtitle>
-          <ListItem.Subtitle style={styles.timeText}>
-            {formatMessageTime(item?.user?.updatedAt)}
-          </ListItem.Subtitle>
-        </View>
-      </ListItem.Content>
-    </ListItem.Swipeable>
-  );
-
-  const renderUnreadBadge = item => {
+  const renderItem = ({ item }) => {
     const count = item?.chat?.isRead?.shop?.countNew || 0;
     return (
-      count > 0 && (
-        <View style={styles.unreadBadge}>
-          <Text style={styles.unreadText}>{count}</Text>
-        </View>
-      )
+      <ListItem.Swipeable
+        onPress={() => navigateToMessItem(item)}
+        rightContent={() => renderDeleteButton(item._id)}
+        bottomDivider>
+        <Avatar
+          size={70}
+          rounded
+          source={{ uri: `${API_BASE_URL}${item?.user?.user_avatar}` }}>
+          <Icon
+            name="circle"
+            type="font-awesome"
+            color={item?.user?.user_status === 'active' ? 'green' : 'red'}
+            size={15}
+            containerStyle={styles.statusIcon}
+          />
+        </Avatar>
+        <ListItem.Content>
+          <View style={styles.titleContainer}>
+            <ListItem.Title numberOfLines={1} style={styles.txtName}>
+              {item?.user?.user_name}
+            </ListItem.Title>
+            {count > 0 && (
+              <View style={styles.unreadBadge}>
+                <Text style={styles.unreadText}>{count}</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.titleContainer}>
+            <ListItem.Subtitle
+              style={[
+                styles.subtitle,
+                { color: count > 0 ? '#536EFF' : 'black' },
+              ]}>
+              {item?.chat?.messagers[item?.chat?.messagers.length - 1]}
+            </ListItem.Subtitle>
+            <ListItem.Subtitle style={styles.timeText}>
+              {formatMessageTime(item?.chat?.updatedAt)}
+            </ListItem.Subtitle>
+          </View>
+        </ListItem.Content>
+      </ListItem.Swipeable>
     );
   };
 
@@ -160,7 +150,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     width: '80%',
-    color: '#19B9EC',
   },
   timeText: {
     fontSize: 15,

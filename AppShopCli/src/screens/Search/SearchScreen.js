@@ -17,10 +17,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import fuzzy from 'fuzzy';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {renderProductItem} from '../Product/ProductScreen';
 import imagePath from '../../constants/imagePath';
 import {apiGet, getItem, setItem} from '../../utils/utils';
 import {PRODUCT_API} from '../../config/urls';
+import {renderProductItem} from '../../components/Product';
 
 const SearchScreen = ({navigation}) => {
   const [isCheck, setIsCheck] = useState(false);

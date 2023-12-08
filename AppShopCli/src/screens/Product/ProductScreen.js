@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+
 import {
   View,
   Text,
@@ -10,84 +11,44 @@ import {
   ActivityIndicator,
   ToastAndroid,
   ScrollView,
-  TouchableOpacity,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FastImage from 'react-native-fast-image';
 import imagePath from '../../constants/imagePath';
-import { apiGet, apiPut } from '../../utils/utils';
+import {
+  saveProductData,
+  saveTypeData,
+  updateProductData,
+} from '../../redux/actions/product';
+import { useSelector } from 'react-redux';
+import { renderProductItem } from '../../components/Product';
 import { useFocusEffect } from '@react-navigation/native';
-import { API_BASE_URL, PRODUCT_API } from '../../config/urls';
 
 const TAB_ITEMS = [
-  { status: 'All' },
-  { status: 'Còn hàng' },
-  { status: 'Hết hàng' },
-  { status: 'Bị ẩn' },
+  { status: 'all' },
+  { status: 'con_hang' },
+  { status: 'het_hang' },
+  { status: 'private' },
 ];
 
-export const formatCurrency = value => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(value);
+const TAB_TEXT = {
+  all: 'All',
+  con_hang: 'Còn hàng',
+  het_hang: 'Hết hàng',
+  private: 'Được ẩn',
 };
-
-export const renderProductItem = (item, navigation, toggleHideProduct) => (
-  <Pressable style={styles.productItem}>
-    <TouchableOpacity onPress={() => toggleHideProduct(item)}>
-      <FastImage
-        style={styles.productImage}
-        source={{ uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}` }}
-        resizeMode={FastImage.resizeMode.cover}
-      />
-      <View style={{ position: 'absolute', right: 0 }}>
-        <Octicons
-          name={item?.isDraft ? 'eye-closed' : 'eye'}
-          size={20}
-          color={'black'}
-        />
-      </View>
-    </TouchableOpacity>
-
-    <Pressable
-      onPress={() => navigation.navigate('ChitietProduct')}
-      style={{ flex: 1 }}>
-      <Text style={styles.productName} numberOfLines={1}>
-        {item?.product_name}
-      </Text>
-      <Text style={styles.txt}>
-        Trạng thái:{' '}
-        <Text style={{ color: item?.product_quantity ? 'green' : 'red' }}>
-          {item?.product_quantity ? 'còn hàng' : 'hết hàng'}
-        </Text>
-      </Text>
-      <Text style={styles.txt}>
-        Kho: {item?.product_quantity} | Bán: {item?.product_sold}
-      </Text>
-    </Pressable>
-    <View style={styles.itemActions}>
-      <TouchableOpacity
-        style={styles.actionButton}
-        onPress={() => navigation.navigate('UpdateProduct', { item })}>
-        <FontAwesome name="edit" size={20} color={'black'} />
-      </TouchableOpacity>
-      <Text style={[styles.txt, { color: 'red', fontWeight: '700' }]}>
-        {formatCurrency(item?.product_price)}
-      </Text>
-    </View>
-  </Pressable>
-);
-
 const ProductScreen = ({ navigation }) => {
-  const [status, setStatus] = useState('All');
-  const [productList, setProductList] = useState([]);
-  const [visibleProducts, setVisibleProducts] = useState(5);
+  const productList = useSelector(state => state?.product?.productData);
+  const typeProduct = useSelector(state => state?.product?.typeData);
+  const [status, setStatus] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [selectedTypes, setSelectedTypes] = useState('');
+  const [sortByPrice, setSortByPrice] = useState('');
   const flatListRef = useRef();
+  const bottomSheetModalRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleHideProduct = async product => {
     const action = product?.isDraft ? 'hiện' : 'ẩn';
@@ -103,49 +64,41 @@ const ProductScreen = ({ navigation }) => {
         text: 'Xác nhận',
         onPress: async () => {
           try {
-            const endpoint = `${PRODUCT_API}${product?.isDraft ? '/unpublishById' : '/publishById'
-              }/${product?._id}`;
-            await apiPut(endpoint);
-            getTabStatus();
-            ToastAndroid.show(
-              `Thay đổi trạng thái ${action} thành công`,
-              ToastAndroid.show,
-            );
+            const check = await updateProductData({
+              isDraft: product?.isDraft,
+              productId: product._id,
+            });
+            if (check) {
+              setStatus(product?.isDraft ? 'all' : 'private');
+              ToastAndroid.show(
+                `Thay đổi trạng thái ${action} thành công`,
+                ToastAndroid.show,
+              );
+            }
           } catch (error) {
-            console.error('Xử lý lỗi API:', error);
+            throw error;
           }
         },
       },
     ]);
   };
 
-  const getTabStatus = () => {
-    switch (status) {
-      case 'All':
-        return getApi('all');
-      case 'Còn hàng':
-        return getApi('con_hang');
-      case 'Hết hàng':
-        return getApi('het_hang');
-      case 'Bị ẩn':
-        return getApi('private');
-    }
-  };
+  useFocusEffect(
+    useCallback(() => {
+      // Gọi hàm tải dữ liệu ở đây
+      const load = async () => {
+        try {
+          saveTypeData();
+          setLoading(false);
+          setLoading(await saveProductData(status));
+        } catch (error) {
+          throw error;
+        }
+      };
+      load();
+    }, [status])
+  );
 
-  const getApi = async tab => {
-    try {
-      const res = await apiGet(`${PRODUCT_API}/getAllProductByShop/${tab}`);
-      setLoading(false);
-      setProductList(res?.message);
-    } catch (error) {
-      setLoading(false);
-      console.log('Call api: ', error.response.data);
-    }
-  };
-
-  const onEndReached = () => {
-    setVisibleProducts(prevVisibleProducts => prevVisibleProducts + 5);
-  };
 
   const renderTabItem = ({ item, index }) => (
     <Pressable
@@ -154,89 +107,208 @@ const ProductScreen = ({ navigation }) => {
         item?.status === status && { backgroundColor: '#EEEEEE' },
       ]}
       onPress={() => {
-        setLoading(true);
         setStatus(item?.status);
         flatListRef.current.scrollToIndex({ index });
       }}>
       <Text
         style={[styles.tabText, item?.status === status && { color: 'black' }]}>
-        {item?.status}
+        {TAB_TEXT[item?.status]}
       </Text>
     </Pressable>
   );
 
-
-  useFocusEffect(
-    useCallback(() => {
-      // Gọi hàm tải dữ liệu ở đây
-      getTabStatus();
-    }, [status])
+  const renderFilterButton = () => (
+    <Pressable
+      onPress={() => {
+        bottomSheetModalRef.current?.present();
+        setTimeout(() => {
+          setIsOpen(true);
+        }, 100);
+      }}
+      style={styles.filterButton}>
+      <Ionicons name="filter-sharp" size={24} color={'black'} />
+    </Pressable>
   );
 
+  const handleTypePress = typeId => {
+    if (selectedTypes.includes(typeId)) {
+      setSelectedTypes('');
+    } else {
+      setSelectedTypes(typeId);
+    }
+  };
+
+  const handlePricePress = type => {
+    setSortByPrice(type);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedTypes([]);
+    setSortByPrice('');
+  };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.filter}>
-          <Pressable
-            style={{
-              flex: 0.95,
-              height: 45,
-              marginVertical: 15,
-              borderRadius: 20,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              backgroundColor: '#EEEEEE',
-            }}
-            onPress={() => navigation.navigate('SearchScreen')}>
-            <Text style={{ left: 20 }}>Search</Text>
-            <AntDesign
-              style={{ right: 20 }}
-              name="search1"
-              size={24}
-              color={'gray'}
+    <GestureHandlerRootView
+      style={[styles.container, { zIndex: isOpen ? 1 : 0 }]}>
+      <BottomSheetModalProvider>
+        <Pressable onPress={() => bottomSheetModalRef.current?.close()}>
+          <ScrollView>
+            <View style={styles.filter}>
+              <Pressable
+                style={styles.searchButton}
+                onPress={() => navigation.navigate('SearchScreen')}>
+                <Text style={styles.searchButtonText}>Search</Text>
+                <AntDesign
+                  style={styles.searchIcon}
+                  name="search1"
+                  size={24}
+                  color={'gray'}
+                />
+              </Pressable>
+              {renderFilterButton()}
+            </View>
+            <FlatList
+              scrollEnabled={false}
+              ref={flatListRef}
+              data={TAB_ITEMS}
+              renderItem={renderTabItem}
+              keyExtractor={(item, index) => index.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
             />
-          </Pressable>
-          <Pressable style={styles.button}>
-            <Ionicons name="filter-sharp" size={24} color={'black'} />
-          </Pressable>
-        </View>
-
-        <FlatList
-          scrollEnabled={false}
-          ref={flatListRef}
-          data={TAB_ITEMS}
-          renderItem={renderTabItem}
-          keyExtractor={(item, index) => index.toString()}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
-
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="gray" />
+            {!loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="gray" />
+              </View>
+            ) : productList[status] ? (
+              <FlatList
+                scrollEnabled={false}
+                data={productList[status]}
+                renderItem={({ item }) =>
+                  renderProductItem(item, navigation, toggleHideProduct)
+                }
+                keyExtractor={item => item?._id}
+              />
+            ) : (
+              <View style={styles.imageContainer}>
+                <Image
+                  style={styles.productImage2}
+                  source={imagePath.noProduct}
+                />
+                <Text style={styles.imageText}>Tab không có sản phẩm nào</Text>
+              </View>
+            )}
+          </ScrollView>
+        </Pressable>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={1}
+          snapPoints={['40%', '70%']}
+          backgroundStyle={bottomSheetStyles.backgroundStyle}
+          onDismiss={() => setIsOpen(false)}>
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 17,
+                fontWeight: 'bold',
+              }}>
+              Lọc sản phẩm
+            </Text>
+            <Text style={bottomSheetStyles.subHeaderText}>Loại</Text>
+            <View style={bottomSheetStyles.typeContainer}>
+              {typeProduct && (
+                <FlatList
+                  numColumns={4}
+                  data={typeProduct}
+                  keyExtractor={item => item._id}
+                  columnWrapperStyle={bottomSheetStyles.typeColumnWrapper}
+                  renderItem={({ item }) => (
+                    <Pressable
+                      style={[
+                        bottomSheetStyles.typeItem,
+                        selectedTypes.includes(item._id) && {
+                          backgroundColor: 'black',
+                        },
+                      ]}
+                      onPress={() => handleTypePress(item._id)}>
+                      <Text
+                        style={[
+                          bottomSheetStyles.typeText,
+                          selectedTypes.includes(item._id) && { color: 'white' },
+                        ]}>
+                        {item?.category_name}
+                      </Text>
+                    </Pressable>
+                  )}
+                />
+              )}
+            </View>
+            <Text style={bottomSheetStyles.subHeaderText}>Giá</Text>
+            <View style={styles.buttonRow}>
+              <Pressable
+                style={[
+                  bottomSheetStyles.priceButton,
+                  sortByPrice === 'ascending' && { backgroundColor: 'black' },
+                ]}
+                onPress={() => handlePricePress('ascending')}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    sortByPrice === 'ascending' && { color: 'white' },
+                  ]}>
+                  Tăng dần
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[
+                  bottomSheetStyles.priceButton,
+                  sortByPrice === 'descending' && { backgroundColor: 'black' },
+                ]}
+                onPress={() => handlePricePress('descending')}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    sortByPrice === 'descending' && { color: 'white' },
+                  ]}>
+                  Giảm dần
+                </Text>
+              </Pressable>
+            </View>
+            <View style={bottomSheetStyles.applyButtonContainer}>
+              <Pressable
+                style={[
+                  bottomSheetStyles.applyButton,
+                  { backgroundColor: '#536EFF' },
+                ]}
+                onPress={() => {
+                  console.log('Đã áp dụng:', selectedTypes, sortByPrice);
+                  bottomSheetModalRef.current?.close();
+                }}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    { color: 'white', fontWeight: 'bold' },
+                  ]}>
+                  Áp dụng
+                </Text>
+              </Pressable>
+              <Pressable
+                style={bottomSheetStyles.applyButton}
+                onPress={handleClearSelection}>
+                <Text
+                  style={[
+                    bottomSheetStyles.typeText,
+                    { color: '#536EFF', fontWeight: 'bold' },
+                  ]}>
+                  Clear
+                </Text>
+              </Pressable>
+            </View>
           </View>
-        ) : productList.length ? (
-          <FlatList
-            scrollEnabled={false}
-            data={productList?.slice(0, visibleProducts)}
-            renderItem={({ item }) =>
-              renderProductItem(item, navigation, toggleHideProduct)
-            }
-            keyExtractor={item => item?._id}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.1}
-            showsVerticalScrollIndicator={false}
-          />
-        ) : (
-          <View style={styles.imageContainer}>
-            <Image style={styles.productImage2} source={imagePath.noProduct} />
-            <Text style={styles.imageText}>Tab không có sản phẩm nào</Text>
-          </View>
-        )}
-      </ScrollView>
-    </View>
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
@@ -272,15 +344,48 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginRight: '5%',
   },
-  button: {
+  searchButton: {
+    flex: 0.95,
+    height: 45,
+    marginVertical: 15,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    backgroundColor: '#EEEEEE',
+  },
+  searchButtonText: {
+    left: 20,
+  },
+  searchIcon: {
+    right: 20,
+  },
+  filterButton: {
     width: 50,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#EEEEEE',
     borderRadius: 15,
-    marginRight: '5%',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginHorizontal: '3%',
+  },
+  applyButton: {
+    marginVertical: '2%',
+    borderRadius: 30,
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  applyButtonText: {
+    fontWeight: 'bold',
+    color: 'white',
   },
   productItem: {
     padding: '2%',
@@ -349,6 +454,60 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     color: 'black',
     fontSize: 18,
+  },
+});
+
+const bottomSheetStyles = StyleSheet.create({
+  backgroundStyle: {
+    borderRadius: 25,
+    borderWidth: 0.5,
+  },
+  subHeaderText: {
+    marginLeft: '5%',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    marginVertical: '2%',
+  },
+  typeContainer: {
+    marginTop: '2%',
+  },
+  typeColumnWrapper: {
+    justifyContent: 'center',
+  },
+  typeItem: {
+    margin: '2%',
+    width: '20%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 20,
+  },
+  typeText: {
+    color: 'black',
+    fontWeight: '600',
+  },
+  priceButton: {
+    width: '35%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  applyButtonContainer: {
+    marginTop: '10%',
+    marginHorizontal: '5%',
+  },
+  applyButton: {
+    marginVertical: '2%',
+    borderRadius: 30,
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#536EFF',
   },
 });
 

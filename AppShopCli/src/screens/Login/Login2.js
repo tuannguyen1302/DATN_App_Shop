@@ -51,6 +51,7 @@ const Login2 = ({ navigation }) => {
         setItem('LoginUser', { ...res.message, isChecked });
         setButtonDisabled(false);
         navigation.replace('BottomTab');
+
         console.log(res.message);
       } catch (error) {
         setError(error.message);

@@ -32,8 +32,9 @@ export { default as NotifiScreen } from './Notification/NotifiScreen';
 export { default as Password } from './Setting/Password';
 export { default as SettingScreen } from './Setting/SettingScreen';
 export { default as ContactSup } from './Setting/ContactSup';
-
+export { default as ProductItem } from './Product/ProductItem';
 export { default as ChitietProduct } from './Product/ChitietProduct';
 export { default as OTPScreen } from './Login/OTPScreen';
-//export { default as NotifiScreen } from './Notification/NotifiScreen';
 export { default as NotiItem } from './Notification/NotiItem';
+export { default as Updateprofile } from './Profile/Updateprofile';
+

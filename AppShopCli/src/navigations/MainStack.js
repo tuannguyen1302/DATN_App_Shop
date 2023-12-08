@@ -48,6 +48,10 @@ export default function (Stack) {
         component={Screens.ProductScreen}
       />
       <Stack.Screen
+        name={navigationStrings.PRODUCT_ITEM}
+        component={Screens.ProductItem}
+      />
+      <Stack.Screen
         name={navigationStrings.ADD_PRODUCT}
         component={Screens.AddProduct}
       />
@@ -126,6 +130,10 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.OTPScreen}
         component={Screens.OTPScreen}
+      />
+      <Stack.Screen
+        name={navigationStrings.Updateprofile}
+        component={Screens.Updateprofile}
       />
     </>
   );

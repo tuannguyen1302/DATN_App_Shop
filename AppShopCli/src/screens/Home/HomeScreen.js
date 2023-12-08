@@ -1,41 +1,26 @@
 import React, { useEffect } from 'react';
-import {
-  Image,
-  PermissionsAndroid,
-  Text,
-  TouchableOpacity,
-  View,
-
-} from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductScreen from '../Product/ProductScreen';
 import { API_BASE_URL } from '../../config/urls';
 import HomeStyle from './styles';
-import { Notifications } from 'react-native-notifications';
 import { useSelector } from 'react-redux';
 import { saveUserData } from '../../redux/actions/user';
+import { saveChatData, saveNotiData } from '../../redux/actions/chat';
+import { setItem } from '../../utils/utils';
+import { fetchData } from '../../redux/actions/socket';
 
 const HomeScreen = ({ navigation }) => {
   const userAccount = useSelector(state => state?.user?.userData);
-
-  const handlePress = async () => {
-    try {
-      await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      );
-      Notifications.postLocalNotification({
-        title: 'Thông báo',
-        body: 'Đây là một thông báo mẫu',
-        extra: 'data',
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const notifiCount = useSelector(state => state?.chat?.notifi);
 
   useEffect(() => {
-    saveUserData();
+
+    saveUserData(navigation);
+    saveChatData();
+    fetchData();
+
   }, []);
 
   return (
@@ -50,8 +35,17 @@ const HomeScreen = ({ navigation }) => {
         <Text style={HomeStyle.name}>Hello, {userAccount?.nameShop}!</Text>
         <TouchableOpacity
           style={HomeStyle.button}
-          onPress={() => navigation.navigate('NotifiScreen')}>
+          onPress={() => {
+            saveNotiData(0);
+            setItem('notifi', 0);
+            navigation.navigate('NotifiScreen');
+          }}>
           <Ionicons name="notifications-outline" size={30} color="#333" />
+          {notifiCount > 0 && (
+            <View style={HomeStyle.notificationBadge}>
+              <Text style={HomeStyle.notificationText}>{notifiCount}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 

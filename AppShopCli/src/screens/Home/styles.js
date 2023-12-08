@@ -51,6 +51,20 @@ const HomeStyle = StyleSheet.create({
     right: '8%',
     backgroundColor: '#222',
   },
+  notificationBadge: {
+    width: 20,
+    height: 20,
+    top: 0,
+    right: 0,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#536EFF',
+    position: 'absolute',
+  },
+  notificationText: {
+    color: 'white',
+  },
 });
 
 export default HomeStyle;

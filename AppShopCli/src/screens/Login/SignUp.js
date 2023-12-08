@@ -66,7 +66,8 @@ const SignUp = () => {
 
       } catch (error) {
         setButtonDisabled(false);
-        console.log(error);
+        setError(error.message);
+        throw error;
       }
     }
   };
