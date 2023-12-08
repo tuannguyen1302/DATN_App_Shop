@@ -16,7 +16,7 @@ const getItem = async key => {
     if (data) {
       return JSON.parse(data);
     } else {
-      console.log(`No data found for key: ${key}`);
+      // console.log(`No data found for key: ${key}`);
       return null;
     }
   } catch (error) {

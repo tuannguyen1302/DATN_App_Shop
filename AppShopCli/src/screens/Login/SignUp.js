@@ -61,7 +61,7 @@ const SignUp = () => {
         navigation.navigate('Login2');
       } catch (error) {
         setButtonDisabled(false);
-        console.log(error);
+        throw error;
       }
     }
   };

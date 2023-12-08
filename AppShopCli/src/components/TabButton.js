@@ -12,12 +12,14 @@ const TabButton = ({item, onPress, accessibilityState}) => {
   useEffect(() => {
     const animationConfig = {0: {scale: 0}, 1: {scale: 1}};
 
-    if (focused) {
-      viewRef.current.animate(animationConfig);
-      textViewRef.current.animate(animationConfig);
-    } else {
-      viewRef.current.animate(animationConfig);
-      textViewRef.current.animate(animationConfig);
+    if (viewRef.current && textViewRef.current) {
+      if (focused) {
+        viewRef.current.animate(animationConfig);
+        textViewRef.current.animate(animationConfig);
+      } else {
+        viewRef.current.animate(animationConfig);
+        textViewRef.current.animate(animationConfig);
+      }
     }
   }, [focused]);
 
@@ -28,7 +30,12 @@ const TabButton = ({item, onPress, accessibilityState}) => {
   const renderNotificationBadge = () => {
     if (item.label === 'Message') {
       return (
-        <Animatable.View ref={textViewRef} style={styles.notificationBadge}>
+        <Animatable.View
+          ref={textViewRef}
+          style={styles.notificationBadge}
+          animation={focused ? 'bounceIn' : 'bounceOut'}
+          duration={500}
+          useNativeDriver>
           <Text style={styles.notificationText}>{notificationCount}</Text>
         </Animatable.View>
       );
@@ -44,13 +51,20 @@ const TabButton = ({item, onPress, accessibilityState}) => {
         <Animatable.View
           ref={viewRef}
           style={[styles.background, {backgroundColor: item.color}]}
+          animation={focused ? 'bounceIn' : 'bounceOut'}
+          duration={500}
+          useNativeDriver
         />
         <View style={[styles.button, focused && styles.expandedButton]}>
           <item.type name={item.icon} size={25} color={'black'} />
-          <Animatable.View ref={textViewRef}>
+          <Animatable.View
+            ref={textViewRef}
+            animation={focused ? 'fadeIn' : 'fadeOut'}
+            duration={500}
+            useNativeDriver>
             {focused && <Text style={styles.label}>{item.label}</Text>}
           </Animatable.View>
-          {notificationCount > 0 && renderNotificationBadge()}
+          {notificationCount != 0 && renderNotificationBadge()}
         </View>
       </View>
     </TouchableOpacity>

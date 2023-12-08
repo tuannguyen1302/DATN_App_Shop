@@ -152,6 +152,7 @@ const UpdateProduct = ({navigation, route}) => {
           <TextInput
             style={styles.inputField}
             value={state}
+            multiline={true}
             onChangeText={setState}
             maxLength={maxLength}
             placeholder={`Nhập ${label.toLowerCase()}`}

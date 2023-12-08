@@ -20,7 +20,7 @@ const Tab = createMaterialTopTabNavigator();
 const STATUS_TRANSLATIONS = {
   pending: 'Phê duyệt',
   shipped: 'Đang vận chuyển',
-  delivered: 'Đã giao hàng',
+  delivered: 'xác nhận',
   cancelled: 'Đã hủy',
 };
 
@@ -142,15 +142,18 @@ const CanceledScreen = ({navigation}) => {
   );
 };
 
-const patchApi = async (oderId, navigation) => {
+const patchApi = async (oderId, status, navigation) => {
   try {
     const check = await updateOrderData({
-      value: 'shipped',
+      value: status,
       oderId,
     });
     if (check) {
       navigation.navigate('Order', {screen: 'Đang giao'});
-      ToastAndroid.show('Duyệt thành công', ToastAndroid.show);
+      ToastAndroid.show(
+        'Xác nhận đơn hàng thành công thành công',
+        ToastAndroid.show,
+      );
     }
   } catch (error) {
     throw error;
@@ -191,9 +194,18 @@ const renderItem = (orderItem, navigation) => (
       {orderItem?.status === 'pending' && (
         <Pressable
           style={styles.statusBadge}
-          onPress={() => patchApi(orderItem?.oderId, navigation)}>
+          onPress={() => patchApi(orderItem?.oderId, 'shipped', navigation)}>
           <Text style={[styles.infoText, styles.statusText]}>
-            {STATUS_TRANSLATIONS[orderItem?.status]}
+            {STATUS_TRANSLATIONS['pending']}
+          </Text>
+        </Pressable>
+      )}
+      {orderItem?.status === 'shipped' && (
+        <Pressable
+          style={[styles.statusBadge, {backgroundColor: 'green'}]}
+          onPress={() => patchApi(orderItem?.oderId, 'delivered', navigation)}>
+          <Text style={[styles.infoText, styles.statusText]}>
+            {STATUS_TRANSLATIONS['delivered']}
           </Text>
         </Pressable>
       )}

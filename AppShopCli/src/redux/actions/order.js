@@ -16,16 +16,18 @@ export const saveOrderData = async text => {
 export const updateOrderData = async data => {
   try {
     const apiEndpoint =
-      data?.value === 'shipped'
-        ? `${ORDER_API}/changeStatus`
-        : `${ORDER_API}/cancelByShop/${data?.oderId}`;
-
-    const patchData =
-      data?.value === 'shipped'
-        ? {order_id: data?.oderId, status: 'shipped'}
-        : undefined;
-
-    await apiPatch(apiEndpoint, patchData);
+      data?.value === 'cancelled'
+        ? `${ORDER_API}/cancelByShop/${data?.oderId}`
+        : `${ORDER_API}/changeStatus`;
+    const patchData = () => {
+      if (data?.value == 'shipped') {
+        return {order_id: data?.oderId, status: 'shipped'};
+      } else if (data?.value == 'delivered') {
+        return {order_id: data?.oderId, status: 'delivered'};
+      }
+      return undefined;
+    };
+    await apiPatch(apiEndpoint, patchData());
     store.dispatch(updateStatus(data));
     return true;
   } catch (error) {
