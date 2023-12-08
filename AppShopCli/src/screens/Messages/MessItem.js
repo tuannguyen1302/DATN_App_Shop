@@ -21,8 +21,8 @@ const MessageItem = ({ navigation, route }) => {
         ...message,
         user: {
           _id: message?.senderId,
-          //name: message?.senderId === data?.idShop ? 'Me' : data.useName,
-          avatar: `${API_BASE_URL}${data.avatar}`,
+          name: message?.senderId === data?.idShop ? 'Me' : data.useName,
+          avatar: `${API_BASE_URL}${data?.avatar}`,
         },
       }));
       setMessages(mess.reverse());
@@ -69,7 +69,7 @@ const MessageItem = ({ navigation, route }) => {
           ...msg,
           user: {
             _id: msg?.senderId,
-            name: msg?.senderId === data?.idShop ? 'Me' : name,
+            name: msg?.senderId === data?.idShop ? 'Me' : data.useName,
             avatar: `${API_BASE_URL}${data.avatar}`,
           },
         }),
