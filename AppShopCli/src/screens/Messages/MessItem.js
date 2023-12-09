@@ -22,7 +22,7 @@ const MessageItem = ({navigation, route}) => {
         user: {
           _id: message?.senderId,
           name: message?.senderId === data?.idShop ? 'Me' : data.useName,
-          avatar: `${API_BASE_URL}${data.avatar}`,
+          avatar: `${API_BASE_URL}${data?.avatar}`,
         },
       }));
       setMessages(mess.reverse());

@@ -131,6 +131,10 @@ export default function (Stack) {
         name={navigationStrings.OTPScreen}
         component={Screens.OTPScreen}
       />
+      <Stack.Screen
+        name={navigationStrings.Updateprofile}
+        component={Screens.Updateprofile}
+      />
     </>
   );
 }

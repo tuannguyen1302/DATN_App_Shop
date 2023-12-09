@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useSelector} from 'react-redux';
-
+import {useRoute} from '@react-navigation/native';
 const CategoryItem = ({category, isSelected, onPress}) => (
   <TouchableOpacity
     style={[styles.categoryContainer, isSelected && styles.selectedCategory]}
@@ -18,22 +18,19 @@ const CategoryItem = ({category, isSelected, onPress}) => (
 );
 
 const Nganhsp = ({navigation, route}) => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-
-  const handleCategoryPress = category => {
+  const typeProduct = useSelector(state => state?.product?.typeData);
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [id, setid] = useState(null);
+  const {buil} = route.params || {};
+  console.log(buil);
+  const handleCategoryPress = (category, categoryId) => {
+    setid(categoryId);
     setSelectedCategory(prev => (prev === category ? null : category));
   };
 
   const handleDone = () => {
-    if (selectedCategory) {
-      // const isAddScreen = destinationScreen === 'AddProduct';
-
-      // if (isAddScreen) {
-      //   navigation.navigate('AddProduct', { selectedCategory });
-      // } else {
-      //   navigation.navigate('UpdateProduct', { selectedCategory });
-      // }
-      navigation.navigate('AddProduct', {selectedCategory});
+    if (selectedCategory && id) {
+      navigation.navigate('AddProduct', {selectedCategory, id, buil});
     } else {
       Alert.alert(
         'Cảnh báo',
@@ -61,21 +58,14 @@ const Nganhsp = ({navigation, route}) => {
       </View>
       <View style={styles.horizontalLine} />
 
-      {[
-        'Áo',
-        'Quần',
-        'Mũ',
-        'Trang sức',
-        'Túi',
-        'Đồng Hồ',
-        'Nước Hoa',
-        'Giầy',
-      ].map(category => (
+      {typeProduct.map(category => (
         <CategoryItem
-          key={category}
-          category={category}
-          isSelected={selectedCategory === category}
-          onPress={() => handleCategoryPress(category)}
+          key={category._id}
+          category={category.category_name}
+          isSelected={selectedCategory === category.category_name}
+          onPress={() =>
+            handleCategoryPress(category.category_name, category._id)
+          }
         />
       ))}
 

@@ -3,12 +3,17 @@ import {apiGet, apiPut} from '../../utils/utils';
 import {saveUser} from '../reducers/user';
 import store from '../store';
 
-export const saveUserData = async () => {
+export const saveUserData = async navigation => {
   try {
     const res = await apiGet(`${SHOP_API}/getShopForShop`);
+
     store.dispatch(saveUser(res?.message));
   } catch (error) {
-    throw error;
+    console.log(error.code);
+    if (error.code === 403) {
+      navigation.navigate('Updateprofile');
+    }
+    // throw error;
   }
 };
 

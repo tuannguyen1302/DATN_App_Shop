@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   ScrollView,
@@ -20,6 +21,7 @@ import {apiGet} from '../../utils/utils';
 const StatisticalScreen = ({navigation}) => {
   const userAccount = useSelector(state => state?.user?.userData);
   const [data, setData] = useState(null);
+  const [data2, setData2] = useState(null);
   const [isCheck, setIsCheck] = useState(true);
 
   const getApi = async () => {
@@ -27,8 +29,9 @@ const StatisticalScreen = ({navigation}) => {
       const res = await apiGet(
         `${SHOP_API}/overview/${new Date().getFullYear()}`,
       );
-      console.log(res);
       setData(res?.message[0]);
+      const res2 = await apiGet(`${SHOP_API}/analysis/thang`);
+      setData2(res2?.message?.revenue);
     } catch (error) {
       throw error;
     }
@@ -66,16 +69,22 @@ const StatisticalScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      {isCheck ? (
-        <OverviewScreen data={data} userAccount={userAccount} />
-      ) : (
-        <AnalysisScreen />
-      )}
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        {isCheck ? (
+          <OverviewScreen data={data} userAccount={userAccount} />
+        ) : (
+          <AnalysisScreen data={data2} />
+        )}
+      </View>
     </View>
   );
 };
 
 const OverviewScreen = ({data, userAccount}) => {
+  if (!data) {
+    return <ActivityIndicator size={'large'} color={'gray'} />;
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.shopInfoContainer}>
@@ -160,38 +169,28 @@ const ProductItem = ({item}) => (
     </Text>
   </View>
 );
+const AnalysisScreen = ({data}) => {
+  if (!data) {
+    return <ActivityIndicator size={'large'} color={'gray'} />;
+  }
 
-const AnalysisScreen = () => {
-  const data = {
-    labels: [
-      'Tháng 1',
-      'Tháng 2',
-      'Tháng 3',
-      'Tháng 4',
-      'Tháng 5',
-      'Tháng 6',
-      'Tháng 7',
-      'Tháng 8',
-      'Tháng 9',
-      'Tháng 10',
-      'Tháng 11',
-      'Tháng 12',
-    ],
-    datasets: [{data: [20, 45, 28, 80, 99, 43, 50, 60, 70, 80, 90, 100]}],
+  const dataChart = {
+    labels: data?.map(item => `Tháng ${item?.month}`),
+    datasets: [{data: data.map(item => item?.totalRevenue)}],
   };
 
   return (
-    <View style={[styles.container, {marginTop: '10%'}]}>
+    <View style={styles.container}>
       <Text style={styles.footerText}>Thống kê</Text>
       <View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <BarChart
-            data={data}
+            data={dataChart}
             width={1000}
             height={300}
             yAxisSuffix="đ"
             chartConfig={{
-              backgroundGradientFrom: '#9999FF', // Màu xanh tím
+              backgroundGradientFrom: '#9999FF',
               backgroundGradientTo: '#9999FF',
               color: () => `rgba(255, 255, 255,1)`,
             }}
@@ -201,7 +200,7 @@ const AnalysisScreen = () => {
         </ScrollView>
       </View>
       <Text style={[styles.footerText, {textAlign: 'center', marginLeft: 0}]}>
-        Phân tích dữ liệu shop
+        Phân tích dữ liệu shop {new Date().getFullYear()}
       </Text>
     </View>
   );

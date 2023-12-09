@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { apiPost } from '../../utils/utils';
-import { OTP_API, SIGNUP_API } from '../../config/urls';
+import { apiPost, setItem } from '../../utils/utils';
+import { OTP_API, SIGNIN_API, SIGNUP_API } from '../../config/urls';
 import { useNavigation, useRoute } from '@react-navigation/native';
 const OTPScreen = () => {
-    const [otp, setOTP] = useState('');
-    const [countdown, setCountdown] = useState(60);
+
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+
     const navigation = useNavigation();
     const route = useRoute();
+    const [timer, setTimer] = useState(5);
+    const [showResendButton, setShowResendButton] = useState(false);
     const [error, setError] = useState('');
+    const [isChecked, setIsChecked] = useState(false);
 
     // Nhận dữ liệu từ tham số
     const { email, password, role } = route.params || {};
@@ -21,23 +25,37 @@ const OTPScreen = () => {
     }, [email, password, role]);
     // console.log(email);
     useEffect(() => {
-        let timer;
-        if (countdown > 0) {
-            timer = setInterval(() => {
-                setCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
-        } else {
-            clearInterval(timer);
-        }
+        const intervalId = setInterval(() => {
+            setTimer((prevTimer) => {
+                if (prevTimer > 1) {
+                    return prevTimer - 1;
+                } else {
+                    clearInterval(intervalId);
+                    setShowResendButton(true);
+                    return 0;
+                }
+            });
+        }, 1000);
 
-        return () => clearInterval(timer);
-    }, [countdown]);
+        return () => clearInterval(intervalId);
+    }, []);
 
     const handleResendOTP = async () => {
-        // Gửi lại mã OTP ở đây
-        // Sau khi gửi lại, đặt lại đếm ngược về 60 giây
-        setError('');
-        setCountdown(60);
+        setTimer(60);
+
+        setError("");
+        setOtp(['', '', '', '', '', ''])
+        const intervalId = setInterval(() => {
+            setTimer((prevTimer) => {
+                if (prevTimer > 1) {
+                    return prevTimer - 1;
+                } else {
+                    clearInterval(intervalId);
+                    setShowResendButton(true);
+                    return 0;
+                }
+            });
+        }, 1000);
         await apiPost(SIGNUP_API, {
             email: email,
             password: password,
@@ -47,19 +65,36 @@ const OTPScreen = () => {
     };
 
     const handleVerifyOTP = async () => {
-
-
+        // navigation.navigate('Updateprofile');
+        const enteredOtp = otp.join('');
+        console.log(enteredOtp);
         try {
             const res = await apiPost(OTP_API, {
                 email: email,
                 password: password,
                 role: role,
-                otp: otp,
+                otp: enteredOtp,
             });
 
             if (res.status === 200) {
                 console.log("đăng kí thành công ");
-                navigation.navigate('ShopUpdate');
+                try {
+
+                    const res = await apiPost(SIGNIN_API, {
+                        email: email,
+                        password: password,
+                        role: 'Shop',
+                    });
+                    setItem('LoginUser', { ...res.message, isChecked });
+                    console.log(res.message);
+                    navigation.navigate('Updateprofile',);
+                } catch (error) {
+                    setError(error.message);
+
+                }
+
+
+
             } else {
                 setError(res.data.message);
                 console.log("===============");
@@ -69,42 +104,59 @@ const OTPScreen = () => {
             //  console.log(error);
             setError(error.message);
         }
-        // Thực hiện xác thực OTP ở đây
-        // if (otp === '1234') {
-        //     // Xác thực thành công
-        //     Alert.alert('Thành công', 'Mã OTP hợp lệ');
-        // } else {
-        //     // Xác thực thất bại
-        //     Alert.alert('Lỗi', 'Mã OTP không hợp lệ');
-        // }
     };
+    const renderOtpInputs = () => {
+        return otp.map((digit, index) => (
+            <TextInput
+                key={index}
+                style={[
+                    styles.otpInput,
+                    { borderColor: digit !== '' ? 'transparent' : 'black' },
+                ]}
+                onChangeText={(value) => handleOtpChange(index, value)}
+                value={digit}
+                keyboardType="numeric"
+                maxLength={1}
+                ref={(input) => (this[`otpInput${index}`] = input)}
+            />
+        ));
+    };
+    const handleOtpChange = (index, value) => {
 
+        if (isNaN(value)) {
+            return; // Allow only numeric input
+        }
+
+        const newOtp = [...otp];
+        newOtp[index] = value;
+
+        if (index < 5 && value !== '') {
+            // Move focus to the next input
+            this[`otpInput${index + 1}`].focus();
+        }
+
+        setOtp(newOtp);
+    };
     return (
         <View style={styles.container}>
             <View style={{ alignItems: 'center', marginTop: 30 }}>
                 <Text style={styles.headerText}>Xác thực OTP</Text>
             </View>
+            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 200 }}>
 
-            <View style={{ alignItems: 'center', justifyContent: "center", flex: 1 }}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nhập mã OTP"
-                    keyboardType="numeric"
-                    value={otp}
-                    onChangeText={(text) => setOTP(text)}
-                />
-                <Text style={{ color: 'red', fontSize: 20, textDecorationLine: 'underline' }}>{error}</Text>
-                {countdown > 0 ? (
-                    <Text style={styles.countdownText}>Mã OTP còn hiệu lực sau {countdown} </Text>
-                ) : (
-                    <TouchableOpacity style={styles.resendButton} onPress={handleResendOTP}>
-                        <Text style={styles.buttonText}>Gửi lại OTP</Text>
-                    </TouchableOpacity>
-                )}
-                <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
-                    <Text style={styles.buttonText}>Xác thực</Text>
+                <Text style={styles.title}>Nhập OTP</Text>
+                <View style={styles.otpContainer}>{renderOtpInputs()}</View>
+                <Text style={{ color: 'red', marginVertical: 10 }} >{error}</Text>
+                <TouchableOpacity style={styles.submitButton} onPress={handleVerifyOTP}>
+                    <Text style={styles.submitButtonText}>Submit</Text>
                 </TouchableOpacity>
-
+                {showResendButton ? (
+                    <TouchableOpacity style={styles.resendButton} onPress={handleResendOTP}>
+                        <Text style={styles.resendButtonText}>Resend OTP</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <Text style={styles.timerText}>Mã OTP còn {timer} giây</Text>
+                )}
             </View>
         </View>
 
@@ -112,47 +164,70 @@ const OTPScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
 
-
-    },
     headerText: {
         fontSize: 28,
         marginVertical: 20,
-        fontWeight: '800',
+        fontWeight: '900',
         color: 'black'
 
 
     },
-    input: {
-        width: '80%',
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 20,
-        borderRadius: 10,
-        paddingHorizontal: 10,
+    container: {
+        flex: 1,
+
     },
-    button: {
-        borderWidth: 2,
-        backgroundColor: 'white',
-        padding: 10,
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: 'black'
+    },
+    otpContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center', // Center the content horizontally
+        alignItems: 'center', // Center the content vertically
+        marginBottom: 20,
+    },
+    otpInput: {
+        borderWidth: 0.5,
+        fontSize: 15,
+        width: 40,
+        height: 40,
+        textAlign: 'center',
+        marginHorizontal: 5,
         borderRadius: 5,
-        marginVertical: 20
+        fontWeight: 'bold',
+    },
+    submitButton: {
+        backgroundColor: 'white',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 9,
+        borderWidth: 1,
+        marginTop: 5
+    },
+    submitButtonText: {
+        color: 'black',
+        fontSize: 16,
+
     },
     resendButton: {
+        marginTop: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 9,
+        backgroundColor: 'black',
+        borderWidth: 1,
 
-        padding: 10,
-        borderRadius: 5,
     },
-    buttonText: {
-        color: 'black',
-        fontSize: 18,
-    },
-    countdownText: {
+    resendButtonText: {
+        color: 'white',
         fontSize: 16,
+    },
+    timerText: {
         marginTop: 10,
+        fontSize: 14,
     },
 });
 

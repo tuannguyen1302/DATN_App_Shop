@@ -7,6 +7,7 @@ import {
   Image,
   Text,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {ListItem, Avatar} from '@rneui/themed';
@@ -103,11 +104,15 @@ const MessageScreen = ({navigation}) => {
         <Image style={styles.logo} source={imagePath.logo} />
         <Text style={styles.title}>Chat box</Text>
       </View>
-      <FlatList
-        data={data}
-        keyExtractor={item => item?.chat?._id}
-        renderItem={renderItem}
-      />
+      {!data ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?.chat?._id}
+          renderItem={renderItem}
+        />
+      )}
     </View>
   );
 };

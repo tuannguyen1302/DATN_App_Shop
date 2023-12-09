@@ -39,4 +39,5 @@ export default {
   PROFILE: 'Profile',
   ChitietProduct: 'ChitietProduct',
   OTPScreen: 'OTPScreen',
+  Updateprofile: 'Updateprofile',
 };

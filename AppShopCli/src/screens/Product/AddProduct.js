@@ -31,10 +31,11 @@ const AddProduct = () => {
   const [productPrice, setProductPrice] = useState('');
   const route = useRoute();
 
-  const { buil } = route.params || {};
-  const { selectedCategory } = route.params || {};
+  const { buil, selectedCategory, id } = route.params || {};
+  //const { selectedCategory, id } = route.params || {};
   const bottomSheetModalRef = useRef(null);
   const clearField = setField => setField('');
+  console.log(id);
 
   const openCamera = async isFrontCamera => {
     try {
@@ -71,19 +72,6 @@ const AddProduct = () => {
       { cancelable: true },
     );
   };
-
-  const selectImageOption = () => {
-    Alert.alert(
-      'Thông báo',
-      'Bạn muốn lấy ảnh từ?',
-      [
-        { text: 'Chụp ảnh ', onPress: () => openCamera(true) },
-        { text: 'Thư viện ', onPress: () => openCamera(false) },
-      ],
-      { cancelable: true },
-    );
-  };
-
   const postApi = async () => {
     try {
       if (
@@ -104,7 +92,7 @@ const AddProduct = () => {
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
       formData.append('product_price', productPrice);
-      formData.append('category', '65599b6f265ed146cfe0aca8');
+      formData.append('category', id);
       formData.append('product_attributes', productAttributes);
       selectedImages.forEach(image => {
         formData.append('thumbs', {
@@ -259,7 +247,7 @@ const AddProduct = () => {
           </View>
           <Pressable
             onPress={() => {
-              navigation.navigate('Nganhsp');
+              navigation.navigate('Nganhsp', { buil });
             }}
             style={styles.nganhsp}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -282,7 +270,7 @@ const AddProduct = () => {
           </Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('Phanloaisp');
+              navigation.navigate('Phanloaisp', { selectedCategory, id });
             }}
             style={styles.nganhsp}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -296,7 +284,7 @@ const AddProduct = () => {
             <Text style={styles.buttonText}>Lưu</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log(buil)}
+            onPress={() => { console.log(selectedCategory, id, buil); }}
             style={[styles.button, { backgroundColor: '#000000' }]}>
             <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
           </TouchableOpacity>

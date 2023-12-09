@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {apiGet} from '../../utils/utils';
@@ -13,7 +14,7 @@ import {NOTIFI_API} from '../../config/urls';
 import {formatNotificationTime} from '../../components/DateTime';
 
 const NotifiScreen = ({navigation}) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
 
   const renderItem = ({item}) => {
     return (
@@ -60,11 +61,15 @@ const NotifiScreen = ({navigation}) => {
         </TouchableOpacity>
         <Text style={styles.title}>Notification</Text>
       </View>
-      <FlatList
-        data={data}
-        keyExtractor={item => item?._id}
-        renderItem={renderItem}
-      />
+      {!data ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?._id}
+          renderItem={renderItem}
+        />
+      )}
     </View>
   );
 };

@@ -15,7 +15,7 @@ const HomeScreen = ({navigation}) => {
   const notifiCount = useSelector(state => state?.chat?.notifi);
 
   useEffect(() => {
-    fetchData();
+    fetchData(navigation);
   }, []);
 
   return (

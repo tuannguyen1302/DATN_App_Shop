@@ -26,12 +26,12 @@ const handlePress = async () => {
   }
 };
 
-export const fetchData = async () => {
+export const fetchData = async navigation => {
   try {
     const token = await getItem('LoginUser');
     const currentCount = (await getItem('notifi')) || 0;
 
-    saveUserData();
+    saveUserData(navigation);
     saveTypeData();
     await saveChatData();
     saveNotiData(currentCount);
