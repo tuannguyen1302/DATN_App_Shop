@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -55,23 +56,35 @@ const OrderScreen = () => {
   );
 };
 
+const load = async (isCheck, text) => {
+  try {
+    isCheck(true);
+    isCheck(await saveOrderData(text));
+  } catch (error) {
+    throw error;
+  }
+};
+
 const OrderListScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.pending);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    saveOrderData('pending');
+    load(setLoading, 'pending');
   }, []);
 
   return (
     <View style={styles.container}>
-      {!data ? (
+      {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
+      ) : data ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
+      ) : (
+        <Text>Không có đơn nào</Text>
       )}
     </View>
   );
@@ -79,20 +92,24 @@ const OrderListScreen = ({navigation}) => {
 
 const InDeliveryScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.shipped);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    saveOrderData('shipped');
+    load(setLoading, 'shipped');
   }, []);
 
   return (
     <View style={styles.container}>
-      {!data ? (
+      {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
+      ) : data ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
+      ) : (
+        <Text>Không có đơn nào</Text>
       )}
     </View>
   );
@@ -100,21 +117,24 @@ const InDeliveryScreen = ({navigation}) => {
 
 const DeliveredScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.delivered);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    saveOrderData('delivered');
+    load(setLoading, 'delivered');
   }, []);
 
   return (
     <View style={styles.container}>
-      {!data ? (
+      {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
+      ) : data ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
+      ) : (
+        <Text>Không có đơn nào</Text>
       )}
     </View>
   );
@@ -122,42 +142,63 @@ const DeliveredScreen = ({navigation}) => {
 
 const CanceledScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.cancelled);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    saveOrderData('cancelled');
+    load(setLoading, 'cancelled');
   }, []);
 
   return (
     <View style={styles.container}>
-      {!data ? (
+      {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
+      ) : data ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
         />
+      ) : (
+        <Text>Không có đơn nào</Text>
       )}
     </View>
   );
 };
 
-const patchApi = async (oderId, status, navigation) => {
-  try {
-    const check = await updateOrderData({
-      value: status,
-      oderId,
-    });
-    if (check) {
-      navigation.navigate('Order', {screen: 'Đang giao'});
-      ToastAndroid.show(
-        'Xác nhận đơn hàng thành công thành công',
-        ToastAndroid.show,
-      );
-    }
-  } catch (error) {
-    throw error;
-  }
+const patchApi = (oderId, status, navigation) => {
+  Alert.alert(
+    `Thông báo`,
+    `Bạn có muốn ${
+      status === 'shipped' ? 'phê duyệt' : 'xác nhận'
+    } đơn hàng này!`,
+    [
+      {
+        text: 'Hủy',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Xác nhận',
+        onPress: async () => {
+          try {
+            const check = await updateOrderData({
+              value: status,
+              oderId,
+            });
+            if (check) {
+              navigation.navigate('Order', {screen: 'Đang giao'});
+              ToastAndroid.show(
+                'Xác nhận đơn hàng thành công thành công',
+                ToastAndroid.show,
+              );
+            }
+          } catch (error) {
+            throw error;
+          }
+        },
+      },
+    ],
+  );
 };
 
 const renderItem = (orderItem, navigation) => (

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -26,20 +27,39 @@ const UpdatedOrderHistory = ({navigation, route}) => {
   const {orderItem} = route.params;
 
   const handleApproval = async text => {
-    try {
-      const check = await updateOrderData({
-        value: text,
-        oderId: orderItem.oderId,
-      });
-      if (check) {
-        navigation.navigate('Order', {
-          screen: text === 'shipped' ? 'Đang giao' : 'Đã hủy',
-        });
-        ToastAndroid.show('Thay đổi trạng thái thành công', ToastAndroid.show);
-      }
-    } catch (error) {
-      throw error;
-    }
+    Alert.alert(
+      text === 'shipped' ? 'Thông báo' : 'Cảnh báo',
+      `Bạn có muốn ${text === 'shipped' ? 'phê duyệt' : 'hủy'} đơn hàng này!`,
+      [
+        {
+          text: 'Hủy',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Xác nhận',
+          onPress: async () => {
+            try {
+              const check = await updateOrderData({
+                value: text,
+                oderId: orderItem.oderId,
+              });
+              if (check) {
+                navigation.navigate('Order', {
+                  screen: text === 'shipped' ? 'Đang giao' : 'Đã hủy',
+                });
+                ToastAndroid.show(
+                  'Thay đổi trạng thái thành công',
+                  ToastAndroid.show,
+                );
+              }
+            } catch (error) {
+              throw error;
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (

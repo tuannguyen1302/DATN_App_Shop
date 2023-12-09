@@ -4,6 +4,8 @@ import {saveChatData, saveNotiData} from './chat';
 
 import {PermissionsAndroid} from 'react-native';
 import {Notifications} from 'react-native-notifications';
+import {saveUserData} from './user';
+import {saveTypeData} from './product';
 
 const handlePress = async () => {
   try {
@@ -29,13 +31,16 @@ export const fetchData = async () => {
     const token = await getItem('LoginUser');
     const currentCount = (await getItem('notifi')) || 0;
 
+    saveUserData();
+    saveTypeData();
+    await saveChatData();
     saveNotiData(currentCount);
 
     socketServices.emit('new-user-add', token?.userId);
 
-    socketServices.on(`newChat-${token?.userId}`, () => {
+    socketServices.on(`newChat-${token?.userId}`, async () => {
       handlePress();
-      saveChatData();
+      await saveChatData();
     });
 
     socketServices.on(`notification-${token?.userId}`, async () => {

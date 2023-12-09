@@ -4,42 +4,53 @@ import navigationStrings from '../constants/navigationStrings';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import TabButton from '../components/TabButton';
+import {useSelector} from 'react-redux';
 import * as Screens from '../screens';
 
 const Tab = createBottomTabNavigator();
 
-const TabArr = [
-  {
-    route: navigationStrings.HomeScreen,
-    label: 'Home',
-    type: FontAwesome5,
-    icon: 'home',
-    component: Screens.HomeScreen,
-  },
-  {
-    route: navigationStrings.MESSAGES,
-    label: 'Message',
-    type: AntDesign,
-    icon: 'message1',
-    component: Screens.MessageScreen,
-  },
-  {
-    route: navigationStrings.ORDER,
-    label: 'Order',
-    type: AntDesign,
-    icon: 'profile',
-    component: Screens.OrderScreen,
-  },
-  {
-    route: navigationStrings.PROFILE,
-    label: 'Profile',
-    type: FontAwesome5,
-    icon: 'user-alt',
-    component: Screens.ProfileScreen,
-  },
-];
-
 const TabRoutes = () => {
+  const count = useSelector(state =>
+    state?.chat?.chatData
+      ? state?.chat?.chatData.reduce(
+          (count, item) => count + item.chat?.isRead?.shop?.countNew,
+          0,
+        )
+      : 0,
+  );
+
+  const TabArr = [
+    {
+      route: navigationStrings.HomeScreen,
+      label: 'Home',
+      type: FontAwesome5,
+      icon: 'home',
+      component: Screens.HomeScreen,
+    },
+    {
+      route: navigationStrings.MESSAGES,
+      label: 'Message',
+      type: AntDesign,
+      icon: 'message1',
+      count: count,
+      component: Screens.MessageScreen,
+    },
+    {
+      route: navigationStrings.ORDER,
+      label: 'Order',
+      type: AntDesign,
+      icon: 'profile',
+      component: Screens.OrderScreen,
+    },
+    {
+      route: navigationStrings.PROFILE,
+      label: 'Profile',
+      type: FontAwesome5,
+      icon: 'user-alt',
+      component: Screens.ProfileScreen,
+    },
+  ];
+
   return (
     <Tab.Navigator
       screenOptions={{

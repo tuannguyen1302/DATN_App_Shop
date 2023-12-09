@@ -18,7 +18,6 @@ const CategoryItem = ({category, isSelected, onPress}) => (
 );
 
 const Nganhsp = ({navigation, route}) => {
-  const typeProduct = useSelector(state => state?.product?.typeData);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleCategoryPress = category => {
@@ -27,12 +26,14 @@ const Nganhsp = ({navigation, route}) => {
 
   const handleDone = () => {
     if (selectedCategory) {
-      // const isAddScreen = route.params?.destinationScreen === 'AddProduct';
+      // const isAddScreen = destinationScreen === 'AddProduct';
+
       // if (isAddScreen) {
-      navigation.navigate('AddProduct', {selectedCategory});
+      //   navigation.navigate('AddProduct', { selectedCategory });
       // } else {
-      //   navigation.navigate('UpdateProduct', {selectedCategory});
+      //   navigation.navigate('UpdateProduct', { selectedCategory });
       // }
+      navigation.navigate('AddProduct', {selectedCategory});
     } else {
       Alert.alert(
         'Cảnh báo',
@@ -44,8 +45,17 @@ const Nganhsp = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={30} color={'black'} />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            width: 40,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#EEEEEE',
+            borderRadius: 15,
+          }}>
+          <AntDesign name="left" size={30} color={'black'} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Ngành Sản Phẩm</Text>
       </View>

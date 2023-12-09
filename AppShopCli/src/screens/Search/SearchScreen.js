@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Image,
   Pressable,
@@ -8,7 +8,8 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  StyleSheet,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,9 +21,15 @@ import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import imagePath from '../../constants/imagePath';
 import {apiGet, getItem, setItem} from '../../utils/utils';
 import {PRODUCT_API} from '../../config/urls';
+import {useSelector} from 'react-redux';
 import {renderProductItem} from '../../components/Product';
+import {bottomSheetStyles} from '../Home/ProductScreen';
+import {updateProductData} from '../../redux/actions/product';
+import SearchScreenStyles from './styles';
 
 const SearchScreen = ({navigation}) => {
+  const typeProduct = useSelector(state => state?.product?.typeData);
+  const [selectedTypes, setSelectedTypes] = useState('');
   const [isCheck, setIsCheck] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
@@ -178,7 +185,9 @@ const SearchScreen = ({navigation}) => {
       return (
         <FlatList
           data={productList?.slice(0, visibleProducts)}
-          renderItem={({item}) => renderProductItem(item, navigation, {})}
+          renderItem={({item}) =>
+            renderProductItem(item, navigation, toggleHideProduct)
+          }
           keyExtractor={item => item?._id}
           onEndReached={() => setVisibleProducts(prev => prev + 5)}
           onEndReachedThreshold={0.1}
@@ -186,6 +195,42 @@ const SearchScreen = ({navigation}) => {
         />
       );
     }
+  };
+
+  const toggleHideProduct = async product => {
+    const action = product?.isDraft ? 'hiện' : 'ẩn';
+    const message = `Bạn muốn ${action} sản phẩm "${product?.product_name}"?`;
+
+    Alert.alert(`Cảnh báo`, message, [
+      {
+        text: 'Hủy',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Xác nhận',
+        onPress: async () => {
+          try {
+            const check = await updateProductData({
+              isDraft: product?.isDraft,
+              productId: product._id,
+            });
+            if (check) {
+              const res = await apiGet(
+                `${PRODUCT_API}/findProduct/${searchText}`,
+              );
+              setProductList(res?.message);
+              ToastAndroid.show(
+                `Thay đổi trạng thái ${action} thành công`,
+                ToastAndroid.show,
+              );
+            }
+          } catch (error) {
+            throw error;
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -283,106 +328,103 @@ const SearchScreen = ({navigation}) => {
         <BottomSheetModal
           ref={bottomSheetModalRef}
           index={1}
-          snapPoints={['25%', '50%']}
+          snapPoints={['25%', '55%']}
           backgroundStyle={{
             borderRadius: 25,
             borderWidth: 0.5,
           }}>
-          <View style={{flex: 1}}></View>
+          <View style={{flex: 1}}>
+            <View style={{flex: 1}}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                }}>
+                Lọc tìm kiếm
+              </Text>
+              <Text style={bottomSheetStyles.subHeaderText}>Loại</Text>
+              <View style={bottomSheetStyles.typeContainer}>
+                {typeProduct && (
+                  <FlatList
+                    numColumns={4}
+                    data={[{_id: 'null', category_name: 'All'}, ...typeProduct]}
+                    keyExtractor={item => item?._id}
+                    columnWrapperStyle={bottomSheetStyles.typeColumnWrapper}
+                    renderItem={({item}) => (
+                      <Pressable
+                        style={[
+                          bottomSheetStyles.typeItem,
+                          selectedTypes.includes(item?._id) && {
+                            backgroundColor: 'black',
+                          },
+                        ]}
+                        onPress={() => {
+                          if (selectedTypes.includes(item?._id)) {
+                            setSelectedTypes('');
+                          } else {
+                            setSelectedTypes(item?._id);
+                          }
+                        }}>
+                        <Text
+                          style={[
+                            bottomSheetStyles.typeText,
+                            selectedTypes.includes(item?._id) && {
+                              color: 'white',
+                            },
+                          ]}>
+                          {item?.category_name}
+                        </Text>
+                      </Pressable>
+                    )}
+                  />
+                )}
+              </View>
+
+              <View style={bottomSheetStyles.applyButtonContainer}>
+                <Pressable
+                  style={[
+                    bottomSheetStyles.applyButton,
+                    {backgroundColor: '#536EFF'},
+                  ]}
+                  onPress={async () => {
+                    if (selectedTypes) {
+                      bottomSheetModalRef.current?.close();
+                    } else {
+                      ToastAndroid.show(
+                        'Vui lòng chọn loại trước khi lọc!',
+                        ToastAndroid.SHORT,
+                      );
+                    }
+                  }}>
+                  <Text
+                    style={[
+                      bottomSheetStyles.typeText,
+                      {color: 'white', fontWeight: 'bold'},
+                    ]}>
+                    Áp dụng
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={bottomSheetStyles.applyButton}
+                  onPress={() => {
+                    setSelectedTypes('');
+                  }}>
+                  <Text
+                    style={[
+                      bottomSheetStyles.typeText,
+                      {color: '#536EFF', fontWeight: 'bold'},
+                    ]}>
+                    Clear
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
         </BottomSheetModal>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 };
-
-const SearchScreenStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  searchHeaderView: {
-    alignSelf: 'center',
-    width: '85%',
-    marginVertical: '2%',
-    height: 45,
-    padding: 5,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 10,
-  },
-  searchPlaceholder: {
-    marginLeft: '5%',
-    fontSize: 15,
-    color: 'gray',
-  },
-  imageContainer: {
-    marginTop: '10%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  searchHeader: {
-    flexDirection: 'row',
-    marginHorizontal: '5%',
-    marginVertical: '1%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  searchBox: {
-    flex: 1,
-    height: 40,
-    borderRadius: 10,
-    paddingLeft: '3%',
-    marginRight: '4%',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#D9D9D9',
-  },
-  searchInput: {
-    flex: 1,
-    marginHorizontal: '2%',
-    color: 'black',
-  },
-  cancelText: {
-    color: 'red',
-    fontSize: 18,
-    fontWeight: '500',
-    marginRight: '5%',
-  },
-  productImage: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-  },
-  imageText: {
-    marginTop: '5%',
-    color: 'black',
-    fontSize: 18,
-  },
-  searchItem: {
-    padding: 5,
-    height: 40,
-    marginBottom: '1%',
-    marginHorizontal: '5%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: '#EEEEEE',
-    justifyContent: 'space-between',
-  },
-  searchText: {
-    left: '20%',
-    fontSize: 15,
-    color: 'black',
-    fontWeight: '500',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default SearchScreen;

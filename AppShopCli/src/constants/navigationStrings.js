@@ -20,7 +20,9 @@ export default {
   STATIS: 'StatisticalScreen',
   INVENTORY: 'InventoryScreen',
   NGANH_SP: 'Nganhsp',
+  NGANH_SPUPDATE: 'NganhspUPDATE',
   PHAN_LOAI_SP: 'Phanloaisp',
+  PHAN_LOAI_SPUPDATE: 'PhanloaispUPDATE',
   DISCOUNT: 'Discount',
   DISCOUNT_ITEM: 'DiscountItem',
   DISCOUNT_ADD: 'AddDiscount',
@@ -35,4 +37,6 @@ export default {
   HomeScreen: 'HomeScreen',
   ORDER: 'Order',
   PROFILE: 'Profile',
+  ChitietProduct: 'ChitietProduct',
+  OTPScreen: 'OTPScreen',
 };

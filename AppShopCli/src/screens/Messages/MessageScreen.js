@@ -57,7 +57,9 @@ const MessageScreen = ({navigation}) => {
             </ListItem.Title>
             {count > 0 && (
               <View style={styles.unreadBadge}>
-                <Text style={styles.unreadText}>{count}</Text>
+                <Text style={styles.unreadText}>
+                  {count > 9 ? '9+' : count}
+                </Text>
               </View>
             )}
           </View>

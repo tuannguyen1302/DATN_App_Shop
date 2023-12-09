@@ -1,10 +1,8 @@
 import React, {useRef, useEffect} from 'react';
 import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {useSelector} from 'react-redux';
 
 const TabButton = ({item, onPress, accessibilityState}) => {
-  const data = useSelector(state => state?.chat?.chatData);
   const {selected: focused} = accessibilityState;
   const viewRef = useRef(null);
   const textViewRef = useRef(null);
@@ -23,21 +21,16 @@ const TabButton = ({item, onPress, accessibilityState}) => {
     }
   }, [focused]);
 
-  const notificationCount = data
-    ? data.reduce((count, item) => count + item.chat?.isRead?.shop?.countNew, 0)
-    : 0;
-
-  const renderNotificationBadge = () => {
-    if (item.label === 'Message') {
+  const renderNotificationBadge = count => {
+    if (count > 0) {
       return (
-        <Animatable.View
-          ref={textViewRef}
+        <View
           style={styles.notificationBadge}
-          animation={focused ? 'bounceIn' : 'bounceOut'}
-          duration={500}
-          useNativeDriver>
-          <Text style={styles.notificationText}>{notificationCount}</Text>
-        </Animatable.View>
+          animation={focused ? 'bounceIn' : 'bounceOut'}>
+          <Text style={styles.notificationText}>
+            {count > 9 ? '9+' : count}
+          </Text>
+        </View>
       );
     }
     return null;
@@ -64,7 +57,9 @@ const TabButton = ({item, onPress, accessibilityState}) => {
             useNativeDriver>
             {focused && <Text style={styles.label}>{item.label}</Text>}
           </Animatable.View>
-          {notificationCount != 0 && renderNotificationBadge()}
+          {item.label === 'Message'
+            ? renderNotificationBadge(item.count)
+            : null}
         </View>
       </View>
     </TouchableOpacity>

@@ -16,11 +16,7 @@ import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import imagePath from '../../constants/imagePath';
-import {
-  saveProductData,
-  saveTypeData,
-  updateProductData,
-} from '../../redux/actions/product';
+import {saveProductData, updateProductData} from '../../redux/actions/product';
 import {useSelector} from 'react-redux';
 import {renderProductItem} from '../../components/Product';
 
@@ -42,8 +38,8 @@ const ProductScreen = ({navigation}) => {
   const typeProduct = useSelector(state => state?.product?.typeData);
   const [status, setStatus] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [selectedTypes, setSelectedTypes] = useState('');
-  const [sortByPrice, setSortByPrice] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState('null');
+  const [sortByPrice, setSortByPrice] = useState('up');
   const flatListRef = useRef();
   const bottomSheetModalRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -81,16 +77,20 @@ const ProductScreen = ({navigation}) => {
     ]);
   };
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        saveTypeData();
-        setLoading(false);
-        setLoading(await saveProductData(status));
-      } catch (error) {
-        throw error;
+  const load = async () => {
+    try {
+      setLoading(true);
+      if (!selectedTypes) {
+        setLoading(await saveProductData('null', status, 'up'));
+      } else {
+        setLoading(await saveProductData(selectedTypes, status, sortByPrice));
       }
-    };
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
     load();
   }, [status]);
 
@@ -124,21 +124,8 @@ const ProductScreen = ({navigation}) => {
     </Pressable>
   );
 
-  const handleTypePress = typeId => {
-    if (selectedTypes.includes(typeId)) {
-      setSelectedTypes('');
-    } else {
-      setSelectedTypes(typeId);
-    }
-  };
-
   const handlePricePress = type => {
     setSortByPrice(type);
-  };
-
-  const handleClearSelection = () => {
-    setSelectedTypes([]);
-    setSortByPrice('');
   };
 
   return (
@@ -170,11 +157,11 @@ const ProductScreen = ({navigation}) => {
               horizontal
               showsHorizontalScrollIndicator={false}
             />
-            {!loading ? (
-              <View style={styles.loadingContainer}>
+            {loading ? (
+              <View style={{marginTop: '50%'}}>
                 <ActivityIndicator size="large" color="gray" />
               </View>
-            ) : productList[status] ? (
+            ) : !productList[status]?.message ? (
               <FlatList
                 scrollEnabled={false}
                 data={productList[status]}
@@ -197,7 +184,7 @@ const ProductScreen = ({navigation}) => {
         <BottomSheetModal
           ref={bottomSheetModalRef}
           index={1}
-          snapPoints={['40%', '70%']}
+          snapPoints={['40%', '75%']}
           backgroundStyle={bottomSheetStyles.backgroundStyle}
           onDismiss={() => setIsOpen(false)}>
           <View style={{flex: 1}}>
@@ -214,22 +201,28 @@ const ProductScreen = ({navigation}) => {
               {typeProduct && (
                 <FlatList
                   numColumns={4}
-                  data={typeProduct}
-                  keyExtractor={item => item._id}
+                  data={[{_id: 'null', category_name: 'All'}, ...typeProduct]}
+                  keyExtractor={item => item?._id}
                   columnWrapperStyle={bottomSheetStyles.typeColumnWrapper}
                   renderItem={({item}) => (
                     <Pressable
                       style={[
                         bottomSheetStyles.typeItem,
-                        selectedTypes.includes(item._id) && {
+                        selectedTypes.includes(item?._id) && {
                           backgroundColor: 'black',
                         },
                       ]}
-                      onPress={() => handleTypePress(item._id)}>
+                      onPress={() => {
+                        if (selectedTypes.includes(item?._id)) {
+                          setSelectedTypes('');
+                        } else {
+                          setSelectedTypes(item?._id);
+                        }
+                      }}>
                       <Text
                         style={[
                           bottomSheetStyles.typeText,
-                          selectedTypes.includes(item._id) && {color: 'white'},
+                          selectedTypes.includes(item?._id) && {color: 'white'},
                         ]}>
                         {item?.category_name}
                       </Text>
@@ -243,13 +236,13 @@ const ProductScreen = ({navigation}) => {
               <Pressable
                 style={[
                   bottomSheetStyles.priceButton,
-                  sortByPrice === 'ascending' && {backgroundColor: 'black'},
+                  sortByPrice === 'up' && {backgroundColor: 'black'},
                 ]}
-                onPress={() => handlePricePress('ascending')}>
+                onPress={() => handlePricePress('up')}>
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
-                    sortByPrice === 'ascending' && {color: 'white'},
+                    sortByPrice === 'up' && {color: 'white'},
                   ]}>
                   Tăng dần
                 </Text>
@@ -257,13 +250,13 @@ const ProductScreen = ({navigation}) => {
               <Pressable
                 style={[
                   bottomSheetStyles.priceButton,
-                  sortByPrice === 'descending' && {backgroundColor: 'black'},
+                  sortByPrice === 'down' && {backgroundColor: 'black'},
                 ]}
-                onPress={() => handlePricePress('descending')}>
+                onPress={() => handlePricePress('down')}>
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
-                    sortByPrice === 'descending' && {color: 'white'},
+                    sortByPrice === 'down' && {color: 'white'},
                   ]}>
                   Giảm dần
                 </Text>
@@ -275,9 +268,16 @@ const ProductScreen = ({navigation}) => {
                   bottomSheetStyles.applyButton,
                   {backgroundColor: '#536EFF'},
                 ]}
-                onPress={() => {
-                  console.log('Đã áp dụng:', selectedTypes, sortByPrice);
-                  bottomSheetModalRef.current?.close();
+                onPress={async () => {
+                  if (selectedTypes) {
+                    load();
+                    bottomSheetModalRef.current?.close();
+                  } else {
+                    ToastAndroid.show(
+                      'Vui lòng chọn loại trước khi lọc!',
+                      ToastAndroid.SHORT,
+                    );
+                  }
                 }}>
                 <Text
                   style={[
@@ -289,7 +289,10 @@ const ProductScreen = ({navigation}) => {
               </Pressable>
               <Pressable
                 style={bottomSheetStyles.applyButton}
-                onPress={handleClearSelection}>
+                onPress={() => {
+                  setSelectedTypes('');
+                  setSortByPrice('');
+                }}>
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
@@ -310,11 +313,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   tabItem: {
     width: 95,
@@ -450,7 +448,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const bottomSheetStyles = StyleSheet.create({
+export const bottomSheetStyles = StyleSheet.create({
   backgroundStyle: {
     borderRadius: 25,
     borderWidth: 0.5,
@@ -485,12 +483,14 @@ const bottomSheetStyles = StyleSheet.create({
   priceButton: {
     width: '35%',
     height: 40,
+    borderWidth: 1,
+    borderColor: '#ddd',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
   },
   applyButtonContainer: {
-    marginTop: '10%',
+    marginTop: '5%',
     marginHorizontal: '5%',
   },
   applyButton: {

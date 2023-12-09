@@ -6,7 +6,8 @@ const setItem = async (key, value) => {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
-    console.error('Error during setItem:', e);
+    // console.error('Error during setItem:', e);
+    throw error;
   }
 };
 
@@ -20,7 +21,7 @@ const getItem = async key => {
       return null;
     }
   } catch (error) {
-    console.error(`Error retrieving data for key ${key}: ${error.message}`);
+    // console.error(`Error retrieving data for key ${key}: ${error.message}`);
     throw error;
   }
 };
@@ -60,7 +61,7 @@ const apiReq = async (endPoint, data, method, headers, requestOptions = {}) => {
 
     return responseData;
   } catch (error) {
-    console.error('Error during API request:', error);
+    // console.error('Error during API request:', error);
 
     if (error.response && error.response.status === 401) {
       throw {...error.response.data, msg: 'Unauthorized'};

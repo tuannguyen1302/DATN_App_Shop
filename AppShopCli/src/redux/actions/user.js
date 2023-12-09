@@ -1,12 +1,10 @@
 import {SHOP_API} from '../../config/urls';
-import socketServices from '../../utils/socketService';
-import {apiGet, apiPut, getItem} from '../../utils/utils';
+import {apiGet, apiPut} from '../../utils/utils';
 import {saveUser} from '../reducers/user';
 import store from '../store';
 
 export const saveUserData = async () => {
   try {
-    console.log(await getItem('notifi'));
     const res = await apiGet(`${SHOP_API}/getShopForShop`);
     store.dispatch(saveUser(res?.message));
   } catch (error) {

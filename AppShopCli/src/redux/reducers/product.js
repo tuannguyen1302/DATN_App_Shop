@@ -14,6 +14,12 @@ const productSlice = createSlice({
   reducers: {
     saveProduct: (state, action) => {
       const {value, data} = action.payload;
+      state.productData = {
+        all: null,
+        con_hang: null,
+        het_hang: null,
+        private: null,
+      };
       state.productData[value] = data;
     },
     saveType: (state, action) => {

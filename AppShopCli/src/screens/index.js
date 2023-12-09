@@ -12,7 +12,7 @@ export {default as Login2} from './Login/Login2';
 export {default as SignUp} from './Login/SignUp';
 export {default as MessItem} from './Messages/MessItem';
 export {default as SearchScreen} from './Search/SearchScreen';
-export {default as ProductScreen} from './Product/ProductScreen';
+export {default as ProductScreen} from './Home/ProductScreen';
 export {default as ProductItem} from './Product/ProductItem';
 export {default as AddProduct} from './Product/AddProduct';
 export {default as Nganhsp} from './Product/Nganhsp';
@@ -30,6 +30,10 @@ export {default as UpdateDiscount} from './Discount/UpdateDiscount';
 export {default as Password} from './Setting/Password';
 export {default as SettingScreen} from './Setting/SettingScreen';
 export {default as ContactSup} from './Setting/ContactSup';
-
+export {default as PhanloaispUPDATE} from './Product/PhanLoaiSPupdate';
+export {default as NGANH_SPUPDATE} from './Product/Nganhspupdate';
 export {default as NotifiScreen} from './Notification/NotifiScreen';
+
+export {default as ChitietProduct} from './Product/ChitietProduct';
+export {default as OTPScreen} from './Login/OTPScreen';
 export {default as NotiItem} from './Notification/NotiItem';

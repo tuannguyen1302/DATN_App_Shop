@@ -88,8 +88,16 @@ export default function (Stack) {
         component={Screens.Nganhsp}
       />
       <Stack.Screen
+        name={navigationStrings.NGANH_SPUPDATE}
+        component={Screens.NGANH_SPUPDATE}
+      />
+      <Stack.Screen
         name={navigationStrings.PHAN_LOAI_SP}
         component={Screens.PhanLoaiSP}
+      />
+      <Stack.Screen
+        name={navigationStrings.PHAN_LOAI_SPUPDATE}
+        component={Screens.PhanloaispUPDATE}
       />
       <Stack.Screen
         name={navigationStrings.DISCOUNT}
@@ -114,6 +122,14 @@ export default function (Stack) {
       <Stack.Screen
         name={navigationStrings.CONTACT}
         component={Screens.ContactSup}
+      />
+      <Stack.Screen
+        name={navigationStrings.ChitietProduct}
+        component={Screens.ChitietProduct}
+      />
+      <Stack.Screen
+        name={navigationStrings.OTPScreen}
+        component={Screens.OTPScreen}
       />
     </>
   );
