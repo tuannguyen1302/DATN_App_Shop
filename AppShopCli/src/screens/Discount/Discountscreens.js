@@ -9,6 +9,7 @@ import {
   Alert,
   ToastAndroid,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -18,7 +19,7 @@ import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {formatNotificationTime} from '../../components/DateTime';
 
 const DiscountCodeScreen = ({navigation}) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
 
   const deleteSale = idDiscount => {
     Alert.alert('Cảnh báo', 'Bạn muốn xóa mã giảm giá này chứ?', [
@@ -106,12 +107,16 @@ const DiscountCodeScreen = ({navigation}) => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Discount</Text>
       </View>
-      <FlatList
-        data={data}
-        keyExtractor={item => item?._id}
-        renderItem={renderDiscountItem}
-        contentContainerStyle={{marginHorizontal: '3%'}}
-      />
+      {!data ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?._id}
+          renderItem={renderDiscountItem}
+          contentContainerStyle={{marginHorizontal: '3%'}}
+        />
+      )}
       <TouchableOpacity
         onPress={() => navigation.navigate('AddDiscount')}
         style={{

@@ -1,10 +1,10 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import navigationStrings from '../constants/navigationStrings';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import TabButton from '../components/TabButton';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import * as Screens from '../screens';
 
 const Tab = createBottomTabNavigator();
@@ -13,9 +13,9 @@ const TabRoutes = () => {
   const count = useSelector(state =>
     state?.chat?.chatData
       ? state?.chat?.chatData.reduce(
-        (count, item) => count + item.chat?.isRead?.shop?.countNew,
-        0,
-      )
+          (count, item) => count + item.chat?.isRead?.shop?.countNew,
+          0,
+        )
       : 0,
   );
 

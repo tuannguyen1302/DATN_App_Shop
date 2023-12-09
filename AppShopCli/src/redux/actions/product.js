@@ -1,15 +1,22 @@
 import {CATERGORY_API, PRODUCT_API} from '../../config/urls';
 import {apiGet, apiPut} from '../../utils/utils';
-import {saveProduct, saveType, updateStatus} from '../reducers/product';
+import {saveProduct, saveType} from '../reducers/product';
 import store from '../store';
 
-export const saveProductData = async text => {
+export const saveProductData = async (idType, text, sort) => {
   try {
-    // /ofCategoryForShop/🆔q
-    const res = await apiGet(`${PRODUCT_API}/getAllProductByShop/${text}`);
-    const productData = res?.message;
+    const res = await apiGet(
+      `${PRODUCT_API}/${
+        idType == 'null' ? 'getAllProductByShop' : 'ofCategoryForShop/' + idType
+      }/${text}`,
+    );
+    const productData = res?.message.sort((a, b) => {
+      const priceA = a.product_price;
+      const priceB = b.product_price;
+      return sort === 'up' ? priceA - priceB : priceB - priceA;
+    });
     store.dispatch(saveProduct({value: text, data: productData}));
-    return true;
+    return false;
   } catch (error) {
     throw error;
   }
@@ -21,7 +28,7 @@ export const updateProductData = async data => {
       data?.isDraft ? '/unpublishById' : '/publishById'
     }/${data?.productId}`;
     await apiPut(endpoint);
-    return await saveProductData();
+    return true;
   } catch (error) {
     throw error;
   }

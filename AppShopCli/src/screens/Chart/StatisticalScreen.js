@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Dimensions,
+  ActivityIndicator,
   FlatList,
   Image,
   ScrollView,
@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {BarChart} from 'react-native-chart-kit';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {formatCurrency} from '../../components/Price';
 import {useSelector} from 'react-redux';
 import {API_BASE_URL, SHOP_API} from '../../config/urls';
@@ -21,12 +21,17 @@ import {apiGet} from '../../utils/utils';
 const StatisticalScreen = ({navigation}) => {
   const userAccount = useSelector(state => state?.user?.userData);
   const [data, setData] = useState(null);
+  const [data2, setData2] = useState(null);
   const [isCheck, setIsCheck] = useState(true);
 
   const getApi = async () => {
     try {
-      const res = await apiGet(`${SHOP_API}/overview/2023`);
+      const res = await apiGet(
+        `${SHOP_API}/overview/${new Date().getFullYear()}`,
+      );
       setData(res?.message[0]);
+      const res2 = await apiGet(`${SHOP_API}/analysis/thang`);
+      setData2(res2?.message?.revenue);
     } catch (error) {
       throw error;
     }
@@ -37,128 +42,101 @@ const StatisticalScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={StaticStyle.container}>
-      <View style={StaticStyle.headerContainer}>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={StaticStyle.backButton}>
+          style={styles.backButton}>
           <AntDesign name="left" size={20} color={'black'} />
         </TouchableOpacity>
-        <Text style={StaticStyle.titleText}>Statistics</Text>
+        <Text style={styles.titleText}>Statistics</Text>
       </View>
 
-      <View style={StaticStyle.mainContainer}>
+      <View style={styles.mainContainer}>
         <TouchableOpacity
           onPress={() => setIsCheck(true)}
-          style={[
-            StaticStyle.valueContainer,
-            isCheck && StaticStyle.selectedTab,
-          ]}>
-          <Text
-            style={[
-              StaticStyle.valueLabel,
-              isCheck && StaticStyle.selectedLabel,
-            ]}>
+          style={[styles.valueContainer, isCheck && styles.selectedTab]}>
+          <Text style={[styles.valueLabel, isCheck && styles.selectedLabel]}>
             Tổng quan
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setIsCheck(false)}
-          style={[
-            StaticStyle.valueContainer,
-            !isCheck && StaticStyle.selectedTab,
-          ]}>
-          <Text
-            style={[
-              StaticStyle.valueLabel,
-              !isCheck && StaticStyle.selectedLabel,
-            ]}>
+          style={[styles.valueContainer, !isCheck && styles.selectedTab]}>
+          <Text style={[styles.valueLabel, !isCheck && styles.selectedLabel]}>
             Phân tích
           </Text>
         </TouchableOpacity>
       </View>
 
-      {isCheck ? (
-        <OverviewScreen data={data} userAccount={userAccount} />
-      ) : (
-        <AnalysisScreen />
-      )}
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        {isCheck ? (
+          <OverviewScreen data={data} userAccount={userAccount} />
+        ) : (
+          <AnalysisScreen data={data2} />
+        )}
+      </View>
     </View>
   );
 };
 
 const OverviewScreen = ({data, userAccount}) => {
+  if (!data) {
+    return <ActivityIndicator size={'large'} color={'gray'} />;
+  }
+
   return (
-    <ScrollView style={StaticStyle.container}>
-      <View style={StaticStyle.shopInfoContainer}>
-        <Text style={StaticStyle.shopName}>{userAccount?.nameShop}</Text>
-        <Text style={StaticStyle.shopBalance}>
+    <ScrollView style={styles.container}>
+      <View style={styles.shopInfoContainer}>
+        <Text style={styles.shopName}>{userAccount?.nameShop}</Text>
+        <Text style={styles.shopBalance}>
           {formatCurrency(data?.totalCheckout)}
         </Text>
       </View>
 
-      <View style={StaticStyle.chartContainer}>
-        <View style={StaticStyle.chart}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+      <View style={styles.chartContainer}>
+        <View style={styles.chart}>
+          <View style={styles.chartItem}>
             <Feather name="box" size={25} />
-            <Text style={{left: '20%'}}>Sản phẩm</Text>
+            <Text style={styles.chartLabel}>Sản phẩm</Text>
           </View>
-          <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
-            {data?.totalProduct}
-          </Text>
+          <Text style={styles.chartValue}>{data?.totalProduct}</Text>
         </View>
-        <View style={StaticStyle.chart}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+        <View style={styles.chart}>
+          <View style={styles.chartItem}>
             <Feather name="users" size={25} color={'black'} />
-            <Text style={{left: '20%'}}>Khách hàng</Text>
+            <Text style={styles.chartLabel}>Khách hàng</Text>
           </View>
-
-          <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
-            {data?.customerCount}
-          </Text>
+          <Text style={styles.chartValue}>{data?.customerCount}</Text>
         </View>
       </View>
 
-      <View style={StaticStyle.chartContainer}>
-        <View style={StaticStyle.chart}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={styles.chartContainer}>
+        <View style={styles.chart}>
+          <View style={styles.chartItem}>
             <Feather name="list" size={25} color={'black'} />
-            <Text style={{left: '20%'}}>Đơn hàng</Text>
+            <Text style={styles.chartLabel}>Đơn hàng</Text>
           </View>
-          <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
-            {data?.totalOrders}
-          </Text>
+          <Text style={styles.chartValue}>{data?.totalOrders}</Text>
         </View>
-        <View style={StaticStyle.chart}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={styles.chart}>
+          <View style={styles.chartItem}>
             <SimpleLineIcons name="user-following" size={25} color={'black'} />
-            <Text style={{left: '20%'}}>Lượt theo dõi</Text>
+            <Text style={styles.chartLabel}>Lượt theo dõi</Text>
           </View>
-          <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
-            {data?.totalFollow}
-          </Text>
+          <Text style={styles.chartValue}>{data?.totalFollow}</Text>
         </View>
       </View>
 
       {data?.topSold && (
-        <View style={StaticStyle.productListContainer}>
-          <Text style={StaticStyle.footerText}>
-            Top 10 Sản phẩm bán chạy nhất
-          </Text>
+        <View style={styles.productListContainer}>
+          <Text style={styles.footerText}>Top 10 Sản phẩm bán chạy nhất</Text>
           <FlatList
             data={data?.topSold}
             scrollEnabled={false}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item?._id}
-            contentContainerStyle={StaticStyle.productList}
+            contentContainerStyle={styles.productList}
             renderItem={({item}) => <ProductItem item={item} />}
           />
         </View>
@@ -168,79 +146,67 @@ const OverviewScreen = ({data, userAccount}) => {
 };
 
 const ProductItem = ({item}) => (
-  <View style={StaticStyle.itemContainer}>
-    <View style={StaticStyle.productInfo}>
+  <View style={styles.itemContainer}>
+    <View style={styles.productInfo}>
       <Image
-        style={StaticStyle.productImage}
+        style={styles.productImage}
         source={{uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`}}
       />
-      <View style={{left: '5%'}}>
-        <Text style={StaticStyle.productName} numberOfLines={1}>
+      <View style={styles.productDetails}>
+        <Text style={styles.productName} numberOfLines={1}>
           {item?.product_name}
         </Text>
-        <Text style={StaticStyle.infoText} numberOfLines={1}>
+        <Text style={styles.infoText} numberOfLines={1}>
           Giá bán:{' '}
-          <Text style={StaticStyle.priceText}>
+          <Text style={styles.priceText}>
             {formatCurrency(item?.product_price)}
           </Text>
         </Text>
       </View>
     </View>
-    <Text style={StaticStyle.infoText} numberOfLines={1}>
+    <Text style={styles.infoText} numberOfLines={1}>
       Đã bán: {item?.product_sold}
     </Text>
   </View>
 );
+const AnalysisScreen = ({data}) => {
+  if (!data) {
+    return <ActivityIndicator size={'large'} color={'gray'} />;
+  }
 
-const AnalysisScreen = () => {
+  const dataChart = {
+    labels: data?.map(item => `Tháng ${item?.month}`),
+    datasets: [{data: data.map(item => item?.totalRevenue)}],
+  };
+
   return (
-    <View style={[StaticStyle.container, {marginTop: '10%'}]}>
-      <Text style={StaticStyle.footerText}>Thống kê</Text>
-
-      <View horizontal style={StaticStyle.chartContainer}>
-        <BarChart
-          data={{
-            labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-            datasets: [
-              {
-                data: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                ],
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width / 1.05}
-          height={Dimensions.get('window').height / 4}
-          yAxisLabel="$"
-          yAxisSuffix="k"
-          chartConfig={{
-            backgroundGradientFrom: '#ffa726',
-            backgroundGradientTo: '#ffa726',
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          }}
-          style={StaticStyle.chartStyle}
-        />
+    <View style={styles.container}>
+      <Text style={styles.footerText}>Thống kê</Text>
+      <View>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <BarChart
+            data={dataChart}
+            width={1000}
+            height={300}
+            yAxisSuffix="đ"
+            chartConfig={{
+              backgroundGradientFrom: '#9999FF',
+              backgroundGradientTo: '#9999FF',
+              color: () => `rgba(255, 255, 255,1)`,
+            }}
+            bezier
+            style={styles.chartStyle}
+          />
+        </ScrollView>
       </View>
-      <Text
-        style={{
-          textAlign: 'center',
-          fontSize: 20,
-          color: 'black',
-          fontWeight: '600',
-        }}>
-        Biểu đồ
+      <Text style={[styles.footerText, {textAlign: 'center', marginLeft: 0}]}>
+        Phân tích dữ liệu shop {new Date().getFullYear()}
       </Text>
     </View>
   );
 };
 
-const StaticStyle = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -328,13 +294,25 @@ const StaticStyle = StyleSheet.create({
     backgroundColor: '#eee',
     borderRadius: 10,
   },
+  chartItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  chartLabel: {
+    marginLeft: '5%',
+  },
+  chartValue: {
+    color: 'black',
+    fontSize: 18,
+    fontWeight: '600',
+  },
   productListContainer: {
     marginHorizontal: '4%',
     flex: 1,
     marginTop: '2%',
   },
   footerText: {
-    left: '5%',
+    marginLeft: '5%',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
@@ -363,6 +341,9 @@ const StaticStyle = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  productDetails: {
+    left: '5%',
+  },
   productName: {
     fontSize: 18,
     marginBottom: '5%',
@@ -382,16 +363,11 @@ const StaticStyle = StyleSheet.create({
     justifyContent: 'space-around',
   },
   chartStyle: {
-    marginVertical: 8,
+    margin: 8,
     borderRadius: 10,
   },
   productList: {
     marginTop: '2%',
-  },
-  dropdownText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
   },
   priceText: {
     color: 'black',

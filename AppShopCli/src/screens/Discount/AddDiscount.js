@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Text,
   ToastAndroid,
@@ -39,7 +39,8 @@ const renderTextInput = (
   field,
   keyboardType = 'default',
   handleTextChange,
-  multiline = false,
+  multiline,
+  icon,
 ) => {
   return (
     <TextInput
@@ -50,9 +51,7 @@ const renderTextInput = (
       keyboardType={keyboardType}
       onChangeText={text => handleTextChange(text, field)}
       left={
-        <TextInput.Icon
-          icon={() => <FontAwesome name="bullhorn" size={24} />}
-        />
+        <TextInput.Icon icon={() => <FontAwesome name={icon} size={24} />} />
       }
     />
   );
@@ -102,7 +101,17 @@ const AddDiscount = ({navigation}) => {
   };
 
   const handleTextChange = (text, field) => {
-    setDiscountData({...discountData, [field]: text});
+    let newValue = text;
+
+    // Giới hạn giá trị nhập trong khoảng từ 0 đến 100
+    if (field === 'value') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(100, numericValue)).toString();
+      }
+    }
+
+    setDiscountData({...discountData, [field]: newValue});
   };
 
   const postDiscountApi = async () => {
@@ -184,6 +193,8 @@ const AddDiscount = ({navigation}) => {
               'name',
               'default',
               handleTextChange,
+              false,
+              'bullhorn',
             )}
             {renderTextInput(
               'Mô tả',
@@ -192,6 +203,7 @@ const AddDiscount = ({navigation}) => {
               'default',
               handleTextChange,
               true,
+              'edit',
             )}
             {renderTextInput(
               'Mã giảm giá',
@@ -199,6 +211,8 @@ const AddDiscount = ({navigation}) => {
               'code',
               'default',
               handleTextChange,
+              false,
+              'barcode',
             )}
             {discountData.type === 'percentage' &&
               renderTextInput(
@@ -207,6 +221,8 @@ const AddDiscount = ({navigation}) => {
                 'value',
                 'numeric',
                 handleTextChange,
+                false,
+                'pagelines',
               )}
             {renderTextInput(
               'Số tiền giảm tối đa',
@@ -214,6 +230,8 @@ const AddDiscount = ({navigation}) => {
               'min_order_value',
               'numeric',
               handleTextChange,
+              false,
+              'money',
             )}
             {renderTextInput(
               'Số lượng sử dụng',
@@ -221,6 +239,8 @@ const AddDiscount = ({navigation}) => {
               'max_uses',
               'numeric',
               handleTextChange,
+              false,
+              'user',
             )}
             {renderTextInput(
               'Giới hạn sử dụng',
@@ -228,6 +248,8 @@ const AddDiscount = ({navigation}) => {
               'max_uses_per_user',
               'numeric',
               handleTextChange,
+              false,
+              'ban',
             )}
             <TextInput
               label="Ngày bắt đầu"
