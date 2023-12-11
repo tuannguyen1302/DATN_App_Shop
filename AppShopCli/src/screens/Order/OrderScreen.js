@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,11 +10,11 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import imagePath from '../../constants/imagePath';
-import {useSelector} from 'react-redux';
-import {API_BASE_URL} from '../../config/urls';
-import {saveOrderData, updateOrderData} from '../../redux/actions/order';
+import { useSelector } from 'react-redux';
+import { API_BASE_URL } from '../../config/urls';
+import { saveOrderData, updateOrderData } from '../../redux/actions/order';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -30,8 +30,8 @@ const tabNavigatorOptions = route => ({
     borderRadius: 10,
     marginHorizontal: '2%',
   },
-  tabBarLabel: ({focused}) => (
-    <Text style={{color: focused ? 'black' : 'grey', fontWeight: '500'}}>
+  tabBarLabel: ({ focused }) => (
+    <Text style={{ color: focused ? 'black' : 'grey', fontWeight: '500' }}>
       {route.name}
     </Text>
   ),
@@ -46,7 +46,7 @@ const OrderScreen = () => {
           <Text style={styles.titleText}>Order</Text>
         </View>
       </View>
-      <Tab.Navigator screenOptions={({route}) => tabNavigatorOptions(route)}>
+      <Tab.Navigator screenOptions={({ route }) => tabNavigatorOptions(route)}>
         <Tab.Screen name="Đơn hàng" component={OrderListScreen} />
         <Tab.Screen name="Đang giao" component={InDeliveryScreen} />
         <Tab.Screen name="Đã giao" component={DeliveredScreen} />
@@ -65,7 +65,7 @@ const load = async (isCheck, text) => {
   }
 };
 
-const OrderListScreen = ({navigation}) => {
+const OrderListScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.pending);
   const [loading, setLoading] = useState(true);
 
@@ -81,16 +81,18 @@ const OrderListScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{ alignSelf: 'center' }}>
+          <Text style={{ fontSize: 25 }} >Không có đơn nào</Text>
+        </View>
       )}
     </View>
   );
 };
 
-const InDeliveryScreen = ({navigation}) => {
+const InDeliveryScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.shipped);
   const [loading, setLoading] = useState(true);
 
@@ -106,16 +108,18 @@ const InDeliveryScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{ alignSelf: 'center' }}>
+          <Text style={{ fontSize: 25 }} >Không có đơn nào</Text>
+        </View>
       )}
     </View>
   );
 };
 
-const DeliveredScreen = ({navigation}) => {
+const DeliveredScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.delivered);
   const [loading, setLoading] = useState(true);
 
@@ -131,16 +135,18 @@ const DeliveredScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{ alignSelf: 'center' }}>
+          <Text style={{ fontSize: 25 }} >Không có đơn nào</Text>
+        </View>
       )}
     </View>
   );
 };
 
-const CanceledScreen = ({navigation}) => {
+const CanceledScreen = ({ navigation }) => {
   const data = useSelector(state => state?.order?.orderData?.cancelled);
   const [loading, setLoading] = useState(true);
 
@@ -156,10 +162,12 @@ const CanceledScreen = ({navigation}) => {
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
+          renderItem={({ item }) => renderItem(item, navigation)}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{ alignSelf: 'center' }}>
+          <Text style={{ fontSize: 25 }} >Không có đơn nào</Text>
+        </View>
       )}
     </View>
   );
@@ -168,8 +176,7 @@ const CanceledScreen = ({navigation}) => {
 const patchApi = (oderId, status, navigation) => {
   Alert.alert(
     `Thông báo`,
-    `Bạn có muốn ${
-      status === 'shipped' ? 'phê duyệt' : 'xác nhận'
+    `Bạn có muốn ${status === 'shipped' ? 'phê duyệt' : 'xác nhận'
     } đơn hàng này!`,
     [
       {
@@ -186,7 +193,7 @@ const patchApi = (oderId, status, navigation) => {
               oderId,
             });
             if (check) {
-              navigation.navigate('Order', {screen: 'Đang giao'});
+              navigation.navigate('Order', { screen: 'Đang giao' });
               ToastAndroid.show(
                 'Xác nhận đơn hàng thành công thành công',
                 ToastAndroid.show,
@@ -203,12 +210,12 @@ const patchApi = (oderId, status, navigation) => {
 
 const renderItem = (orderItem, navigation) => (
   <Pressable
-    onPress={() => navigation.navigate('OrderHistory', {orderItem})}
+    onPress={() => navigation.navigate('OrderHistory', { orderItem })}
     style={styles.itemContainer}>
     <View style={styles.productContainer}>
       <Image
         style={styles.productImage}
-        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
+        source={{ uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}` }}
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={1}>
@@ -243,7 +250,7 @@ const renderItem = (orderItem, navigation) => (
       )}
       {orderItem?.status === 'shipped' && (
         <Pressable
-          style={[styles.statusBadge, {backgroundColor: 'green'}]}
+          style={[styles.statusBadge, { backgroundColor: 'green' }]}
           onPress={() => patchApi(orderItem?.oderId, 'delivered', navigation)}>
           <Text style={[styles.infoText, styles.statusText]}>
             {STATUS_TRANSLATIONS['delivered']}
@@ -258,6 +265,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+
     backgroundColor: 'white',
   },
   header: {
