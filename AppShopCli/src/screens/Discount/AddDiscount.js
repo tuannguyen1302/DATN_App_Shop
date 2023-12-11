@@ -29,7 +29,7 @@ const APPLY_OPTIONS = [
 ];
 
 const SALE_OPTIONS = [
-  {id: 0, name: 'Phần trăm '},
+  {id: 0, name: 'Phần trăm'},
   {id: 1, name: 'Giá tiền'},
 ];
 
@@ -74,9 +74,9 @@ const AddDiscount = ({navigation}) => {
     type: 'percentage',
     value: '0',
     uses_count: '0',
-    min_order_value: '0',
-    max_uses: '0',
-    max_uses_per_user: '0',
+    min_order_value: '900000', // Số tiền giảm tối đa là 900,000 VND
+    max_uses: '1', // Số lượng sử dụng là 1
+    max_uses_per_user: '1', // Giới hạn sử dụng từ 1 - 3
     applies_to: 'all',
     start_date: '',
     end_date: '',
@@ -111,6 +111,27 @@ const AddDiscount = ({navigation}) => {
       }
     }
 
+    if (field === 'min_order_value') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(999999, numericValue)).toString();
+      }
+    }
+
+    if (field === 'max_uses') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(1000, numericValue)).toString();
+      }
+    }
+
+    if (field === 'max_uses_per_user') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(3, numericValue)).toString();
+      }
+    }
+
     setDiscountData({...discountData, [field]: newValue});
   };
 
@@ -119,6 +140,17 @@ const AddDiscount = ({navigation}) => {
       if (!isDataValid()) {
         ToastAndroid.show(
           'Vui lòng điền đầy đủ thông tin và giá trị hợp lệ.',
+          ToastAndroid.SHORT,
+        );
+        return;
+      }
+
+      if (
+        discountData.applies_to == 'specific' &&
+        discountData.product_ids.length == 0
+      ) {
+        ToastAndroid.show(
+          'Vui lòng chọn sản phẩm khuyến mãi',
           ToastAndroid.SHORT,
         );
         return;
@@ -136,6 +168,7 @@ const AddDiscount = ({navigation}) => {
 
       await apiPost(DISCOUNT_API, discountData);
       ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
+      navigation.goBack();
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -225,7 +258,7 @@ const AddDiscount = ({navigation}) => {
                 'pagelines',
               )}
             {renderTextInput(
-              'Số tiền giảm tối đa',
+              'Số tiền giảm tối đa (VND)',
               discountData['min_order_value'],
               'min_order_value',
               'numeric',
@@ -243,7 +276,7 @@ const AddDiscount = ({navigation}) => {
               'user',
             )}
             {renderTextInput(
-              'Giới hạn sử dụng',
+              'Giới hạn sử dụng (1 - 3)',
               discountData['max_uses_per_user'],
               'max_uses_per_user',
               'numeric',

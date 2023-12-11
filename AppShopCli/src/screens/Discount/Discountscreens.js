@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   View,
   Text,
@@ -56,9 +57,11 @@ const DiscountCodeScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    getApi();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getApi();
+    }, []),
+  );
 
   const renderDiscountItem = ({item}) => {
     return (
