@@ -39,7 +39,9 @@ const UpdateProduct = ({ navigation, route }) => {
   const [productAttribute, setproductAttribute] = useState(item?.product_attributes);
   const typeProduct = useSelector(state => state?.product?.typeData);
 
-  const ngang = typeProduct.find(items => items._id === item.category);
+
+  const ngang = typeProduct.find(items => items._id === item?.category);
+
 
   const clearField = setField => setField('');
   const defaultNewId = item?._id;
@@ -80,7 +82,7 @@ const UpdateProduct = ({ navigation, route }) => {
     );
   };
   const hienthi = () => {
-    console.log(buil, selectedCategory, id);
+    console.log(productAttribute, ngang?._id, ngang?.category_name);
 
   }
 
@@ -92,7 +94,7 @@ const UpdateProduct = ({ navigation, route }) => {
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice
+        !productPrice || !selectedCategory || (productAttributes !== undefined)
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -119,7 +121,7 @@ const UpdateProduct = ({ navigation, route }) => {
       formData.append('product_price', productPrice);
       formData.append('category', id);
       formData.append('product_attributes', productAttributes);
-      //console.log(JSON.stringify(formData) + "=======================");
+      console.log(JSON.stringify(formData) + "=======================");
       selectedImages.forEach(image => {
         let localUri = image?.uri;
         let filename = localUri.split('/').pop();
@@ -292,7 +294,7 @@ const UpdateProduct = ({ navigation, route }) => {
           </View>
           <Pressable
             onPress={() => {
-              navigation.navigate('NganhspUPDATE', { buil, newid: item?._id, item: item });
+              navigation.navigate('NganhspUPDATE', { buil, newid: item?._id, item: item, productAttribute });
             }}
             style={styles.nganhsp}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -315,7 +317,7 @@ const UpdateProduct = ({ navigation, route }) => {
           </Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('PhanloaispUPDATE', { newid: item?._id, item: item, selectedCategory, id });
+              navigation.navigate('PhanloaispUPDATE', { newid: item?._id, item: item, selectedCategory: ngang?.category_name, id: ngang?._id });
 
             }}
             style={styles.nganhsp}>

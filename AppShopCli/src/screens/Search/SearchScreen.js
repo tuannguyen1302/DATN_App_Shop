@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Image,
   Pressable,
@@ -16,13 +16,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import fuzzy from 'fuzzy';
 import imagePath from '../../constants/imagePath';
-import {apiGet, getItem, setItem} from '../../utils/utils';
-import {PRODUCT_API} from '../../config/urls';
-import {renderProductItem} from '../../components/Product';
-import {updateProductData} from '../../redux/actions/product';
+import { apiGet, getItem, setItem } from '../../utils/utils';
+import { PRODUCT_API } from '../../config/urls';
+import { renderProductItem } from '../../components/Product';
+import { updateProductData } from '../../redux/actions/product';
 import SearchScreenStyles from './styles';
 
-const SearchScreen = ({navigation}) => {
+const SearchScreen = ({ navigation }) => {
   const [isCheck, setIsCheck] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
@@ -43,7 +43,7 @@ const SearchScreen = ({navigation}) => {
         );
 
         if (!existingItem) {
-          const newSearchItem = {id: Math.random().toString(), name: query};
+          const newSearchItem = { id: Math.random().toString(), name: query };
           const updatedHistory = [...searchHistory, newSearchItem];
 
           setSearchHistory(updatedHistory);
@@ -52,6 +52,8 @@ const SearchScreen = ({navigation}) => {
       }
 
       const res = await apiGet(`${PRODUCT_API}/findProduct/${query}`);
+      //console.log(`${PRODUCT_API}/findProduct/${query}`);
+
       setLoading(false);
       setProductList(res?.message);
     } catch (error) {
@@ -86,11 +88,11 @@ const SearchScreen = ({navigation}) => {
     }
   };
 
-  const renderSearchItem = ({item}) => (
+  const renderSearchItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => saveSearchToHistory(item?.id ? item.name : item)}
       style={SearchScreenStyles.searchItem}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <FontAwesome5 name={item?.id ? 'history' : 'search'} size={23} />
         <Text style={SearchScreenStyles.searchText}>
           {item?.id ? item.name : item}
@@ -177,7 +179,7 @@ const SearchScreen = ({navigation}) => {
       return (
         <FlatList
           data={productList?.slice(0, visibleProducts)}
-          renderItem={({item}) =>
+          renderItem={({ item }) =>
             renderProductItem(item, navigation, toggleHideProduct)
           }
           keyExtractor={item => item?._id}
@@ -228,8 +230,8 @@ const SearchScreen = ({navigation}) => {
   return (
     <View style={SearchScreenStyles.container}>
       <Pressable
-        style={{flex: 1}}
-        onPress={() => bottomSheetModalRef.current?.close()}>
+        style={{ flex: 1 }}
+      >
         <View
           style={{
             flexDirection: 'row',
@@ -272,13 +274,13 @@ const SearchScreen = ({navigation}) => {
           />
           {searchText ? (
             <TouchableOpacity
-              style={{marginRight: 10}}
+              style={{ marginRight: 10 }}
               onPress={() => setSearchText('')}>
               <Feather name="x-circle" size={24} color="black" />
             </TouchableOpacity>
           ) : (
             <AntDesign
-              style={{marginRight: 10}}
+              style={{ marginRight: 10 }}
               name="search1"
               size={24}
               color={'gray'}

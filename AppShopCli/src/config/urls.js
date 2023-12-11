@@ -1,5 +1,5 @@
+//export const API_BASE_URL = 'https://6504-222-252-43-35.ngrok-free.app/';
 export const API_BASE_URL = 'https://dai.tongdaihoidap.com/';
-
 export const getApiUrl = endpoint => API_BASE_URL + endpoint;
 
 export const SIGNIN_API = getApiUrl('v1/api/access/login');
