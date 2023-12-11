@@ -62,6 +62,7 @@ const SignUp = () => {
           role: role,
         };
         navigation.navigate('OTPScreen', params);
+        // navigation.navigate('Updateprofile');
         setButtonDisabled(false);
 
       } catch (error) {

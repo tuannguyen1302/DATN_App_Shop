@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -16,20 +16,21 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {API_BASE_URL} from '../../config/urls';
-import {useSelector} from 'react-redux';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {updateUserData} from '../../redux/actions/user';
-import {ToastAndroid} from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { API_BASE_URL } from '../../config/urls';
+import { useSelector } from 'react-redux';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { updateUserData } from '../../redux/actions/user';
+import { ToastAndroid } from 'react-native';
 
-const ShopUpdate = ({navigation}) => {
+const ShopUpdate = ({ navigation }) => {
   const account = useSelector(state => state?.user?.userData);
+
   const [data, setData] = useState({
-    avatar: {uri: `${API_BASE_URL}${account?.avatarShop}`},
+    avatar: { uri: `${API_BASE_URL}${account?.avatarShop}` },
     nameShop: account?.nameShop,
-    emailShop: account?.emailShop,
+
     address: account?.address,
     phoneNumberShop: account?.phoneNumberShop.toString(),
     des: account?.des,
@@ -41,10 +42,10 @@ const ShopUpdate = ({navigation}) => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const response = isFrontCamera
-        ? await launchCamera({mediaType: 'photo'})
-        : await launchImageLibrary({mediaType: 'photo', multiple: true});
+        ? await launchCamera({ mediaType: 'photo' })
+        : await launchImageLibrary({ mediaType: 'photo', multiple: true });
 
-      setData({...data, avatar: response.assets[0]});
+      setData({ ...data, avatar: response.assets[0] });
       bottomSheetModalRef.current?.close();
     } catch (error) {
       console.log(error);
@@ -54,7 +55,6 @@ const ShopUpdate = ({navigation}) => {
   const postApi = async () => {
     if (
       !data.nameShop ||
-      !data.emailShop ||
       !data.address ||
       !data.phoneNumberShop ||
       !data.des
@@ -63,18 +63,25 @@ const ShopUpdate = ({navigation}) => {
       return;
     }
 
+    // Kiểm tra định dạng số điện thoại
+    const phoneNumberRegex = /^[0-9]{10}$/; // Định dạng cho số điện thoại Việt Nam
+    if (!phoneNumberRegex.test(data.phoneNumberShop)) {
+      ToastAndroid.show('Số điện thoại không hợp lệ', ToastAndroid.SHORT);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('nameShop', data?.nameShop);
     formData.append('phoneNumberShop', data?.phoneNumberShop);
     formData.append('des', data?.des);
-    formData.append('emailShop', data?.emailShop);
+
     formData.append('address', data?.address);
 
     let localUri = data?.avatar?.uri;
     let filename = localUri.split('/').pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
-    formData.append('avatar', {uri: localUri, name: filename, type});
+    formData.append('avatar', { uri: localUri, name: filename, type });
 
     try {
       updateUserData(formData);
@@ -86,7 +93,7 @@ const ShopUpdate = ({navigation}) => {
     }
   };
 
-  const renderTextInput = (label, state, value) => (
+  const renderTextInput = (label, state, value, maxLength) => (
     <View key={label} style={styles.viewname}>
       <View>
         <Text style={styles.text}>{label}</Text>
@@ -95,14 +102,15 @@ const ShopUpdate = ({navigation}) => {
         <TextInput
           style={styles.input}
           value={state}
-          onChangeText={text => setData({...data, [value]: text})}
-          maxLength={120}
-          multiline={true}
+          onChangeText={
+            (text) => setData({ ...data, [value]: text.slice(0, maxLength) })}
+          maxLength={maxLength}
+          keyboardType={value === 'phoneNumberShop' ? 'numeric' : 'default'}
           placeholder={`Nhập ${label.toLowerCase()}`}
         />
-        <View style={{alignItems: 'center', justifyContent: 'space-around'}}>
-          <Text>{state.length}/120</Text>
-          <Pressable onPress={() => setData({...data, [value]: ''})}>
+        <View style={{ alignItems: 'center', justifyContent: 'space-around' }}>
+          <Text>{state.length}/{maxLength}</Text>
+          <Pressable onPress={() => setData({ ...data, [value]: '' })}>
             <AntDesign
               name="closecircleo"
               size={20}
@@ -134,7 +142,7 @@ const ShopUpdate = ({navigation}) => {
                   onPress={() => bottomSheetModalRef.current?.present()}>
                   <Image
                     style={styles.avatar}
-                    source={{uri: data?.avatar?.uri}}
+                    source={{ uri: data?.avatar?.uri }}
                   />
                   <View style={styles.cameraIcon}>
                     <Feather color={'white'} name="camera" size={20} />
@@ -147,29 +155,29 @@ const ShopUpdate = ({navigation}) => {
                     label: 'Tên cửa hàng',
                     state: data?.nameShop,
                     value: 'nameShop',
+                    maxLength: 100,
                   },
-                  {
-                    label: 'Email',
-                    state: data?.emailShop,
-                    value: 'emailShop',
-                  },
+
                   {
                     label: 'Địa chỉ cửa hàng',
                     state: data?.address,
                     value: 'address',
+                    maxLength: 120,
                   },
                   {
                     label: 'Số điện thoại',
                     state: data?.phoneNumberShop,
                     value: 'phoneNumberShop',
+                    maxLength: 10,
                   },
                   {
                     label: 'Mô tả cửa hàng',
                     state: data?.des,
                     value: 'des',
+                    maxLength: 120,
                   },
                 ].map(item =>
-                  renderTextInput(item.label, item.state, item.value),
+                  renderTextInput(item.label, item.state, item.value, item.maxLength),
                 )}
               </View>
             </ScrollView>
@@ -183,8 +191,8 @@ const ShopUpdate = ({navigation}) => {
           index={1}
           snapPoints={['1%', '50%']}
           backgroundStyle={styles.bottomSheetBackground}>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{fontSize: 20, color: 'gray', fontWeight: 'bold'}}>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 20, color: 'gray', fontWeight: 'bold' }}>
               Chọn ảnh từ
             </Text>
             <TouchableOpacity
@@ -297,7 +305,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: '5%',
-    marginTop: 30,
+    marginTop: 100,
     backgroundColor: 'black',
   },
   buttonText: {

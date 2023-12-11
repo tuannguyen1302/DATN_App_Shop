@@ -119,7 +119,7 @@ const MessageScreen = ({ navigation }) => {
               source={Chat}
             />
             <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-              Chưa có tin nhắn nào được nhận 👑
+              hãy bắt đầu cuộc trò chuyện  👑
             </Text>
           </View>
         )}
