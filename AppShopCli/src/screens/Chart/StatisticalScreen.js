@@ -29,7 +29,7 @@ const StatisticalScreen = ({navigation}) => {
       const res = await apiGet(
         `${SHOP_API}/overview/${new Date().getFullYear()}`,
       );
-      setData(res?.message[0]);
+      setData(res?.message);
       const res2 = await apiGet(`${SHOP_API}/analysis/thang`);
       setData2(res2?.message?.revenue);
     } catch (error) {
@@ -82,7 +82,7 @@ const StatisticalScreen = ({navigation}) => {
 
 const OverviewScreen = ({data, userAccount}) => {
   if (!data) {
-    return <ActivityIndicator size={'large'} color={'gray'} />;
+    return <ActivityIndicator size={'large'} color={'black'} />;
   }
 
   return (
@@ -128,7 +128,7 @@ const OverviewScreen = ({data, userAccount}) => {
         </View>
       </View>
 
-      {data?.topSold && (
+      {data?.topSold.length > 0 && (
         <View style={styles.productListContainer}>
           <Text style={styles.footerText}>Top 10 Sản phẩm bán chạy nhất</Text>
           <FlatList
@@ -171,7 +171,7 @@ const ProductItem = ({item}) => (
 );
 const AnalysisScreen = ({data}) => {
   if (!data) {
-    return <ActivityIndicator size={'large'} color={'gray'} />;
+    return <ActivityIndicator size={'large'} color={'black'} />;
   }
 
   const dataChart = {

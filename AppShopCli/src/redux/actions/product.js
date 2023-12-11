@@ -10,11 +10,13 @@ export const saveProductData = async (idType, text, sort) => {
         idType == 'null' ? 'getAllProductByShop' : 'ofCategoryForShop/' + idType
       }/${text}`,
     );
-    const productData = res?.message.sort((a, b) => {
-      const priceA = a.product_price;
-      const priceB = b.product_price;
-      return sort === 'up' ? priceA - priceB : priceB - priceA;
-    });
+    const productData = res?.message.length
+      ? res?.message.sort((a, b) => {
+          const priceA = a.product_price;
+          const priceB = b.product_price;
+          return sort === 'up' ? priceA - priceB : priceB - priceA;
+        })
+      : null;
     store.dispatch(saveProduct({value: text, data: productData}));
     return false;
   } catch (error) {

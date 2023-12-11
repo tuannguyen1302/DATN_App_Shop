@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   ToastAndroid,
@@ -15,6 +16,7 @@ import imagePath from '../../constants/imagePath';
 import {useSelector} from 'react-redux';
 import {API_BASE_URL} from '../../config/urls';
 import {saveOrderData, updateOrderData} from '../../redux/actions/order';
+import {ScrollView} from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -68,50 +70,86 @@ const load = async (isCheck, text) => {
 const OrderListScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.pending);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     load(setLoading, 'pending');
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => load(setRefreshing, 'pending')}
+        />
+      }
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
       {loading ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
+        <ActivityIndicator size={'large'} color={'black'} />
       ) : data ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
+          scrollEnabled={false}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order1}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào cần phê duyệt
+          </Text>
+        </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const InDeliveryScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.shipped);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     load(setLoading, 'shipped');
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => load(setRefreshing, 'shipped')}
+        />
+      }
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
       {loading ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
+        <ActivityIndicator size={'large'} color={'black'} />
       ) : data ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
+          scrollEnabled={false}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order2}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào được vận chuyển
+          </Text>
+        </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -132,9 +170,18 @@ const DeliveredScreen = ({navigation}) => {
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
+          showsVerticalScrollIndicator={false}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order3}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào đã giao
+          </Text>
+        </View>
       )}
     </View>
   );
@@ -157,9 +204,18 @@ const CanceledScreen = ({navigation}) => {
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
+          showsVerticalScrollIndicator={false}
         />
       ) : (
-        <Text>Không có đơn nào</Text>
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order4}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng được hủy ✨
+          </Text>
+        </View>
       )}
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Pressable,
   Text,
@@ -10,17 +10,19 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { apiDelete, clearAllItem } from '../../utils/utils';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { SIGNOUT_API } from '../../config/urls';
+import {apiDelete, clearAllItem} from '../../utils/utils';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {SIGNOUT_API} from '../../config/urls';
 import socketServices from '../../utils/socketService';
 import Spinner from 'react-native-loading-spinner-overlay';
+import store from '../../redux/store';
+import {saveUser} from '../../redux/reducers/user';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const SettingScreen = ({ navigation }) => {
+const SettingScreen = ({navigation}) => {
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const bottomSheetModalRef = useRef(null);
 
@@ -31,6 +33,7 @@ const SettingScreen = ({ navigation }) => {
       clearAllItem();
       socketServices.emit('logout');
       setButtonDisabled(false);
+      store.dispatch(saveUser(null));
       navigation.replace('Login2');
     } catch (error) {
       setButtonDisabled(false);
@@ -48,7 +51,7 @@ const SettingScreen = ({ navigation }) => {
               style={SettingStyles.backButton}>
               <AntDesign name="left" size={30} color={'black'} />
             </TouchableOpacity>
-            <Text style={[SettingStyles.headerText, { left: '20%' }]}>
+            <Text style={[SettingStyles.headerText, {left: '20%'}]}>
               Setting
             </Text>
           </View>
@@ -118,7 +121,7 @@ const SettingScreen = ({ navigation }) => {
             <Text
               style={[
                 SettingStyles.headerText,
-                { marginTop: windowHeight * 0.09 },
+                {marginTop: windowHeight * 0.09},
               ]}>
               Khác
             </Text>
@@ -157,7 +160,7 @@ const SettingScreen = ({ navigation }) => {
           <Spinner
             visible={isButtonDisabled}
             textContent={'Đang đăng xuất...'}
-            textStyle={{ color: '#FFF' }}
+            textStyle={{color: '#FFF'}}
           />
         </Pressable>
 
@@ -169,7 +172,7 @@ const SettingScreen = ({ navigation }) => {
             borderRadius: 25,
             borderWidth: 0.5,
           }}>
-          <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{flex: 1, alignItems: 'center'}}>
             <MaterialIcons
               name="logout"
               size={windowWidth * 0.11}
@@ -184,7 +187,7 @@ const SettingScreen = ({ navigation }) => {
               }}>
               Bạn có chắc chắn muốn đăng xuất không?
             </Text>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
                 onPress={() => bottomSheetModalRef.current?.close()}
                 style={{
@@ -197,7 +200,7 @@ const SettingScreen = ({ navigation }) => {
                   justifyContent: 'center',
                 }}>
                 <Text
-                  style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                  style={{fontSize: 15, fontWeight: 'bold', color: 'black'}}>
                   Hủy
                 </Text>
               </TouchableOpacity>

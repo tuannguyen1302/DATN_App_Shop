@@ -63,7 +63,11 @@ const ProductScreen = ({navigation}) => {
               productId: product._id,
             });
             if (check) {
-              setStatus(product?.isDraft ? 'all' : 'private');
+              if (!selectedTypes) {
+                saveProductData('null', status, 'up');
+              } else {
+                saveProductData(selectedTypes, status, sortByPrice);
+              }
               ToastAndroid.show(
                 `Thay đổi trạng thái ${action} thành công`,
                 ToastAndroid.show,
@@ -133,7 +137,7 @@ const ProductScreen = ({navigation}) => {
       style={[styles.container, {zIndex: isOpen ? 1 : 0}]}>
       <BottomSheetModalProvider>
         <Pressable onPress={() => bottomSheetModalRef.current?.close()}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.filter}>
               <Pressable
                 style={styles.searchButton}
@@ -159,9 +163,9 @@ const ProductScreen = ({navigation}) => {
             />
             {loading ? (
               <View style={{marginTop: '50%'}}>
-                <ActivityIndicator size="large" color="gray" />
+                <ActivityIndicator size="large" color="black" />
               </View>
-            ) : !productList[status]?.message ? (
+            ) : productList[status] ? (
               <FlatList
                 scrollEnabled={false}
                 data={productList[status]}
@@ -433,8 +437,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: '20%',
+    alignSelf: 'center',
   },
   productImage2: {
     width: 200,

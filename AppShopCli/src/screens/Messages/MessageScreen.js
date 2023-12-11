@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Pressable,
@@ -7,7 +7,6 @@ import {
   Image,
   Text,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {ListItem, Avatar} from '@rneui/themed';
@@ -16,6 +15,7 @@ import {useSelector} from 'react-redux';
 import {API_BASE_URL} from '../../config/urls';
 import imagePath from '../../constants/imagePath';
 import {formatMessageTime} from '../../components/DateTime';
+import Chat from '../../assets/images/Chat.png';
 
 const MessageScreen = ({navigation}) => {
   const data = useSelector(state => state?.chat?.chatData);
@@ -104,15 +104,26 @@ const MessageScreen = ({navigation}) => {
         <Image style={styles.logo} source={imagePath.logo} />
         <Text style={styles.title}>Chat box</Text>
       </View>
-      {!data ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={item => item?.chat?._id}
-          renderItem={renderItem}
-        />
-      )}
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        {data[0]?.chat ? (
+          <FlatList
+            data={data}
+            keyExtractor={item => item?.chat?._id}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View style={{alignSelf: 'center', alignItems: 'center'}}>
+            <Image
+              style={{width: 100, height: 100, resizeMode: 'contain'}}
+              source={Chat}
+            />
+            <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+              Chưa có tin nhắn nào được nhận 👑
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };

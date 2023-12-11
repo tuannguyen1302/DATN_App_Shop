@@ -12,9 +12,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {apiGet} from '../../utils/utils';
 import {NOTIFI_API} from '../../config/urls';
 import {formatNotificationTime} from '../../components/DateTime';
+import imagePath from '../../constants/imagePath';
 
 const NotifiScreen = ({navigation}) => {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const renderItem = ({item}) => {
     return (
@@ -23,9 +25,7 @@ const NotifiScreen = ({navigation}) => {
         style={styles.notificationItem}>
         <Image
           resizeMode="contain"
-          source={{
-            uri: 'https://th.bing.com/th/id/OIP.iZrlA44xilXu5howRorUOAHaE8?w=278&h=185&c=7&r=0&o=5&pid=1.7',
-          }}
+          source={imagePath.notification2}
           style={styles.notificationImage}
         />
         <View style={styles.notificationTextContainer}>
@@ -42,8 +42,10 @@ const NotifiScreen = ({navigation}) => {
     try {
       const res = await apiGet(`${NOTIFI_API}/shop`);
       setData(res?.message.reverse());
+      setLoading(false);
     } catch (error) {
-      throw error;
+      console.error('Error fetching data:', error);
+      setLoading(false);
     }
   };
 
@@ -61,13 +63,29 @@ const NotifiScreen = ({navigation}) => {
         </TouchableOpacity>
         <Text style={styles.title}>Notification</Text>
       </View>
-      {!data ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
+      {loading ? (
+        <ActivityIndicator
+          style={{marginTop: '40%'}}
+          size="large"
+          color="black"
+        />
+      ) : !data ? (
+        <View
+          style={{alignSelf: 'center', alignItems: 'center', marginTop: '40%'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.notification1}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng được hủy ✨
+          </Text>
+        </View>
       ) : (
         <FlatList
           data={data}
           keyExtractor={item => item?._id}
           renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>
