@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   Pressable,
@@ -8,19 +8,19 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  StyleSheet,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import fuzzy from 'fuzzy';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import imagePath from '../../constants/imagePath';
 import {apiGet, getItem, setItem} from '../../utils/utils';
 import {PRODUCT_API} from '../../config/urls';
 import {renderProductItem} from '../../components/Product';
+import {updateProductData} from '../../redux/actions/product';
+import SearchScreenStyles from './styles';
 
 const SearchScreen = ({navigation}) => {
   const [isCheck, setIsCheck] = useState(false);
@@ -30,7 +30,6 @@ const SearchScreen = ({navigation}) => {
   const [productList, setProductList] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState(5);
   const [loading, setLoading] = useState(false);
-  const bottomSheetModalRef = useRef(null);
 
   const saveSearchToHistory = async query => {
     try {
@@ -150,7 +149,7 @@ const SearchScreen = ({navigation}) => {
               <View style={SearchScreenStyles.imageContainer}>
                 <Image
                   style={SearchScreenStyles.productImage}
-                  source={imagePath.search}
+                  source={imagePath.search1}
                 />
                 <Text style={SearchScreenStyles.imageText}>
                   Tìm kiếm trong cửa hàng
@@ -166,10 +165,10 @@ const SearchScreen = ({navigation}) => {
           <View style={SearchScreenStyles.imageContainer}>
             <Image
               style={SearchScreenStyles.productImage}
-              source={imagePath.noProduct}
+              source={imagePath.search2}
             />
             <Text style={SearchScreenStyles.imageText}>
-              Không tìm thấy sản phẩm nào
+              Không tìm thấy sản phù hợp 😶‍🌫️
             </Text>
           </View>
         );
@@ -178,7 +177,9 @@ const SearchScreen = ({navigation}) => {
       return (
         <FlatList
           data={productList?.slice(0, visibleProducts)}
-          renderItem={({item}) => renderProductItem(item, navigation, {})}
+          renderItem={({item}) =>
+            renderProductItem(item, navigation, toggleHideProduct)
+          }
           keyExtractor={item => item?._id}
           onEndReached={() => setVisibleProducts(prev => prev + 5)}
           onEndReachedThreshold={0.1}
@@ -188,201 +189,112 @@ const SearchScreen = ({navigation}) => {
     }
   };
 
+  const toggleHideProduct = async product => {
+    const action = product?.isDraft ? 'hiện' : 'ẩn';
+    const message = `Bạn muốn ${action} sản phẩm "${product?.product_name}"?`;
+
+    Alert.alert(`Cảnh báo`, message, [
+      {
+        text: 'Hủy',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Xác nhận',
+        onPress: async () => {
+          try {
+            const check = await updateProductData({
+              isDraft: product?.isDraft,
+              productId: product._id,
+            });
+            if (check) {
+              const res = await apiGet(
+                `${PRODUCT_API}/findProduct/${searchText}`,
+              );
+              setProductList(res?.message);
+              ToastAndroid.show(
+                `Thay đổi trạng thái ${action} thành công`,
+                ToastAndroid.show,
+              );
+            }
+          } catch (error) {
+            throw error;
+          }
+        },
+      },
+    ]);
+  };
+
   return (
-    <GestureHandlerRootView style={SearchScreenStyles.container}>
-      <BottomSheetModalProvider>
-        <Pressable
-          style={{flex: 1}}
-          onPress={() => bottomSheetModalRef.current?.close()}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginHorizontal: '5%',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                width: 40,
-                height: 40,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#EEEEEE',
-                borderRadius: 15,
-              }}>
-              <AntDesign name="left" size={20} color={'black'} />
-            </TouchableOpacity>
-            <Text
-              style={{
-                left: '30%',
-                fontSize: 22,
-                color: 'black',
-                fontWeight: '600',
-              }}>
-              Search
-            </Text>
-          </View>
-          <View style={SearchScreenStyles.searchHeader}>
-            <View
-              style={{
-                flex: 0.95,
-                height: 45,
-                marginVertical: 15,
-                borderRadius: 20,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                backgroundColor: '#EEEEEE',
-              }}
-              onPress={() => navigation.navigate('SearchScreen')}>
-              <TextInput
-                style={SearchScreenStyles.searchInput}
-                defaultValue={searchText}
-                placeholder="Nhập tìm kiếm"
-                returnKeyType="search"
-                onFocus={() => setIsCheck(false)}
-                onSubmitEditing={() => saveSearchToHistory(searchText)}
-                onChangeText={setSearchText}
-              />
-              {searchText ? (
-                <TouchableOpacity
-                  style={{marginRight: 10}}
-                  onPress={() => setSearchText('')}>
-                  <Feather name="x-circle" size={24} color="black" />
-                </TouchableOpacity>
-              ) : (
-                <AntDesign
-                  style={{marginRight: 10}}
-                  name="search1"
-                  size={24}
-                  color={'gray'}
-                />
-              )}
-            </View>
-            <Pressable
-              onPress={() => bottomSheetModalRef.current?.present()}
-              style={{
-                width: 40,
-                height: 40,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#EEEEEE',
-                borderRadius: 15,
-              }}>
-              <Ionicons name="filter-sharp" size={24} color={'black'} />
-            </Pressable>
-          </View>
-          {loading ? (
-            <View style={SearchScreenStyles.loadingContainer}>
-              <ActivityIndicator size="large" color="gray" />
-            </View>
-          ) : (
-            renderSearchList()
-          )}
-        </Pressable>
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={['25%', '50%']}
-          backgroundStyle={{
-            borderRadius: 25,
-            borderWidth: 0.5,
+    <View style={SearchScreenStyles.container}>
+      <Pressable
+        style={{flex: 1}}
+        onPress={() => bottomSheetModalRef.current?.close()}>
+        <View
+          style={{
+            flexDirection: 'row',
+            marginHorizontal: '5%',
+            alignItems: 'center',
           }}>
-          <View style={{flex: 1}}></View>
-        </BottomSheetModal>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{
+              width: 40,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#EEEEEE',
+              borderRadius: 15,
+            }}>
+            <AntDesign name="left" size={20} color={'black'} />
+          </TouchableOpacity>
+          <Text
+            style={{
+              left: '30%',
+              fontSize: 22,
+              color: 'black',
+              fontWeight: '600',
+            }}>
+            Search
+          </Text>
+        </View>
+        <View
+          style={SearchScreenStyles.searchHeader}
+          onPress={() => navigation.navigate('SearchScreen')}>
+          <TextInput
+            style={SearchScreenStyles.searchInput}
+            defaultValue={searchText}
+            placeholder="Nhập tìm kiếm"
+            returnKeyType="search"
+            onFocus={() => setIsCheck(false)}
+            onSubmitEditing={() => saveSearchToHistory(searchText)}
+            onChangeText={setSearchText}
+          />
+          {searchText ? (
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => setSearchText('')}>
+              <Feather name="x-circle" size={24} color="black" />
+            </TouchableOpacity>
+          ) : (
+            <AntDesign
+              style={{marginRight: 10}}
+              name="search1"
+              size={24}
+              color={'gray'}
+            />
+          )}
+        </View>
+        {loading ? (
+          <View style={SearchScreenStyles.loadingContainer}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        ) : (
+          renderSearchList()
+        )}
+      </Pressable>
+    </View>
   );
 };
-
-const SearchScreenStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  searchHeaderView: {
-    alignSelf: 'center',
-    width: '85%',
-    marginVertical: '2%',
-    height: 45,
-    padding: 5,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 10,
-  },
-  searchPlaceholder: {
-    marginLeft: '5%',
-    fontSize: 15,
-    color: 'gray',
-  },
-  imageContainer: {
-    marginTop: '10%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  searchHeader: {
-    flexDirection: 'row',
-    marginHorizontal: '5%',
-    marginVertical: '1%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  searchBox: {
-    flex: 1,
-    height: 40,
-    borderRadius: 10,
-    paddingLeft: '3%',
-    marginRight: '4%',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#D9D9D9',
-  },
-  searchInput: {
-    flex: 1,
-    marginHorizontal: '2%',
-    color: 'black',
-  },
-  cancelText: {
-    color: 'red',
-    fontSize: 18,
-    fontWeight: '500',
-    marginRight: '5%',
-  },
-  productImage: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-  },
-  imageText: {
-    marginTop: '5%',
-    color: 'black',
-    fontSize: 18,
-  },
-  searchItem: {
-    padding: 5,
-    height: 40,
-    marginBottom: '1%',
-    marginHorizontal: '5%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: '#EEEEEE',
-    justifyContent: 'space-between',
-  },
-  searchText: {
-    left: '20%',
-    fontSize: 15,
-    color: 'black',
-    fontWeight: '500',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default SearchScreen;

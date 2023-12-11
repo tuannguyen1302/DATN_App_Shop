@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://687c-116-96-45-68.ngrok-free.app/';
+export const API_BASE_URL = 'https://dai.tongdaihoidap.com/';
 
 export const getApiUrl = endpoint => API_BASE_URL + endpoint;
 
@@ -12,5 +12,5 @@ export const SHOP_API = getApiUrl('v1/api/shop');
 export const DISCOUNT_API = getApiUrl('v1/api/discount');
 export const NOTIFI_API = getApiUrl('v1/api/notification');
 export const USER_API = getApiUrl('v1/api/user');
-export const OTP_API = getApiUrl('v1/api/access/verifyOtp');
 export const CATERGORY_API = getApiUrl('v1/api/category');
+export const OTP_API = getApiUrl('v1/api/access/verifyOtp');

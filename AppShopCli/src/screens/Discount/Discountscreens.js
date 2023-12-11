@@ -9,6 +9,7 @@ import {
   Alert,
   ToastAndroid,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,9 +17,11 @@ import {apiDelete, apiGet} from '../../utils/utils';
 import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {formatNotificationTime} from '../../components/DateTime';
+import imagePath from '../../constants/imagePath';
 
 const DiscountCodeScreen = ({navigation}) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const deleteSale = idDiscount => {
     Alert.alert('Cảnh báo', 'Bạn muốn xóa mã giảm giá này chứ?', [
@@ -32,6 +35,7 @@ const DiscountCodeScreen = ({navigation}) => {
         onPress: async () => {
           try {
             await apiDelete(`${DISCOUNT_API}/deleteDiscount/${idDiscount}`);
+            getApi();
             ToastAndroid.show('Xóa mã giảm giá thành công', ToastAndroid.show);
           } catch (error) {
             console.log('Delete api: ', error.message);
@@ -47,6 +51,8 @@ const DiscountCodeScreen = ({navigation}) => {
       setData(res?.message);
     } catch (error) {
       console.log('Call api: ', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,6 +102,8 @@ const DiscountCodeScreen = ({navigation}) => {
     );
   };
 
+  console.log(data);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.header}>
@@ -106,12 +114,39 @@ const DiscountCodeScreen = ({navigation}) => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Discount</Text>
       </View>
-      <FlatList
-        data={data}
-        keyExtractor={item => item?._id}
-        renderItem={renderDiscountItem}
-        contentContainerStyle={{marginHorizontal: '3%'}}
-      />
+      {loading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : !data[0]?._id ? (
+        <View
+          style={{
+            alignSelf: 'center',
+            alignItems: 'center',
+            marginTop: '40%',
+          }}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.discount}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có mã giảm giá nào ✨
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?._id}
+          renderItem={renderDiscountItem}
+          contentContainerStyle={{marginHorizontal: '3%'}}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
       <TouchableOpacity
         onPress={() => navigation.navigate('AddDiscount')}
         style={{
@@ -167,7 +202,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
     borderColor: '#aaa',
-    backgroundColor: 'white', // Màu nền của mỗi item
+    backgroundColor: 'white',
   },
   discountImage: {
     width: 100,

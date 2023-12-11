@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import { apiGet } from '../../utils/utils';
-import { API_BASE_URL, CHAT_API } from '../../config/urls';
-import { GiftedChat, Send } from 'react-native-gifted-chat';
+import {apiGet} from '../../utils/utils';
+import {API_BASE_URL, CHAT_API} from '../../config/urls';
+import {GiftedChat, Send} from 'react-native-gifted-chat';
 import socketServices from '../../utils/socketService';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { saveChatData } from '../../redux/actions/chat';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {saveChatData} from '../../redux/actions/chat';
 
-const MessageItem = ({ navigation, route }) => {
-  const { data } = route.params;
+const MessageItem = ({navigation, route}) => {
+  const {data} = route.params;
   const [messages, setMessages] = useState([]);
 
   const getApi = async () => {
@@ -21,8 +21,8 @@ const MessageItem = ({ navigation, route }) => {
         ...message,
         user: {
           _id: message?.senderId,
-          //name: message?.senderId === data?.idShop ? 'Me' : data.useName,
-          avatar: `${API_BASE_URL}${data.avatar}`,
+          name: message?.senderId === data?.idShop ? 'Me' : data.useName,
+          avatar: `${API_BASE_URL}${data?.avatar}`,
         },
       }));
       setMessages(mess.reverse());
@@ -33,7 +33,7 @@ const MessageItem = ({ navigation, route }) => {
 
   const openImagePicker = async () => {
     try {
-      const result = await launchImageLibrary({ mediaType: 'photo' });
+      const result = await launchImageLibrary({mediaType: 'photo'});
 
       if (!result.cancelled) {
         const imageMessage = {
@@ -81,12 +81,12 @@ const MessageItem = ({ navigation, route }) => {
     <View style={MessageItemStyles.container}>
       <View style={MessageItemStyles.header}>
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             socketServices.emit('leaveRoom', {
               roomName: data?.idRoom,
               userId: data?.idShop,
             }),
-              saveChatData(),
+              await saveChatData(),
               navigation.goBack();
           }}
           style={{
@@ -101,12 +101,12 @@ const MessageItem = ({ navigation, route }) => {
         </TouchableOpacity>
         <View style={MessageItemStyles.userInfo}>
           <Image
-            source={{ uri: `${API_BASE_URL}${data?.avatar}` }}
+            source={{uri: `${API_BASE_URL}${data?.avatar}`}}
             style={MessageItemStyles.userAvatar}
           />
           <Text style={MessageItemStyles.userName}>{data?.useName}</Text>
         </View>
-        <TouchableOpacity onPress={() => { }}>
+        <TouchableOpacity onPress={() => {}}>
           <AntDesign name="questioncircleo" size={25} color={'black'} />
         </TouchableOpacity>
       </View>
@@ -119,9 +119,9 @@ const MessageItem = ({ navigation, route }) => {
         }}
         textInputStyle={MessageItemStyles.input}
         renderSend={props => (
-          <Send {...props} containerStyle={{ justifyContent: 'center' }}>
+          <Send {...props} containerStyle={{justifyContent: 'center'}}>
             <TouchableOpacity
-              onPress={() => props.onSend({ text: props.text.trim() }, true)}
+              onPress={() => props.onSend({text: props.text.trim()}, true)}
               style={MessageItemStyles.sendButton}>
               <MaterialIcons name="send" size={25} color={'white'} />
             </TouchableOpacity>
@@ -131,14 +131,14 @@ const MessageItem = ({ navigation, route }) => {
         renderActions={() => (
           <TouchableOpacity
             onPress={openImagePicker}
-            style={{ alignSelf: 'center', marginLeft: '3%' }}>
+            style={{alignSelf: 'center', marginLeft: '3%'}}>
             <Feather name="camera" size={25} color="#333" />
           </TouchableOpacity>
         )}
         renderMessageImage={props => (
           <Image
-            source={{ uri: props.currentMessage.image }}
-            style={{ width: 200, height: 150 }}
+            source={{uri: props.currentMessage.image}}
+            style={{width: 200, height: 150}}
           />
         )}
       />

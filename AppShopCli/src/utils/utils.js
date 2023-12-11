@@ -6,7 +6,8 @@ const setItem = async (key, value) => {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
-    console.error('Error during setItem:', e);
+    // console.error('Error during setItem:', e);
+    throw error;
   }
 };
 
@@ -20,7 +21,7 @@ const getItem = async key => {
       return null;
     }
   } catch (error) {
-    console.error(`Error retrieving data for key ${key}: ${error.message}`);
+    // console.error(`Error retrieving data for key ${key}: ${error.message}`);
     throw error;
   }
 };
@@ -51,7 +52,7 @@ const apiReq = async (endPoint, data, method, headers, requestOptions = {}) => {
       };
     }
 
-    const response = await axios[method](endPoint, data, { headers });
+    const response = await axios[method](endPoint, data, {headers});
     const responseData = response.data;
 
     if (responseData.status === false) {
@@ -60,10 +61,10 @@ const apiReq = async (endPoint, data, method, headers, requestOptions = {}) => {
 
     return responseData;
   } catch (error) {
-    //  console.error('Error during API request:', error);
+    // console.error('Error during API request:', error);
 
     if (error.response && error.response.status === 401) {
-      throw { ...error.response.data, msg: 'Unauthorized' };
+      throw {...error.response.data, msg: 'Unauthorized'};
     }
 
     if (error.response && error.response.data) {
@@ -72,15 +73,15 @@ const apiReq = async (endPoint, data, method, headers, requestOptions = {}) => {
         msg: error.response.data.message || 'Network Error',
       };
     } else {
-      throw { message: 'Network Error', msg: 'Network Error' };
+      throw {message: 'Network Error', msg: 'Network Error'};
     }
   }
 };
 
 const createApiFunction =
   method =>
-    (endPoint, data, headers = {}) =>
-      apiReq(endPoint, data, method, headers);
+  (endPoint, data, headers = {}) =>
+    apiReq(endPoint, data, method, headers);
 
 export const apiGet = createApiFunction('get');
 export const apiPut = createApiFunction('put');
@@ -88,4 +89,4 @@ export const apiPost = createApiFunction('post');
 export const apiDelete = createApiFunction('delete');
 export const apiPatch = createApiFunction('patch');
 
-export { setItem, getItem, clearAllItem };
+export {setItem, getItem, clearAllItem};

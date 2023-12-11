@@ -8,7 +8,7 @@ import {formatCurrency} from './Price';
 
 export const renderProductItem = (item, navigation, toggleHideProduct) => (
   <Pressable
-    onPress={() => navigation.navigate('ProductItem')}
+    onPress={() => navigation.navigate('ProductItem', {id: item?._id})}
     style={styles.productItem}>
     <TouchableOpacity onPress={() => toggleHideProduct(item)}>
       <FastImage

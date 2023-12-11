@@ -1,5 +1,6 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
+import {WebView} from 'react-native-webview';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const NotiItem = ({navigation, route}) => {
@@ -16,6 +17,10 @@ const NotiItem = ({navigation, route}) => {
         </TouchableOpacity>
         <Text style={styles.title}>Information Notification</Text>
       </View>
+      <WebView
+        source={{uri: 'https://741e-116-96-45-68.ngrok-free.app/shopNoti/'}}
+        style={{flex: 1}}
+      />
     </View>
   );
 };

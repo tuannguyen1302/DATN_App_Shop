@@ -1,19 +1,22 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   ToastAndroid,
   View,
 } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import imagePath from '../../constants/imagePath';
-import { useSelector } from 'react-redux';
-import { API_BASE_URL } from '../../config/urls';
-import { saveOrderData, updateOrderData } from '../../redux/actions/order';
+import {useSelector} from 'react-redux';
+import {API_BASE_URL} from '../../config/urls';
+import {saveOrderData, updateOrderData} from '../../redux/actions/order';
+import {ScrollView} from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -29,8 +32,8 @@ const tabNavigatorOptions = route => ({
     borderRadius: 10,
     marginHorizontal: '2%',
   },
-  tabBarLabel: ({ focused }) => (
-    <Text style={{ color: focused ? 'black' : 'grey', fontWeight: '500' }}>
+  tabBarLabel: ({focused}) => (
+    <Text style={{color: focused ? 'black' : 'grey', fontWeight: '500'}}>
       {route.name}
     </Text>
   ),
@@ -45,7 +48,7 @@ const OrderScreen = () => {
           <Text style={styles.titleText}>Order</Text>
         </View>
       </View>
-      <Tab.Navigator screenOptions={({ route }) => tabNavigatorOptions(route)}>
+      <Tab.Navigator screenOptions={({route}) => tabNavigatorOptions(route)}>
         <Tab.Screen name="Đơn hàng" component={OrderListScreen} />
         <Tab.Screen name="Đang giao" component={InDeliveryScreen} />
         <Tab.Screen name="Đã giao" component={DeliveredScreen} />
@@ -55,119 +58,213 @@ const OrderScreen = () => {
   );
 };
 
-const OrderListScreen = ({ navigation }) => {
-  const data = useSelector(state => state?.order?.orderData?.pending);
-
-  useEffect(() => {
-    saveOrderData('pending');
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      {!data ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
-        />
-      )}
-    </View>
-  );
-};
-
-const InDeliveryScreen = ({ navigation }) => {
-  const data = useSelector(state => state?.order?.orderData?.shipped);
-  useEffect(() => {
-    saveOrderData('shipped');
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      {!data ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
-        />
-      )}
-    </View>
-  );
-};
-
-const DeliveredScreen = ({ navigation }) => {
-  const data = useSelector(state => state?.order?.orderData?.delivered);
-
-  useEffect(() => {
-    saveOrderData('delivered');
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      {!data ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
-        />
-      )}
-    </View>
-  );
-};
-
-const CanceledScreen = ({ navigation }) => {
-  const data = useSelector(state => state?.order?.orderData?.cancelled);
-
-  useEffect(() => {
-    saveOrderData('cancelled');
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      {!data ? (
-        <ActivityIndicator size={'large'} color={'gray'} />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
-        />
-      )}
-    </View>
-  );
-};
-
-const patchApi = async (oderId, status, navigation) => {
+const load = async (isCheck, text) => {
   try {
-    const check = await updateOrderData({
-      value: status,
-      oderId,
-    });
-    if (check) {
-      navigation.navigate('Order', { screen: 'Đang giao' });
-      ToastAndroid.show(
-        'Xác nhận đơn hàng thành công thành công',
-        ToastAndroid.show,
-      );
-    }
+    isCheck(true);
+    isCheck(await saveOrderData(text));
   } catch (error) {
     throw error;
   }
 };
 
+const OrderListScreen = ({navigation}) => {
+  const data = useSelector(state => state?.order?.orderData?.pending);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    load(setLoading, 'pending');
+  }, []);
+
+  return (
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => load(setRefreshing, 'pending')}
+        />
+      }
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'black'} />
+      ) : data ? (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+          scrollEnabled={false}
+        />
+      ) : (
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order1}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào cần phê duyệt
+          </Text>
+        </View>
+      )}
+    </ScrollView>
+  );
+};
+
+const InDeliveryScreen = ({navigation}) => {
+  const data = useSelector(state => state?.order?.orderData?.shipped);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    load(setLoading, 'shipped');
+  }, []);
+
+  return (
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => load(setRefreshing, 'shipped')}
+        />
+      }
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'black'} />
+      ) : data ? (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+          scrollEnabled={false}
+        />
+      ) : (
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order2}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào được vận chuyển
+          </Text>
+        </View>
+      )}
+    </ScrollView>
+  );
+};
+
+const DeliveredScreen = ({navigation}) => {
+  const data = useSelector(state => state?.order?.orderData?.delivered);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    load(setLoading, 'delivered');
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : data ? (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order3}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào đã giao
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const CanceledScreen = ({navigation}) => {
+  const data = useSelector(state => state?.order?.orderData?.cancelled);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    load(setLoading, 'cancelled');
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator size={'large'} color={'gray'} />
+      ) : data ? (
+        <FlatList
+          data={data}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+          <Image
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            source={imagePath.order4}
+          />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng được hủy ✨
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const patchApi = (oderId, status, navigation) => {
+  Alert.alert(
+    `Thông báo`,
+    `Bạn có muốn ${
+      status === 'shipped' ? 'phê duyệt' : 'xác nhận'
+    } đơn hàng này!`,
+    [
+      {
+        text: 'Hủy',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Xác nhận',
+        onPress: async () => {
+          try {
+            const check = await updateOrderData({
+              value: status,
+              oderId,
+            });
+            if (check) {
+              navigation.navigate('Order', {screen: 'Đang giao'});
+              ToastAndroid.show(
+                'Xác nhận đơn hàng thành công thành công',
+                ToastAndroid.show,
+              );
+            }
+          } catch (error) {
+            throw error;
+          }
+        },
+      },
+    ],
+  );
+};
+
 const renderItem = (orderItem, navigation) => (
   <Pressable
-    onPress={() => navigation.navigate('OrderHistory', { orderItem })}
+    onPress={() => navigation.navigate('OrderHistory', {orderItem})}
     style={styles.itemContainer}>
     <View style={styles.productContainer}>
       <Image
         style={styles.productImage}
-        source={{ uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}` }}
+        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={1}>
@@ -202,7 +299,7 @@ const renderItem = (orderItem, navigation) => (
       )}
       {orderItem?.status === 'shipped' && (
         <Pressable
-          style={[styles.statusBadge, { backgroundColor: 'green' }]}
+          style={[styles.statusBadge, {backgroundColor: 'green'}]}
           onPress={() => patchApi(orderItem?.oderId, 'delivered', navigation)}>
           <Text style={[styles.infoText, styles.statusText]}>
             {STATUS_TRANSLATIONS['delivered']}

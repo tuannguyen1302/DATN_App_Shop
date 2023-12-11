@@ -1,14 +1,14 @@
-import React, { useRef, useEffect } from 'react';
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
-const TabButton = ({ item, onPress, accessibilityState }) => {
-  const { selected: focused } = accessibilityState;
+const TabButton = ({item, onPress, accessibilityState}) => {
+  const {selected: focused} = accessibilityState;
   const viewRef = useRef(null);
   const textViewRef = useRef(null);
 
   useEffect(() => {
-    const animationConfig = { 0: { scale: 0 }, 1: { scale: 1 } };
+    const animationConfig = {0: {scale: 0}, 1: {scale: 1}};
 
     if (viewRef.current && textViewRef.current) {
       if (focused) {
@@ -39,11 +39,11 @@ const TabButton = ({ item, onPress, accessibilityState }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, { flex: focused ? 1 : 0.65 }]}>
+      style={[styles.container, {flex: focused ? 1 : 0.65}]}>
       <View>
         <Animatable.View
           ref={viewRef}
-          style={[styles.background, { backgroundColor: item.color }]}
+          style={[styles.background, {backgroundColor: item.color}]}
           animation={focused ? 'bounceIn' : 'bounceOut'}
           duration={500}
           useNativeDriver

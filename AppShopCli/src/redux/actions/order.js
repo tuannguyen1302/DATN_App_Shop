@@ -8,6 +8,7 @@ export const saveOrderData = async text => {
     const res = await apiGet(`${ORDER_API}/getAllOrderForShop/${text}`);
     const orderData = res?.message?.orderRes?.user;
     store.dispatch(saveOrder({value: text, data: orderData}));
+    return false;
   } catch (error) {
     throw error;
   }

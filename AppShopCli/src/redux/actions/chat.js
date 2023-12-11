@@ -7,6 +7,7 @@ export const saveChatData = async () => {
   try {
     const res = await apiGet(`${CHAT_API}/getConvarsationsForShop`);
     store.dispatch(saveChat(res?.message));
+    return true;
   } catch (error) {
     throw error;
   }
