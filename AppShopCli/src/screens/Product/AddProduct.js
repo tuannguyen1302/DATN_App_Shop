@@ -110,7 +110,7 @@ const AddProduct = () => {
       await apiPost(`${PRODUCT_API}/createProduct`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      navigation.goBack();
+      navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.response);
     }
