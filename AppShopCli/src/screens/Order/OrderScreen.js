@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -11,12 +11,13 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {useFocusEffect} from '@react-navigation/native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import imagePath from '../../constants/imagePath';
-import { useSelector } from 'react-redux';
-import { API_BASE_URL } from '../../config/urls';
-import { saveOrderData, updateOrderData } from '../../redux/actions/order';
-import { ScrollView } from 'react-native';
+import {useSelector} from 'react-redux';
+import {API_BASE_URL} from '../../config/urls';
+import {saveOrderData, updateOrderData} from '../../redux/actions/order';
+import {ScrollView} from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -32,8 +33,8 @@ const tabNavigatorOptions = route => ({
     borderRadius: 10,
     marginHorizontal: '2%',
   },
-  tabBarLabel: ({ focused }) => (
-    <Text style={{ color: focused ? 'black' : 'grey', fontWeight: '500' }}>
+  tabBarLabel: ({focused}) => (
+    <Text style={{color: focused ? 'black' : 'grey', fontWeight: '500'}}>
       {route.name}
     </Text>
   ),
@@ -48,7 +49,7 @@ const OrderScreen = () => {
           <Text style={styles.titleText}>Order</Text>
         </View>
       </View>
-      <Tab.Navigator screenOptions={({ route }) => tabNavigatorOptions(route)}>
+      <Tab.Navigator screenOptions={({route}) => tabNavigatorOptions(route)}>
         <Tab.Screen name="Đơn hàng" component={OrderListScreen} />
         <Tab.Screen name="Đang giao" component={InDeliveryScreen} />
         <Tab.Screen name="Đã giao" component={DeliveredScreen} />
@@ -60,125 +61,132 @@ const OrderScreen = () => {
 
 const load = async (isCheck, text) => {
   try {
-    isCheck(true);
     isCheck(await saveOrderData(text));
   } catch (error) {
     throw error;
   }
 };
 
-const OrderListScreen = ({ navigation }) => {
+const OrderListScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.pending);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    load(setLoading, 'pending');
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      load(setLoading, 'pending');
+    }, []),
+  );
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => load(setRefreshing, 'pending')}
-        />
-      }
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'black'} />
-      ) : data ? (
+      ) : data.length != 0 ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
-          scrollEnabled={false}
+          renderItem={({item}) => renderItem(item, navigation)}
+          scrollEnabled={true}
+          showsVerticalScrollIndicator={false}
         />
       ) : (
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'pending')}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.container, {alignItems: 'center'}]}>
           <Image
-            style={{ width: 100, height: 100, resizeMode: 'contain' }}
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
             source={imagePath.order1}
           />
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
             Chưa có đơn hàng nào cần phê duyệt
           </Text>
-        </View>
+        </ScrollView>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
-const InDeliveryScreen = ({ navigation }) => {
+const InDeliveryScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.shipped);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    load(setLoading, 'shipped');
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      load(setLoading, 'shipped');
+    }, []),
+  );
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => load(setRefreshing, 'shipped')}
-        />
-      }
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'black'} />
-      ) : data ? (
+      ) : data.length != 0 ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
-          scrollEnabled={false}
+          renderItem={({item}) => renderItem(item, navigation)}
+          scrollEnabled={true}
+          showsVerticalScrollIndicator={false}
         />
       ) : (
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'shipped')}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.container, {alignItems: 'center'}]}>
           <Image
-            style={{ width: 100, height: 100, resizeMode: 'contain' }}
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
             source={imagePath.order2}
           />
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-            Chưa có đơn hàng nào được vận chuyển
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            Chưa có đơn hàng nào đang giao
           </Text>
-        </View>
+        </ScrollView>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
-const DeliveredScreen = ({ navigation }) => {
+const DeliveredScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.delivered);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    load(setLoading, 'delivered');
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      load(setLoading, 'delivered');
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
-      ) : data ? (
+      ) : data.length != 0 ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
+          renderItem={({item}) => renderItem(item, navigation)}
           showsVerticalScrollIndicator={false}
         />
       ) : (
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
           <Image
-            style={{ width: 100, height: 100, resizeMode: 'contain' }}
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
             source={imagePath.order3}
           />
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
             Chưa có đơn hàng nào đã giao
           </Text>
         </View>
@@ -187,32 +195,34 @@ const DeliveredScreen = ({ navigation }) => {
   );
 };
 
-const CanceledScreen = ({ navigation }) => {
+const CanceledScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.cancelled);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    load(setLoading, 'cancelled');
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      load(setLoading, 'cancelled');
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
-      ) : data ? (
+      ) : data.length != 0 ? (
         <FlatList
           data={data}
           keyExtractor={item => item?.oderId}
-          renderItem={({ item }) => renderItem(item, navigation)}
+          renderItem={({item}) => renderItem(item, navigation)}
           showsVerticalScrollIndicator={false}
         />
       ) : (
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <View style={{alignSelf: 'center', alignItems: 'center'}}>
           <Image
-            style={{ width: 100, height: 100, resizeMode: 'contain' }}
+            style={{width: 100, height: 100, resizeMode: 'contain'}}
             source={imagePath.order4}
           />
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
             Chưa có đơn hàng được hủy ✨
           </Text>
         </View>
@@ -224,7 +234,8 @@ const CanceledScreen = ({ navigation }) => {
 const patchApi = (oderId, status, navigation) => {
   Alert.alert(
     `Thông báo`,
-    `Bạn có muốn ${status === 'shipped' ? 'phê duyệt' : 'xác nhận'
+    `Bạn có muốn ${
+      status === 'shipped' ? 'phê duyệt' : 'xác nhận'
     } đơn hàng này!`,
     [
       {
@@ -241,7 +252,9 @@ const patchApi = (oderId, status, navigation) => {
               oderId,
             });
             if (check) {
-              navigation.navigate('Order', { screen: 'Đang giao' });
+              navigation.navigate('Order', {
+                screen: status === 'shipped' ? 'Đang giao' : 'Đã giao',
+              });
               ToastAndroid.show(
                 'Xác nhận đơn hàng thành công thành công',
                 ToastAndroid.show,
@@ -258,12 +271,12 @@ const patchApi = (oderId, status, navigation) => {
 
 const renderItem = (orderItem, navigation) => (
   <Pressable
-    onPress={() => navigation.navigate('OrderHistory', { orderItem })}
+    onPress={() => navigation.navigate('OrderHistory', {orderItem})}
     style={styles.itemContainer}>
     <View style={styles.productContainer}>
       <Image
         style={styles.productImage}
-        source={{ uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}` }}
+        source={{uri: `${API_BASE_URL}uploads/${orderItem?.product_thumb[0]}`}}
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={1}>
@@ -298,7 +311,7 @@ const renderItem = (orderItem, navigation) => (
       )}
       {orderItem?.status === 'shipped' && (
         <Pressable
-          style={[styles.statusBadge, { backgroundColor: 'green' }]}
+          style={[styles.statusBadge, {backgroundColor: 'green'}]}
           onPress={() => patchApi(orderItem?.oderId, 'delivered', navigation)}>
           <Text style={[styles.infoText, styles.statusText]}>
             {STATUS_TRANSLATIONS['delivered']}
@@ -313,7 +326,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-
     backgroundColor: 'white',
   },
   header: {

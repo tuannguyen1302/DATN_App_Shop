@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import imagePath from '../../constants/imagePath';
 import {saveProductData, updateProductData} from '../../redux/actions/product';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import {renderProductItem} from '../../components/Product';
 
 const TAB_ITEMS = [
@@ -33,6 +34,7 @@ const TAB_TEXT = {
   het_hang: 'Hết hàng',
   private: 'Được ẩn',
 };
+
 const ProductScreen = ({navigation}) => {
   const productList = useSelector(state => state?.product?.productData);
   const typeProduct = useSelector(state => state?.product?.typeData);
@@ -94,9 +96,11 @@ const ProductScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    load();
-  }, [status]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [status]),
+  );
 
   const renderTabItem = ({item, index}) => (
     <Pressable

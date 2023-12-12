@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useSelector} from 'react-redux';
-import {useRoute} from '@react-navigation/native';
+
 const CategoryItem = ({category, isSelected, onPress}) => (
   <TouchableOpacity
     style={[styles.categoryContainer, isSelected && styles.selectedCategory]}
