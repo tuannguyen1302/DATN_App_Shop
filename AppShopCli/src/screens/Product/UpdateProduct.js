@@ -37,11 +37,12 @@ const UpdateProduct = ({ navigation, route }) => {
   const [productPrice, setProductPrice] = useState(item?.product_price);
   const { selectedCategory, buil, newid, id } = route.params || {};
   const [productAttribute, setproductAttribute] = useState(item?.product_attributes);
+
   const typeProduct = useSelector(state => state?.product?.typeData);
 
 
   const ngang = typeProduct.find(items => items._id === item?.category);
-
+  const [productid, setproductid] = useState(ngang?._id);
 
   const clearField = setField => setField('');
   const defaultNewId = item?._id;
@@ -94,7 +95,7 @@ const UpdateProduct = ({ navigation, route }) => {
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice || !selectedCategory || (productAttributes !== undefined)
+        !productPrice || (productAttributes !== undefined) || !productid
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -114,14 +115,23 @@ const UpdateProduct = ({ navigation, route }) => {
         productAttributes = [buil];
         console.log(productAttributes);
       }
-      // console.log(productAttributes);
+      console.log(id);
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
       formData.append('product_price', productPrice);
-      formData.append('category', id);
+      if (id === undefined) {
+        formData.append('category', productid);
+        console.log("ssss");
+
+      } else {
+        formData.append('category', id);
+        console.log("dđ");
+
+      }
+
       formData.append('product_attributes', productAttributes);
-      console.log(JSON.stringify(formData) + "=======================");
+      //console.log(JSON.stringify(formData) + "=======================");
       selectedImages.forEach(image => {
         let localUri = image?.uri;
         let filename = localUri.split('/').pop();
@@ -135,7 +145,7 @@ const UpdateProduct = ({ navigation, route }) => {
         'Content-Type': 'multipart/form-data',
       });
       console.log("sửa thành công ");
-      navigation.navigate('HomeScreen');
+      navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.message);
     }
