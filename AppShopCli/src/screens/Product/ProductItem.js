@@ -6,6 +6,8 @@ import {
   View,
   ScrollView,
   Image,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Card} from 'react-native-elements';
@@ -13,7 +15,9 @@ import Swiper from 'react-native-swiper';
 import {PRODUCT_API, API_BASE_URL} from '../../config/urls';
 import {apiGet} from '../../utils/utils';
 import {formatCurrency} from '../../components/Price';
-import {Rating, AirbnbRating} from 'react-native-elements';
+import {Rating} from 'react-native-elements';
+
+const {width, height} = Dimensions.get('window');
 
 const ProductItem = ({navigation, route}) => {
   const {id} = route.params;
@@ -22,7 +26,6 @@ const ProductItem = ({navigation, route}) => {
   const getApi = async () => {
     try {
       const res = await apiGet(`${PRODUCT_API}/getProduct/${id}`);
-      console.log(res);
       setProductData(res?.message);
     } catch (error) {
       throw error;
@@ -43,6 +46,7 @@ const ProductItem = ({navigation, route}) => {
         </TouchableOpacity>
         <Text style={styles.title}>Product Information</Text>
       </View>
+
       {productData && (
         <ScrollView style={styles.content}>
           <Swiper
@@ -58,6 +62,7 @@ const ProductItem = ({navigation, route}) => {
               />
             ))}
           </Swiper>
+
           <Card containerStyle={styles.cardContainer}>
             <Card.Title style={styles.cardTitle}>
               {productData.product_name}
@@ -74,15 +79,17 @@ const ProductItem = ({navigation, route}) => {
                 imageSize={20}
                 ratingBackgroundColor="#ccc"
               />
-
-              {/* AirbnbRating component with customizable stars */}
-              {/* <AirbnbRating
-                  count={5} // Số sao tối đa
-                  reviews={['Terrible', 'Bad', 'OK', 'Good', 'Excellent']} // Nhãn cho từng sao
-                  defaultRating={1} // Số sao mặc định
-                  size={20} // Kích thước của từng sao
-                /> */}
             </View>
+
+            <FlatList
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              data={productData?.product_attributes}
+              keyExtractor={item => item?._id}
+              renderItem={({item}) => <AttributeItem item={item} />}
+            />
+
+            <Text style={styles.sectionTitle}>Mô tả</Text>
             <Text style={styles.productDescription}>
               {productData.product_description}
             </Text>
@@ -92,6 +99,22 @@ const ProductItem = ({navigation, route}) => {
     </View>
   );
 };
+
+const AttributeItem = ({item}) => (
+  <View style={styles.attributeItem}>
+    <Text style={styles.attributeLabel}>{item?.color}</Text>
+    <Text style={styles.totalQuantity}>Tổng: {item?.quantity}</Text>
+
+    <View style={styles.sizeContainer}>
+      {item?.options.map((value, index) => (
+        <View key={index} style={styles.sizeItem}>
+          <Text style={styles.sizeLabel}>{value.size}</Text>
+          <Text style={styles.quantityLabel}>{value.options_quantity}</Text>
+        </View>
+      ))}
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -113,7 +136,7 @@ const styles = StyleSheet.create({
   },
   title: {
     left: '30%',
-    fontSize: 22,
+    fontSize: width * 0.05,
     color: 'black',
     fontWeight: '600',
   },
@@ -122,7 +145,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   swiperContainer: {
-    height: 300,
+    height: height * 0.3,
   },
   productImage: {
     width: '100%',
@@ -134,7 +157,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
   },
   productInfo: {
@@ -144,19 +167,56 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   productPrice: {
-    fontSize: 18,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
     color: 'red',
   },
-  addButton: {
-    backgroundColor: 'green',
+  sectionTitle: {
+    marginTop: 10,
+    fontSize: width * 0.05,
+    color: 'black',
+    fontWeight: '600',
+  },
+  attributeItem: {
+    marginTop: 10,
+    backgroundColor: '#F4F4F4',
+    padding: 10,
+    borderRadius: 8,
+  },
+  attributeLabel: {
+    fontWeight: 'bold',
+    fontSize: width * 0.035,
+  },
+  totalQuantity: {
+    marginTop: 5,
+    color: '#6B6B6B',
+  },
+  sizeContainer: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+  sizeItem: {
+    backgroundColor: '#9F9F9F',
     borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sizeLabel: {
+    color: 'white',
+    marginRight: 5,
+  },
+  quantityLabel: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   productDescription: {
-    fontSize: 16,
+    fontSize: width * 0.035,
     lineHeight: 24,
-    color: 'gray',
-    marginBottom: 16,
+    color: 'black',
+    marginVertical: 5,
   },
 });
 

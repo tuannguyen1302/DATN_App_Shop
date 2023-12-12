@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useSelector } from 'react-redux';
-import { useRoute } from '@react-navigation/native';
-const CategoryItem = ({ category, isSelected, onPress }) => (
+import {useSelector} from 'react-redux';
 
+const CategoryItem = ({category, isSelected, onPress}) => (
   <TouchableOpacity
     style={[styles.categoryContainer, isSelected && styles.selectedCategory]}
     onPress={onPress}>
@@ -18,21 +17,27 @@ const CategoryItem = ({ category, isSelected, onPress }) => (
   </TouchableOpacity>
 );
 
-const Nganhsp = ({ navigation, route }) => {
+const Nganhsp = ({navigation, route}) => {
   const typeProduct = useSelector(state => state?.product?.typeData);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [id, setid] = useState(null);
-  const { buil, newid, item, productAttribute } = route.params || {};
+  const {buil, newid, item, productAttribute} = route.params || {};
   console.log(productAttribute);
   const handleCategoryPress = (category, categoryId) => {
     setid(categoryId);
     setSelectedCategory(prev => (prev === category ? null : category));
   };
 
-
   const handleDone = () => {
     if (selectedCategory && id) {
-      navigation.navigate('UpdateProduct', { selectedCategory, id, buil, newid, item, productAttribute });
+      navigation.navigate('UpdateProduct', {
+        selectedCategory,
+        id,
+        buil,
+        newid,
+        item,
+        productAttribute,
+      });
     } else {
       Alert.alert(
         'Cảnh báo',
@@ -65,7 +70,9 @@ const Nganhsp = ({ navigation, route }) => {
           key={category._id}
           category={category.category_name}
           isSelected={selectedCategory === category.category_name}
-          onPress={() => handleCategoryPress(category.category_name, category._id)}
+          onPress={() =>
+            handleCategoryPress(category.category_name, category._id)
+          }
         />
       ))}
 

@@ -17,9 +17,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { API_BASE_URL, PRODUCT_API } from '../../config/urls';
-import { apiGet, apiPut } from '../../utils/utils';
+import { apiPut } from '../../utils/utils';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { apiPost } from '../../../src/utils/utils';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -39,7 +38,6 @@ const UpdateProduct = ({ navigation, route }) => {
   const [productAttribute, setproductAttribute] = useState(item?.product_attributes);
 
   const typeProduct = useSelector(state => state?.product?.typeData);
-
 
   const ngang = typeProduct.find(items => items._id === item?.category);
   const [productid, setproductid] = useState(ngang?._id);
@@ -84,12 +82,9 @@ const UpdateProduct = ({ navigation, route }) => {
   };
   const hienthi = () => {
     console.log(productAttribute, ngang?._id, ngang?.category_name);
-
-  }
-
+  };
 
   const postApi = async () => {
-
     try {
       if (
         !selectedImages ||
@@ -107,10 +102,8 @@ const UpdateProduct = ({ navigation, route }) => {
       let productAttributes;
 
       if (buil === undefined) {
-
         productAttributes = [JSON.stringify(productAttribute)];
         console.log(productAttributes);
-
       } else {
         productAttributes = [buil];
         console.log(productAttributes);
@@ -194,11 +187,6 @@ const UpdateProduct = ({ navigation, route }) => {
     const newImages = item?.product_thumb.map(uri => ({
       id: (idCounter++).toString(),
       uri: `${API_BASE_URL}uploads/${uri}`,
-
-
-
-
-
     }));
     setSelectedImages(prevImages => [...prevImages, ...newImages]);
   }, []);
@@ -240,7 +228,7 @@ const UpdateProduct = ({ navigation, route }) => {
                   {item.isButton ? (
                     <TouchableOpacity
                       style={styles.addButton}
-                      onPress={() => bottomSheetModalRef.current?.present()} >
+                      onPress={() => bottomSheetModalRef.current?.present()}>
                       <Text style={styles.addButtonLabel}>Chọn Ảnh</Text>
                     </TouchableOpacity>
                   ) : (
@@ -304,7 +292,12 @@ const UpdateProduct = ({ navigation, route }) => {
           </View>
           <Pressable
             onPress={() => {
-              navigation.navigate('NganhspUPDATE', { buil, newid: item?._id, item: item, productAttribute });
+              navigation.navigate('NganhspUPDATE', {
+                buil,
+                newid: item?._id,
+                item: item,
+                productAttribute,
+              });
             }}
             style={styles.nganhsp}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
@@ -327,8 +320,12 @@ const UpdateProduct = ({ navigation, route }) => {
           </Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('PhanloaispUPDATE', { newid: item?._id, item: item, selectedCategory: ngang?.category_name, id: ngang?._id });
-
+              navigation.navigate('PhanloaispUPDATE', {
+                newid: item?._id,
+                item: item,
+                selectedCategory: ngang?.category_name,
+                id: ngang?._id,
+              });
             }}
             style={styles.nganhsp}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>

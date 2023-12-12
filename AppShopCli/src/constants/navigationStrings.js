@@ -5,14 +5,13 @@ export default {
   LOGIN1: 'Login1',
   LOGIN2: 'Login2',
   SIGNUP: 'SignUp',
-  MESSAGES: 'MessageScreen',
+
   CHAT_MESSAGS: 'MessItem',
   SEARCH: 'SearchScreen',
   PRODUCT: 'Product',
   PRODUCT_ITEM: 'ProductItem',
   ADD_PRODUCT: 'AddProduct',
   UPDATE_PRODUCT: 'UpdateProduct',
-
   ORDER_HISTORY: 'OrderHistory',
   SHOP: 'ShopScreen',
   SHOP_UPDATE: 'ShopUpdate',
@@ -32,12 +31,13 @@ export default {
   CONTACT: 'ContactSup',
   NOTIFI: 'NotifiScreen',
   NOTIFI_ITEM: 'NotiItem',
+  OTPScreen: 'OTPScreen',
+  Updateprofile: 'Updateprofile',
+
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',
   HomeScreen: 'HomeScreen',
+  MESSAGES: 'MessageScreen',
   ORDER: 'Order',
   PROFILE: 'Profile',
-  ChitietProduct: 'ChitietProduct',
-  OTPScreen: 'OTPScreen',
-  Updateprofile: 'Updateprofile',
 };
