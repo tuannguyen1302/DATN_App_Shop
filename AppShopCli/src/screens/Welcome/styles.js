@@ -15,10 +15,9 @@ const commonStyles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   logo: {
-    width: width / 1,
-    height: height / 2,
+    width: width / 1.3,
+    height: height / 1.5,
     resizeMode: 'contain',
-    marginBottom: 100,
   },
   iconContainer: {
     alignSelf: 'flex-end',
@@ -30,7 +29,7 @@ const commonStyles = StyleSheet.create({
     resizeMode: 'contain',
   },
   storeImage: {
-    width: width / 1,
+    width: width / 1.2,
     height: width / 1.2,
     resizeMode: 'contain',
     justifyContent: 'center',

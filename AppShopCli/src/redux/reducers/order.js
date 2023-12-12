@@ -41,7 +41,6 @@ const orderSlice = createSlice({
         } else {
           state.orderData.pending = updateData('pending');
         }
-        state.orderData[value].push({...orderToUpdate, status: value});
       }
     },
   },
