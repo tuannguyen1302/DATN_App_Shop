@@ -13,7 +13,7 @@ const orderSlice = createSlice({
   reducers: {
     saveOrder: (state, action) => {
       const {value, data} = action.payload;
-      state.orderData[value] = data;
+      state.orderData[value] = data || [];
     },
 
     updateStatus: (state, action) => {

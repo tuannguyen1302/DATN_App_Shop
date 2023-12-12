@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Alert,
   FlatList,
@@ -15,12 +15,12 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { PRODUCT_API } from '../../../src/config/urls';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { apiPost } from '../../../src/utils/utils';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {PRODUCT_API} from '../../../src/config/urls';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {apiPost} from '../../../src/utils/utils';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const AddProduct = () => {
@@ -31,7 +31,7 @@ const AddProduct = () => {
   const [productPrice, setProductPrice] = useState('');
   const route = useRoute();
 
-  const { buil, selectedCategory, id } = route.params || {};
+  const {buil, selectedCategory, id} = route.params || {};
 
   const productAttributes = [buil];
   //console.log(buil);
@@ -45,12 +45,12 @@ const AddProduct = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const result = isFrontCamera
-        ? await launchCamera({ mediaType: 'photo' })
-        : await launchImageLibrary({ mediaType: 'photo' });
+        ? await launchCamera({mediaType: 'photo'})
+        : await launchImageLibrary({mediaType: 'photo'});
 
       setSelectedImages([
         ...selectedImages,
-        { id: Date.now().toString(), uri: result.assets[0] },
+        {id: Date.now().toString(), uri: result.assets[0]},
       ]);
       console.log(selectedImages);
     } catch (error) {
@@ -63,7 +63,7 @@ const AddProduct = () => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn xóa ảnh này?',
       [
-        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
+        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
         {
           text: 'Xóa',
           onPress: () =>
@@ -72,18 +72,19 @@ const AddProduct = () => {
             ),
         },
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
   const postApi = async () => {
     try {
-
       console.log(productAttributes);
       if (
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice || !id || (productAttributes === undefined)
+        !productPrice ||
+        !id ||
+        productAttributes === undefined
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -91,7 +92,6 @@ const AddProduct = () => {
         );
         return;
       }
-
 
       const formData = new FormData();
       formData.append('product_name', productName);
@@ -118,7 +118,7 @@ const AddProduct = () => {
 
   const dataWithButton =
     selectedImages.length < 8
-      ? [{ id: 'button', isButton: true }, ...selectedImages]
+      ? [{id: 'button', isButton: true}, ...selectedImages]
       : selectedImages;
 
   return (
@@ -141,14 +141,14 @@ const AddProduct = () => {
             <Text style={styles.headerText}>Thêm Sản Phẩm</Text>
           </View>
         </View>
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{flex: 1}}>
           <View style={styles.imageContainer}>
             <FlatList
               numColumns={4}
               data={dataWithButton}
               scrollEnabled={false}
               keyExtractor={item => item.id}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <View style={styles.imageItem}>
                   {item.isButton ? (
                     <TouchableOpacity
@@ -160,7 +160,7 @@ const AddProduct = () => {
                     <>
                       <Image
                         style={styles.image}
-                        source={{ uri: item.uri.uri }}
+                        source={{uri: item.uri.uri}}
                       />
                       <TouchableOpacity
                         onPress={() => handleDeleteImage(item.id)}
@@ -238,7 +238,7 @@ const AddProduct = () => {
                   <MaterialIcons name={item.icon} size={25} />
                   <Text style={styles.inputLabel}>{item.label}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <TextInput
                     style={styles.priceAndInventoryInput}
                     maxLength={10}
@@ -247,7 +247,7 @@ const AddProduct = () => {
                     placeholder={`0`}
                   />
                   {item.label === 'Giá sản phẩm 🕸️' && (
-                    <Text style={{ fontSize: 18 }}>đ</Text>
+                    <Text style={{fontSize: 18}}>đ</Text>
                   )}
                 </View>
               </View>
@@ -255,10 +255,10 @@ const AddProduct = () => {
           </View>
           <Pressable
             onPress={() => {
-              navigation.navigate('Nganhsp', { buil });
+              navigation.navigate('Nganhsp', {buil});
             }}
             style={styles.nganhsp}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
               Ngành hàng sản phẩm
             </Text>
             <AntDesign name="right" size={20} />
@@ -278,10 +278,10 @@ const AddProduct = () => {
           </Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('Phanloaisp', { selectedCategory, id });
+              navigation.navigate('Phanloaisp', {selectedCategory, id});
             }}
             style={styles.nganhsp}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
               Phân loại sản phẩm{' '}
             </Text>
             <AntDesign name="right" size={20} />
@@ -295,8 +295,8 @@ const AddProduct = () => {
             onPress={() => {
               console.log(selectedCategory, id, buil);
             }}
-            style={[styles.button, { backgroundColor: '#000000' }]}>
-            <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
+            style={[styles.button, {backgroundColor: '#000000'}]}>
+            <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
           </TouchableOpacity>
         </View>
         <BottomSheetModal
@@ -304,8 +304,8 @@ const AddProduct = () => {
           index={1}
           snapPoints={['1%', '50%']}
           backgroundStyle={styles.bottomSheetBackground}>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 20, color: 'gray', fontWeight: 'bold' }}>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <Text style={{fontSize: 20, color: 'gray', fontWeight: 'bold'}}>
               Chọn ảnh từ
             </Text>
             <TouchableOpacity
