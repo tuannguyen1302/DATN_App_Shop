@@ -31,9 +31,11 @@ const SearchScreenStyles = StyleSheet.create({
   searchHeader: {
     flexDirection: 'row',
     marginHorizontal: '5%',
-    marginVertical: '1%',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    height: 45,
+    marginVertical: 15,
+    borderRadius: 20,
+    backgroundColor: '#EEEEEE',
   },
   searchBox: {
     flex: 1,
@@ -63,7 +65,7 @@ const SearchScreenStyles = StyleSheet.create({
   },
   imageText: {
     marginTop: '5%',
-    color: 'black',
+    fontWeight: 'bold',
     fontSize: 18,
   },
   searchItem: {

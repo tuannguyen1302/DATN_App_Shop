@@ -22,8 +22,8 @@ const Nganhsp = ({ navigation, route }) => {
   const typeProduct = useSelector(state => state?.product?.typeData);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [id, setid] = useState(null);
-  const { buil, newid, item } = route.params || {};
-  console.log(buil);
+  const { buil, newid, item, productAttribute } = route.params || {};
+  console.log(productAttribute);
   const handleCategoryPress = (category, categoryId) => {
     setid(categoryId);
     setSelectedCategory(prev => (prev === category ? null : category));
@@ -32,7 +32,7 @@ const Nganhsp = ({ navigation, route }) => {
 
   const handleDone = () => {
     if (selectedCategory && id) {
-      navigation.navigate('UpdateProduct', { selectedCategory, id, buil, newid, item });
+      navigation.navigate('UpdateProduct', { selectedCategory, id, buil, newid, item, productAttribute });
     } else {
       Alert.alert(
         'Cảnh báo',

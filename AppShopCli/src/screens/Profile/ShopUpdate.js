@@ -22,13 +22,15 @@ import { useSelector } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { updateUserData } from '../../redux/actions/user';
+import { ToastAndroid } from 'react-native';
 
 const ShopUpdate = ({ navigation }) => {
   const account = useSelector(state => state?.user?.userData);
+
   const [data, setData] = useState({
     avatar: { uri: `${API_BASE_URL}${account?.avatarShop}` },
     nameShop: account?.nameShop,
-    emailShop: account?.emailShop,
+
     address: account?.address,
     phoneNumberShop: account?.phoneNumberShop.toString(),
     des: account?.des,
@@ -51,11 +53,28 @@ const ShopUpdate = ({ navigation }) => {
   };
 
   const postApi = async () => {
+    if (
+      !data.nameShop ||
+      !data.address ||
+      !data.phoneNumberShop ||
+      !data.des
+    ) {
+      ToastAndroid.show('Vui lòng nhập đầy đủ thông tin', ToastAndroid.SHORT);
+      return;
+    }
+
+    // Kiểm tra định dạng số điện thoại
+    const phoneNumberRegex = /^[0-9]{10}$/; // Định dạng cho số điện thoại Việt Nam
+    if (!phoneNumberRegex.test(data.phoneNumberShop)) {
+      ToastAndroid.show('Số điện thoại không hợp lệ', ToastAndroid.SHORT);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('nameShop', data?.nameShop);
     formData.append('phoneNumberShop', data?.phoneNumberShop);
     formData.append('des', data?.des);
-    formData.append('emailShop', data?.emailShop);
+
     formData.append('address', data?.address);
 
     let localUri = data?.avatar?.uri;
@@ -67,12 +86,14 @@ const ShopUpdate = ({ navigation }) => {
     try {
       updateUserData(formData);
       navigation.goBack();
+
+      ToastAndroid.show('Cập nhật hồ sơ thành công', ToastAndroid.SHORT);
     } catch (error) {
       throw error;
     }
   };
 
-  const renderTextInput = (label, state, value) => (
+  const renderTextInput = (label, state, value, maxLength) => (
     <View key={label} style={styles.viewname}>
       <View>
         <Text style={styles.text}>{label}</Text>
@@ -81,13 +102,14 @@ const ShopUpdate = ({ navigation }) => {
         <TextInput
           style={styles.input}
           value={state}
-          onChangeText={text => setData({ ...data, [value]: text })}
-          maxLength={120}
-          multiline={true}
+          onChangeText={
+            (text) => setData({ ...data, [value]: text.slice(0, maxLength) })}
+          maxLength={maxLength}
+          keyboardType={value === 'phoneNumberShop' ? 'numeric' : 'default'}
           placeholder={`Nhập ${label.toLowerCase()}`}
         />
         <View style={{ alignItems: 'center', justifyContent: 'space-around' }}>
-          <Text>{state.length}/120</Text>
+          <Text>{state.length}/{maxLength}</Text>
           <Pressable onPress={() => setData({ ...data, [value]: '' })}>
             <AntDesign
               name="closecircleo"
@@ -114,7 +136,7 @@ const ShopUpdate = ({ navigation }) => {
               </TouchableOpacity>
               <Text style={styles.titleText}>Sửa hồ sơ</Text>
             </View>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.avatarSection}>
                 <Pressable
                   onPress={() => bottomSheetModalRef.current?.present()}>
@@ -133,29 +155,29 @@ const ShopUpdate = ({ navigation }) => {
                     label: 'Tên cửa hàng',
                     state: data?.nameShop,
                     value: 'nameShop',
+                    maxLength: 100,
                   },
-                  {
-                    label: 'Email',
-                    state: data?.emailShop,
-                    value: 'emailShop',
-                  },
+
                   {
                     label: 'Địa chỉ cửa hàng',
                     state: data?.address,
                     value: 'address',
+                    maxLength: 120,
                   },
                   {
                     label: 'Số điện thoại',
                     state: data?.phoneNumberShop,
                     value: 'phoneNumberShop',
+                    maxLength: 10,
                   },
                   {
                     label: 'Mô tả cửa hàng',
                     state: data?.des,
                     value: 'des',
+                    maxLength: 120,
                   },
                 ].map(item =>
-                  renderTextInput(item.label, item.state, item.value),
+                  renderTextInput(item.label, item.state, item.value, item.maxLength),
                 )}
               </View>
             </ScrollView>
@@ -283,7 +305,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: '5%',
-    marginTop: 30,
+    marginTop: 100,
     backgroundColor: 'black',
   },
   buttonText: {

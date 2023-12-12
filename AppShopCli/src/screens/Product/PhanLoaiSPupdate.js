@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput, ToastAndroid } from 'react-native';
 import { FlatList } from 'react-native';
 import { Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native';
@@ -15,7 +15,7 @@ const PhanLoaiSP = ({ navigation, route }) => {
     const [data1, setData1] = useState([]);
     const { newid, item, selectedCategory, id } = route.params || {};
 
-    console.log(newid, item);
+    console.log(id, selectedCategory);
 
 
     const [selectedItems, setSelectedItems] = useState([]);
@@ -198,8 +198,13 @@ const PhanLoaiSP = ({ navigation, route }) => {
         if (data.length != 0) {
             const buil = JSON.stringify(data);
             console.log(buil);
-
             navigation.navigate('UpdateProduct', { buil, newid, selectedCategory, id });
+        } else {
+            ToastAndroid.show(
+                'Vui lòng chọn các thông tin trên ',
+                ToastAndroid.SHORT,
+            );
+
         }
     };
 

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   Text,
-  ToastAndroid,
   View,
   ScrollView,
   StyleSheet,
@@ -13,8 +12,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TextInput} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
-import {DISCOUNT_API} from '../../config/urls';
-import {apiPost} from '../../utils/utils';
 
 const applyOptions = [
   {id: 0, name: 'Tất cả sản phẩm'},
@@ -61,28 +58,6 @@ const UpdateDiscount = ({navigation, route}) => {
 
   const handleTextChange = (text, field) => {
     setDiscountData({...discountData, [field]: text});
-  };
-
-  const postDiscountApi = async () => {
-    try {
-      // Chờ api
-      if (!discountData.name || !discountData.code || discountData.value <= 0) {
-        ToastAndroid.show(
-          'Vui lòng điền đầy đủ thông tin.',
-          ToastAndroid.SHORT,
-        );
-        return;
-      }
-
-      await apiPost(DISCOUNT_API, discountData);
-      ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
-    } catch (error) {
-      console.log('Post api: ', error.message);
-      ToastAndroid.show(
-        'Đã xảy ra lỗi. Vui lòng thử lại sau.',
-        ToastAndroid.SHORT,
-      );
-    }
   };
 
   return (

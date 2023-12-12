@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Text,
   ToastAndroid,
@@ -14,23 +14,23 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import {TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
-import {Dropdown} from 'react-native-element-dropdown';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
-import {apiPost} from '../../utils/utils';
-import {useSelector} from 'react-redux';
+import { Dropdown } from 'react-native-element-dropdown';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { API_BASE_URL, DISCOUNT_API } from '../../config/urls';
+import { apiPost } from '../../utils/utils';
+import { useSelector } from 'react-redux';
 
 const APPLY_OPTIONS = [
-  {id: 0, name: 'Tất cả sản phẩm'},
-  {id: 1, name: 'Chọn sản phẩm'},
+  { id: 0, name: 'Tất cả sản phẩm' },
+  { id: 1, name: 'Chọn sản phẩm' },
 ];
 
 const SALE_OPTIONS = [
-  {id: 0, name: 'Phần trăm '},
-  {id: 1, name: 'Giá tiền'},
+  { id: 0, name: 'Phần trăm' },
+  { id: 1, name: 'Giá tiền' },
 ];
 
 const renderTextInput = (
@@ -57,7 +57,7 @@ const renderTextInput = (
   );
 };
 
-const AddDiscount = ({navigation}) => {
+const AddDiscount = ({ navigation }) => {
   const productList = useSelector(state => state?.product?.productData?.all);
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [isStartDate, setStartDate] = useState(false);
@@ -72,11 +72,11 @@ const AddDiscount = ({navigation}) => {
     des: '',
     code: '',
     type: 'percentage',
-    value: '0',
+    value: '1',
     uses_count: '0',
-    min_order_value: '0',
-    max_uses: '0',
-    max_uses_per_user: '0',
+    min_order_value: '900000', // Số tiền giảm tối đa là 900,000 VND
+    max_uses: '1', // Số lượng sử dụng là 1
+    max_uses_per_user: '1', // Giới hạn sử dụng từ 1 - 3
     applies_to: 'all',
     start_date: '',
     end_date: '',
@@ -111,7 +111,28 @@ const AddDiscount = ({navigation}) => {
       }
     }
 
-    setDiscountData({...discountData, [field]: newValue});
+    if (field === 'min_order_value') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(999999, numericValue)).toString();
+      }
+    }
+
+    if (field === 'max_uses') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(1000, numericValue)).toString();
+      }
+    }
+
+    if (field === 'max_uses_per_user') {
+      const numericValue = parseInt(text, 10);
+      if (!isNaN(numericValue)) {
+        newValue = Math.max(0, Math.min(3, numericValue)).toString();
+      }
+    }
+
+    setDiscountData({ ...discountData, [field]: newValue });
   };
 
   const postDiscountApi = async () => {
@@ -119,6 +140,17 @@ const AddDiscount = ({navigation}) => {
       if (!isDataValid()) {
         ToastAndroid.show(
           'Vui lòng điền đầy đủ thông tin và giá trị hợp lệ.',
+          ToastAndroid.SHORT,
+        );
+        return;
+      }
+
+      if (
+        discountData.applies_to == 'specific' &&
+        discountData.product_ids.length == 0
+      ) {
+        ToastAndroid.show(
+          'Vui lòng chọn sản phẩm khuyến mãi',
           ToastAndroid.SHORT,
         );
         return;
@@ -136,6 +168,7 @@ const AddDiscount = ({navigation}) => {
 
       await apiPost(DISCOUNT_API, discountData);
       ToastAndroid.show('Thêm thành công', ToastAndroid.SHORT);
+      navigation.goBack();
     } catch (error) {
       console.log('Post api: ', error.message);
     }
@@ -156,7 +189,7 @@ const AddDiscount = ({navigation}) => {
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
         <Pressable
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           onPress={() => bottomSheetModalRef.current?.close()}>
           <View style={styles.header}>
             <TouchableOpacity
@@ -225,7 +258,7 @@ const AddDiscount = ({navigation}) => {
                 'pagelines',
               )}
             {renderTextInput(
-              'Số tiền giảm tối đa',
+              'Số tiền giảm tối đa (VND)',
               discountData['min_order_value'],
               'min_order_value',
               'numeric',
@@ -243,7 +276,7 @@ const AddDiscount = ({navigation}) => {
               'user',
             )}
             {renderTextInput(
-              'Giới hạn sử dụng',
+              'Giới hạn sử dụng (1 - 3)',
               discountData['max_uses_per_user'],
               'max_uses_per_user',
               'numeric',
@@ -313,7 +346,7 @@ const AddDiscount = ({navigation}) => {
             right: 0,
             marginHorizontal: '5%',
           }}>
-          <Text style={{color: 'white', fontWeight: '700', fontSize: 15}}>
+          <Text style={{ color: 'white', fontWeight: '700', fontSize: 15 }}>
             Save
           </Text>
         </TouchableOpacity>
@@ -326,7 +359,7 @@ const AddDiscount = ({navigation}) => {
             borderRadius: 25,
             borderWidth: 0.5,
           }}>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Text
               style={{
                 fontSize: 25,
@@ -340,7 +373,7 @@ const AddDiscount = ({navigation}) => {
             <FlatList
               data={productList}
               keyExtractor={item => item?._id}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => {
                     if (!discountData?.product_ids.includes(item?._id)) {
@@ -371,12 +404,12 @@ const AddDiscount = ({navigation}) => {
                     flexDirection: 'row',
                   }}>
                   <Image
-                    style={{width: 50, height: 50, borderRadius: 5}}
+                    style={{ width: 50, height: 50, borderRadius: 5 }}
                     source={{
                       uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`,
                     }}
                   />
-                  <View style={{left: 5}}>
+                  <View style={{ left: 5 }}>
                     <Text style={styles.productName} numberOfLines={1}>
                       {item?.product_name}
                     </Text>

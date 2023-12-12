@@ -32,10 +32,13 @@ const AddProduct = () => {
   const route = useRoute();
 
   const { buil, selectedCategory, id } = route.params || {};
+
+  const productAttributes = [buil];
+  //console.log(buil);
   //const { selectedCategory, id } = route.params || {};
   const bottomSheetModalRef = useRef(null);
   const clearField = setField => setField('');
-  console.log(id);
+  //console.log(id);
 
   const openCamera = async isFrontCamera => {
     try {
@@ -74,11 +77,13 @@ const AddProduct = () => {
   };
   const postApi = async () => {
     try {
+
+      console.log(productAttributes);
       if (
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice
+        !productPrice || !id || (productAttributes === undefined)
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -87,7 +92,7 @@ const AddProduct = () => {
         return;
       }
 
-      const productAttributes = [buil];
+
       const formData = new FormData();
       formData.append('product_name', productName);
       formData.append('product_description', productDescription);
@@ -148,12 +153,15 @@ const AddProduct = () => {
                   {item.isButton ? (
                     <TouchableOpacity
                       style={styles.addButton}
-                      onPress={() => bottomSheetModalRef.current?.present()} >
+                      onPress={() => bottomSheetModalRef.current?.present()}>
                       <Text style={styles.addButtonLabel}>Chọn Ảnh</Text>
                     </TouchableOpacity>
                   ) : (
                     <>
-                      <Image style={styles.image} source={{ uri: item.uri.uri }} />
+                      <Image
+                        style={styles.image}
+                        source={{ uri: item.uri.uri }}
+                      />
                       <TouchableOpacity
                         onPress={() => handleDeleteImage(item.id)}
                         style={styles.closeButton}>
@@ -284,7 +292,9 @@ const AddProduct = () => {
             <Text style={styles.buttonText}>Lưu</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => { console.log(selectedCategory, id, buil); }}
+            onPress={() => {
+              console.log(selectedCategory, id, buil);
+            }}
             style={[styles.button, { backgroundColor: '#000000' }]}>
             <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
           </TouchableOpacity>

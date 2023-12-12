@@ -19,8 +19,7 @@ import { apiPost, setItem } from '../../utils/utils';
 import { Login2Style } from './styles';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const isValidEmail = email =>
-  /^[A-Z0-9._%+-]+@gmail\.com$/i.test(email);
+const isValidEmail = email => /^[A-Z0-9._%+-]+@gmail\.com$/i.test(email);
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
@@ -51,8 +50,6 @@ const Login2 = ({ navigation }) => {
         setItem('LoginUser', { ...res.message, isChecked });
         setButtonDisabled(false);
         navigation.replace('BottomTab');
-
-        console.log(res.message);
       } catch (error) {
         setError(error.message);
         setButtonDisabled(false);

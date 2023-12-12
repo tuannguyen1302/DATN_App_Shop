@@ -11,10 +11,10 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import imagePath from '../../constants/imagePath';
-import {useSelector} from 'react-redux';
-import {API_BASE_URL} from '../../config/urls';
+import { useSelector } from 'react-redux';
+import { API_BASE_URL } from '../../config/urls';
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({ navigation }) => {
   const account = useSelector(state => state?.user?.userData);
 
   const navigateToSettings = () => {
@@ -26,9 +26,9 @@ const ProfileScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <View style={styles.header}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image style={styles.logo} source={imagePath.logo} />
           <Text style={styles.titleText}>Profile</Text>
         </View>
@@ -42,19 +42,19 @@ const ProfileScreen = ({navigation}) => {
         <Pressable onPress={navigateToShopUpdate}>
           <Image
             style={styles.avatar}
-            source={{uri: `${API_BASE_URL}${account?.avatarShop}`}}
+            source={{ uri: `${API_BASE_URL}${account?.avatarShop}` }}
           />
           <View style={styles.editButton}>
             <Feather color={'white'} name="edit-3" size={20} />
           </View>
         </Pressable>
-        <View style={{left: '5%'}}>
+        <View style={{ left: '5%' }}>
           <Text style={styles.nameText}> {account?.nameShop} </Text>
           <Text style={styles.infoText}> {account?.emailShop} </Text>
           <Text style={styles.infoText}> {account?.phoneNumberShop} </Text>
         </View>
       </View>
-      <View style={{marginHorizontal: '5%'}}>
+      <View style={{ marginHorizontal: '5%' }}>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>Tên Cửa Hàng:</Text>
           <Text style={styles.valueText}> {account?.nameShop} </Text>
@@ -66,10 +66,6 @@ const ProfileScreen = ({navigation}) => {
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>SĐT cửa hàng:</Text>
           <Text style={styles.valueText}> {account?.phoneNumberShop} </Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.labelText}>Email cửa hàng:</Text>
-          <Text style={styles.valueText}> {account?.emailShop} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.labelText}>Mô tả cửa hàng:</Text>
