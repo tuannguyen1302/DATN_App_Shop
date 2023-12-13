@@ -191,8 +191,8 @@ const ProductScreen = ({navigation}) => {
         </Pressable>
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={['40%', '75%']}
+          // index={1}
+          snapPoints={['75%']}
           backgroundStyle={bottomSheetStyles.backgroundStyle}
           onDismiss={() => setIsOpen(false)}>
           <View style={{flex: 1}}>
