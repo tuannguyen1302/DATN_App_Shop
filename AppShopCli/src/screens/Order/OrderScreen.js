@@ -88,6 +88,12 @@ const OrderListScreen = ({navigation}) => {
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
           scrollEnabled={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'pending')}
+            />
+          }
           showsVerticalScrollIndicator={false}
         />
       ) : (
@@ -134,6 +140,12 @@ const InDeliveryScreen = ({navigation}) => {
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
           scrollEnabled={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'shipped')}
+            />
+          }
           showsVerticalScrollIndicator={false}
         />
       ) : (

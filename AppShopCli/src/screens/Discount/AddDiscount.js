@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Text,
   ToastAndroid,
@@ -14,23 +14,23 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import { TextInput } from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
-import { Dropdown } from 'react-native-element-dropdown';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { API_BASE_URL, DISCOUNT_API } from '../../config/urls';
-import { apiPost } from '../../utils/utils';
-import { useSelector } from 'react-redux';
+import {Dropdown} from 'react-native-element-dropdown';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
+import {apiPost} from '../../utils/utils';
+import {useSelector} from 'react-redux';
 
 const APPLY_OPTIONS = [
-  { id: 0, name: 'Tất cả sản phẩm' },
-  { id: 1, name: 'Chọn sản phẩm' },
+  {id: 0, name: 'Tất cả sản phẩm'},
+  {id: 1, name: 'Chọn sản phẩm'},
 ];
 
 const SALE_OPTIONS = [
-  { id: 0, name: 'Phần trăm' },
-  { id: 1, name: 'Giá tiền' },
+  {id: 0, name: 'Phần trăm'},
+  {id: 1, name: 'Giá tiền'},
 ];
 
 const renderTextInput = (
@@ -57,7 +57,7 @@ const renderTextInput = (
   );
 };
 
-const AddDiscount = ({ navigation }) => {
+const AddDiscount = ({navigation}) => {
   const productList = useSelector(state => state?.product?.productData?.all);
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [isStartDate, setStartDate] = useState(false);
@@ -132,7 +132,7 @@ const AddDiscount = ({ navigation }) => {
       }
     }
 
-    setDiscountData({ ...discountData, [field]: newValue });
+    setDiscountData({...discountData, [field]: newValue});
   };
 
   const postDiscountApi = async () => {
@@ -189,7 +189,7 @@ const AddDiscount = ({ navigation }) => {
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
         <Pressable
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           onPress={() => bottomSheetModalRef.current?.close()}>
           <View style={styles.header}>
             <TouchableOpacity
@@ -346,20 +346,20 @@ const AddDiscount = ({ navigation }) => {
             right: 0,
             marginHorizontal: '5%',
           }}>
-          <Text style={{ color: 'white', fontWeight: '700', fontSize: 15 }}>
+          <Text style={{color: 'white', fontWeight: '700', fontSize: 15}}>
             Save
           </Text>
         </TouchableOpacity>
 
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={['25%', '50%', '100%']}
+          // index={1}
+          snapPoints={['100%']}
           backgroundStyle={{
             borderRadius: 25,
             borderWidth: 0.5,
           }}>
-          <View style={{ flex: 1 }}>
+          <View style={{flex: 1}}>
             <Text
               style={{
                 fontSize: 25,
@@ -373,7 +373,7 @@ const AddDiscount = ({ navigation }) => {
             <FlatList
               data={productList}
               keyExtractor={item => item?._id}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() => {
                     if (!discountData?.product_ids.includes(item?._id)) {
@@ -404,12 +404,12 @@ const AddDiscount = ({ navigation }) => {
                     flexDirection: 'row',
                   }}>
                   <Image
-                    style={{ width: 50, height: 50, borderRadius: 5 }}
+                    style={{width: 50, height: 50, borderRadius: 5}}
                     source={{
                       uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`,
                     }}
                   />
-                  <View style={{ left: 5 }}>
+                  <View style={{left: 5}}>
                     <Text style={styles.productName} numberOfLines={1}>
                       {item?.product_name}
                     </Text>

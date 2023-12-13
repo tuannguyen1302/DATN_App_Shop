@@ -301,8 +301,8 @@ const AddProduct = () => {
         </View>
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={['1%', '50%']}
+          // index={1}
+          snapPoints={['50%']}
           backgroundStyle={styles.bottomSheetBackground}>
           <View style={{flex: 1, alignItems: 'center'}}>
             <Text style={{fontSize: 20, color: 'gray', fontWeight: 'bold'}}>

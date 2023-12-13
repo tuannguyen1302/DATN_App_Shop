@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import { BarChart } from 'react-native-chart-kit';
+import {BarChart} from 'react-native-chart-kit';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { formatCurrency } from '../../components/Price';
-import { useSelector } from 'react-redux';
-import { API_BASE_URL, SHOP_API } from '../../config/urls';
-import { apiGet } from '../../utils/utils';
+import {formatCurrency} from '../../components/Price';
+import {useSelector} from 'react-redux';
+import {API_BASE_URL, SHOP_API} from '../../config/urls';
+import {apiGet} from '../../utils/utils';
 
-const StatisticalScreen = ({ navigation }) => {
+const StatisticalScreen = ({navigation}) => {
   const userAccount = useSelector(state => state?.user?.userData);
   const [data, setData] = useState(null);
   const [data2, setData2] = useState(null);
@@ -70,7 +70,7 @@ const StatisticalScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{flex: 1, justifyContent: 'center'}}>
         {isCheck ? (
           <OverviewScreen data={data} userAccount={userAccount} />
         ) : (
@@ -81,7 +81,7 @@ const StatisticalScreen = ({ navigation }) => {
   );
 };
 
-const OverviewScreen = ({ data, userAccount }) => {
+const OverviewScreen = ({data, userAccount}) => {
   if (!data) {
     return <ActivityIndicator size={'large'} color={'black'} />;
   }
@@ -138,7 +138,7 @@ const OverviewScreen = ({ data, userAccount }) => {
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item?._id}
             contentContainerStyle={styles.productList}
-            renderItem={({ item }) => <ProductItem item={item} />}
+            renderItem={({item}) => <ProductItem item={item} />}
           />
         </View>
       )}
@@ -146,12 +146,12 @@ const OverviewScreen = ({ data, userAccount }) => {
   );
 };
 
-const ProductItem = ({ item }) => (
+const ProductItem = ({item}) => (
   <View style={styles.itemContainer}>
     <View style={styles.productInfo}>
       <Image
         style={styles.productImage}
-        source={{ uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}` }}
+        source={{uri: `${API_BASE_URL}uploads/${item?.product_thumb[0]}`}}
       />
       <View style={styles.productDetails}>
         <Text style={styles.productName} numberOfLines={1}>
@@ -170,19 +170,19 @@ const ProductItem = ({ item }) => (
     </Text>
   </View>
 );
-const AnalysisScreen = ({ data }) => {
+const AnalysisScreen = ({data}) => {
   if (!data) {
     return <ActivityIndicator size={'large'} color={'black'} />;
   }
 
   const dataChart = {
     labels: data?.map(item => `Tháng ${item?.month}`),
-    datasets: [{ data: data.map(item => item?.totalRevenue) }],
+    datasets: [{data: data.map(item => item?.totalRevenue)}],
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.footerText}>Thống kê</Text>
+      <Text style={[styles.footerText, {marginLeft: '5%'}]}>Thống kê</Text>
       <View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <BarChart
@@ -200,7 +200,7 @@ const AnalysisScreen = ({ data }) => {
           />
         </ScrollView>
       </View>
-      <Text style={[styles.footerText, { textAlign: 'center', marginLeft: 0 }]}>
+      <Text style={[styles.footerText, {textAlign: 'center', marginLeft: 0}]}>
         Phân tích dữ liệu shop {new Date().getFullYear()}
       </Text>
     </View>
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     marginTop: '2%',
   },
   footerText: {
-    marginLeft: '5%',
+    // marginLeft: '5%',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
