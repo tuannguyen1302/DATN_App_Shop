@@ -14,9 +14,9 @@ import Swiper from 'react-native-swiper';
 import {formatCurrency} from '../../components/Price';
 import {Rating} from 'react-native-elements';
 import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
-import {apiGet} from '../../utils/utils';
+import {apiGet, apiPost} from '../../utils/utils';
 import {useSelector} from 'react-redux';
-import {formatMessageTime} from '../../components/DateTime';
+import Comment from '../Rating/Comment';
 
 const {width, height} = Dimensions.get('window');
 
@@ -30,6 +30,7 @@ const ProductItem = ({navigation, route}) => {
     const fetchData = async () => {
       try {
         const res = await apiGet(`${PRODUCT_API}/getProduct/${id}`);
+
         setProductData(res?.message);
       } catch (error) {
         throw error;
@@ -50,6 +51,7 @@ const ProductItem = ({navigation, route}) => {
         <ScrollView style={styles.content}>
           <ImageSlider images={productData.product_thumb} />
           <ProductDetails
+            navigation={navigation}
             typeProduct={typeProduct}
             productData={productData}
             isExpanded={isExpanded}
@@ -90,17 +92,12 @@ const ImageSlider = ({images}) => (
 );
 
 const ProductDetails = ({
+  navigation,
   typeProduct,
   productData,
   isExpanded,
   toggleExpand,
 }) => {
-  const [selectedRating, setSelectedRating] = useState('Tất cả');
-
-  const handleRatingSelect = rating => {
-    setSelectedRating(rating);
-  };
-
   return (
     <View style={styles.cardContainer}>
       <Text style={styles.cardTitle} numberOfLines={2}>
@@ -136,70 +133,7 @@ const ProductDetails = ({
         isExpanded={isExpanded}
         toggleExpand={toggleExpand}
       />
-
-      <Text style={styles.reviewTitle}>Đánh giá sản phẩm</Text>
-      <View style={styles.ratingContainer}>
-        <Rating
-          startingValue={productData?.product_ratingAverage}
-          imageSize={18}
-          readonly
-          ratingBackgroundColor="#FFD700"
-        />
-        <Text style={styles.ratingText}>
-          {productData?.product_ratingAverage}/5 (2.005 đánh giá)
-        </Text>
-      </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.ratingFilterContainer}>
-        {['Tất cả', '5', '4', '3', '2', '1'].map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.ratingFilterItem,
-              {backgroundColor: selectedRating === item ? 'black' : 'white'},
-            ]}
-            onPress={() => handleRatingSelect(item)}>
-            <Text
-              style={[
-                styles.ratingFilterText,
-                {color: selectedRating === item ? 'white' : 'black'},
-              ]}>
-              {item}
-            </Text>
-            {item !== 'Tất cả' && (
-              <AntDesign name="star" size={18} color={'yellow'} />
-            )}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <FlatList
-        data={[
-          {
-            _id: 1,
-            avatar:
-              'https://i.ytimg.com/vi/C3UJBMAy5xE/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAt3-G3WFim3YEDksH4KI1038nJKw',
-            name: 'Nguyễn Tiến Dũng',
-            comment: 'Sản phẩm rất tuyệt vời',
-            rating: 5,
-            createdAt: '2023-12-05T12:06:05.950+00:00',
-          },
-          {
-            _id: 2,
-            avatar:
-              'https://i.ytimg.com/vi/C3UJBMAy5xE/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAt3-G3WFim3YEDksH4KI1038nJKw',
-
-            name: 'Nguyễn Văn HH',
-            comment: 'Sản phẩm rất tuyệt vời',
-            rating: 4,
-            createdAt: '2023-12-05T12:06:05.950+00:00',
-          },
-        ]}
-        scrollEnabled={false}
-        keyExtractor={item => item._id.toString()}
-        renderItem={({item}) => <ReviewItem item={item} />}
-      />
+      <Comment navigation={navigation} data={productData} />
     </View>
   );
 };
@@ -279,44 +213,6 @@ const SizeItem = ({item}) => (
     <Text style={styles.quantityLabel}>{item.options_quantity}</Text>
   </View>
 );
-
-const ReviewItem = ({item}) => {
-  return (
-    <View style={styles.reviewItemContainer}>
-      <View style={{width: '80%'}}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
-            width={40}
-            height={40}
-            borderRadius={30}
-            source={{uri: item.avatar}}
-          />
-          <Text style={styles.reviewItemName}>{item.name}</Text>
-        </View>
-        <Text numberOfLines={1} style={styles.reviewItemComment}>
-          {item.comment}
-        </Text>
-        <Text style={styles.reviewItemDate}>
-          {formatMessageTime(item.createdAt)}
-        </Text>
-      </View>
-      <View
-        style={{
-          width: 70,
-          height: 35,
-          flexDirection: 'row',
-          borderWidth: 1,
-          borderColor: 'gray',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 20,
-        }}>
-        <Text>{item.rating}</Text>
-        <AntDesign name="star" color={'yellow'} size={18} />
-      </View>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -449,72 +345,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.035,
     color: 'black',
     fontWeight: '400',
-  },
-  reviewTitle: {
-    marginTop: 10,
-    fontSize: width * 0.045,
-    color: 'black',
-    fontWeight: '600',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-  },
-  ratingText: {
-    marginLeft: 8,
-    fontSize: width * 0.035,
-    color: 'black',
-    fontWeight: '600',
-  },
-  ratingFilterContainer: {
-    marginTop: 10,
-    flexDirection: 'row',
-  },
-  ratingFilterItem: {
-    paddingHorizontal: 25,
-    paddingVertical: 10,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  ratingFilterText: {
-    fontSize: width * 0.035,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  reviewItemContainer: {
-    elevation: 1,
-    padding: '3%',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 5,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 20,
-  },
-  reviewItemName: {
-    fontSize: width * 0.04,
-    fontWeight: '600',
-    marginBottom: 5,
-    left: '20%',
-  },
-  reviewItemDate: {
-    fontSize: width * 0.03,
-    color: 'gray',
-    marginBottom: 5,
-  },
-  reviewItemComment: {
-    fontSize: width * 0.035,
-    lineHeight: 20,
-    marginBottom: 5,
-  },
-  reviewItemRating: {
-    marginTop: 5,
   },
 });
 

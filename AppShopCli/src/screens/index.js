@@ -36,3 +36,4 @@ export {default as ProductItem} from './Product/ProductItem';
 export {default as OTPScreen} from './Login/OTPScreen';
 export {default as NotiItem} from './Notification/NotiItem';
 export {default as Updateprofile} from './Profile/Updateprofile';
+export {default as DetailRating} from './Rating/DetailRating';

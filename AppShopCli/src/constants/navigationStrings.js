@@ -33,6 +33,7 @@ export default {
   NOTIFI_ITEM: 'NotiItem',
   OTPScreen: 'OTPScreen',
   Updateprofile: 'Updateprofile',
+  DetailRating: 'DetailRating',
 
   //Botton Tabs Screen
   TAB_ROUTER: 'BottomTab',
