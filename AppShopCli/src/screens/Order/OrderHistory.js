@@ -25,6 +25,7 @@ const statusTranslations = {
 
 const UpdatedOrderHistory = ({navigation, route}) => {
   const {orderItem} = route.params;
+  console.log(orderItem);
 
   const handleApproval = async text => {
     Alert.alert(
@@ -126,7 +127,7 @@ const UpdatedOrderHistory = ({navigation, route}) => {
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Số điện thoại:</Text>
-            <Text style={styles.infoText}>{orderItem?.phoneNumber}</Text>
+            <Text style={styles.infoText}>0{orderItem?.phoneNumber}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Địa chỉ:</Text>
