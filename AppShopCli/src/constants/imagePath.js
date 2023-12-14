@@ -12,6 +12,7 @@ export default {
   order3: require('../assets/images/Order3.png'),
   order4: require('../assets/images/Order4.png'),
   discount: require('../assets/images/Discount.png'),
+  evaluate: require('../assets/images/Evaluate.png'),
   notification1: require('../assets/images/notification1.png'),
   notification2: require('../assets/images/notification2.png'),
 };

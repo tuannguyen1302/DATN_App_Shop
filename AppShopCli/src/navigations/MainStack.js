@@ -131,6 +131,10 @@ export default function (Stack) {
         name={navigationStrings.Updateprofile}
         component={Screens.Updateprofile}
       />
+      <Stack.Screen
+        name={navigationStrings.DetailRating}
+        component={Screens.DetailRating}
+      />
     </>
   );
 }

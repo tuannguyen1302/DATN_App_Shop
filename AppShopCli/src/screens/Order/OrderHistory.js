@@ -131,7 +131,7 @@ const UpdatedOrderHistory = ({navigation, route}) => {
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Địa chỉ:</Text>
             <Text style={styles.infoText}>
-              {orderItem?.order_shipping.City}
+              {orderItem?.order_shipping.Address}
             </Text>
           </View>
         </View>
