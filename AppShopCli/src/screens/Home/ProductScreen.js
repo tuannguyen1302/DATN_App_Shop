@@ -192,7 +192,7 @@ const ProductScreen = ({navigation}) => {
         <BottomSheetModal
           ref={bottomSheetModalRef}
           // index={1}
-          snapPoints={['75%']}
+          snapPoints={['80%']}
           backgroundStyle={bottomSheetStyles.backgroundStyle}
           onDismiss={() => setIsOpen(false)}>
           <View style={{flex: 1}}>

@@ -9,7 +9,7 @@ const Login1Style = StyleSheet.create({
   },
   logo: {
     width: width,
-    height: height / 3.1,
+    height: height / 3.3,
     resizeMode: 'contain',
     alignSelf: 'center',
   },
@@ -23,13 +23,12 @@ const Login1Style = StyleSheet.create({
   },
   button: {
     flexDirection: 'row',
-    alignSelf: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
     justifyContent: 'center',
     borderRadius: 12,
     height: 64,
-    width: 365,
+    marginHorizontal: '5%',
     marginBottom: '8%',
     borderWidth: 1,
   },
@@ -41,12 +40,11 @@ const Login1Style = StyleSheet.create({
     textAlign: 'center',
   },
   passwordButton: {
-    alignSelf: 'center',
     backgroundColor: '#000000',
     justifyContent: 'center',
     borderRadius: 30,
     height: 65,
-    width: 354,
+    marginHorizontal: '5%',
     marginTop: '7%',
   },
   passwordButtonText: {
@@ -93,11 +91,11 @@ const Login2Style = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    alignItems: 'center',
   },
   scrollViewContainer: {
     flexGrow: 1,
     justifyContent: 'center',
+    marginHorizontal: '5%',
   },
   title: {
     fontSize: 45,
@@ -107,15 +105,12 @@ const Login2Style = StyleSheet.create({
   },
   inputField: {
     padding: 10,
-    alignSelf: 'center',
     backgroundColor: '#EAEAEA',
     borderRadius: 12,
     height: 64,
-    width: 365,
     justifyContent: 'center',
     marginBottom: 27,
     flexDirection: 'row',
-    marginHorizontal: '5%',
     alignItems: 'center',
   },
   iconContainer: {
@@ -134,17 +129,15 @@ const Login2Style = StyleSheet.create({
   },
   error: {
     color: 'red',
-    marginLeft: 40,
   },
   checkBox: {
     backgroundColor: 'white',
     borderWidth: 0,
+    right: '5%',
   },
   signInButton: {
     backgroundColor: 'black',
     height: 60,
-    width: 350,
-    alignSelf: 'center',
     justifyContent: 'center',
     borderRadius: 30,
     marginTop: '5%',
@@ -219,7 +212,6 @@ const SignUpStyle = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     flex: 1,
-    alignItems: 'center',
   },
   scrollViewContainer: {
     flexGrow: 1,
@@ -232,15 +224,13 @@ const SignUpStyle = StyleSheet.create({
   },
   inputField: {
     padding: 10,
-    alignSelf: 'center',
+    marginHorizontal: '5%',
     backgroundColor: '#EAEAEA',
     borderRadius: 12,
     height: 64,
-    width: 365,
     justifyContent: 'center',
     marginBottom: 25,
     flexDirection: 'row',
-    marginHorizontal: '5%',
     alignItems: 'center',
   },
   iconContainer: {
@@ -259,13 +249,12 @@ const SignUpStyle = StyleSheet.create({
   },
   error: {
     color: 'red',
-    marginLeft: 40,
+    marginLeft: '6%',
   },
   signUpButton: {
     backgroundColor: 'black',
     height: 60,
-    width: 350,
-    alignSelf: 'center',
+    marginHorizontal: '5%',
     justifyContent: 'center',
     borderRadius: 30,
     marginTop: '5%',
