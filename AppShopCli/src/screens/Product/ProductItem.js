@@ -30,7 +30,6 @@ const ProductItem = ({navigation, route}) => {
     const fetchData = async () => {
       try {
         const res = await apiGet(`${PRODUCT_API}/getProduct/${id}`);
-
         setProductData(res?.message);
       } catch (error) {
         throw error;

@@ -23,6 +23,7 @@ const Comment = ({navigation, data}) => {
           <Text style={styles.reviewTitle}>Đánh giá sản phẩm</Text>
           <View style={styles.ratingContainer}>
             <Rating
+              readonly
               startingValue={data?.product_ratingAverage}
               imageSize={20}
             />
