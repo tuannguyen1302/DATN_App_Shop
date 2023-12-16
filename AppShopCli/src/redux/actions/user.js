@@ -9,11 +9,11 @@ export const saveUserData = async navigation => {
 
     store.dispatch(saveUser(res?.message));
   } catch (error) {
-    console.log(error.code);
-    if (error.code === 403) {
-      navigation.navigate('Updateprofile');
-    }
-    // throw error;
+    // console.log(error.code);
+    // if (error.code === 403) {
+    //   navigation.navigate('Updateprofile');
+    // }
+    throw error;
   }
 };
 

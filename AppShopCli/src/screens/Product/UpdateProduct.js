@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   imageItem: {
-    margin: '1.5%',
+    margin: '2%',
   },
   image: {
     width: 80,

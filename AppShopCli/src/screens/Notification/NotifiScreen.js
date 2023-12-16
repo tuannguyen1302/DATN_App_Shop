@@ -77,7 +77,7 @@ const NotifiScreen = ({navigation}) => {
             source={imagePath.notification1}
           />
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-            Chưa có đơn hàng được hủy ✨
+            Chưa có thông báo nào✨
           </Text>
         </View>
       ) : (

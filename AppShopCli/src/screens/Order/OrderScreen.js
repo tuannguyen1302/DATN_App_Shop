@@ -188,6 +188,12 @@ const DeliveredScreen = ({navigation}) => {
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : data.length != 0 ? (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'delivered')}
+            />
+          }
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
@@ -233,6 +239,12 @@ const CanceledScreen = ({navigation}) => {
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : data.length != 0 ? (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'cancelled')}
+            />
+          }
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
@@ -243,7 +255,7 @@ const CanceledScreen = ({navigation}) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => load(setRefreshing, 'delivered')}
+              onRefresh={() => load(setRefreshing, 'cancelled')}
             />
           }
           showsVerticalScrollIndicator={false}
