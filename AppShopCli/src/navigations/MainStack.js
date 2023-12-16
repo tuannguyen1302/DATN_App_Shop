@@ -132,8 +132,8 @@ export default function (Stack) {
         component={Screens.Updateprofile}
       />
       <Stack.Screen
-        name={navigationStrings.DetailRating}
-        component={Screens.DetailRating}
+        name={navigationStrings.FORGOT}
+        component={Screens.ForgotScreen}
       />
     </>
   );

@@ -53,7 +53,11 @@ const DetailRating = ({navigation, route}) => {
       </View>
       <View style={{marginHorizontal: '3%'}}>
         <View style={styles.ratingContainer}>
-          <Rating startingValue={data?.product_ratingAverage} imageSize={23} />
+          <Rating
+            readonly
+            startingValue={data?.product_ratingAverage}
+            imageSize={23}
+          />
           <Text style={styles.ratingText}>
             {data?.product_ratingAverage}/5 (
             {Array.isArray(data?.reviews) ? data?.reviews.length : 0} đánh giá)

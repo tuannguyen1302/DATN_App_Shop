@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: '5%',
-    marginTop: 100,
+    marginTop: '15%',
     backgroundColor: 'black',
   },
   buttonText: {
