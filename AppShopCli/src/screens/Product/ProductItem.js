@@ -120,10 +120,14 @@ const ProductDetails = ({
           }`}
         </Text>
       </View>
-      <AttributeList
-        isExpanded={isExpanded}
-        attributes={productData.product_attributes}
-        toggleExpand={toggleExpand}
+      <FlatList
+        numColumns={2}
+        scrollEnabled={false}
+        columnWrapperStyle={styles.attributeList}
+        showsVerticalScrollIndicator={false}
+        data={productData.product_attributes}
+        keyExtractor={item => item?._id}
+        renderItem={({item}) => <AttributeItem item={item} />}
       />
 
       <Text style={styles.sectionTitle}>Chi tiết sản phẩm</Text>
@@ -149,27 +153,6 @@ const PriceAndSales = ({productData}) => (
       ratingBackgroundColor="#FFD700"
     />
   </View>
-);
-
-const AttributeList = ({isExpanded, attributes, toggleExpand}) => (
-  <>
-    <FlatList
-      numColumns={2}
-      scrollEnabled={false}
-      columnWrapperStyle={styles.attributeList}
-      showsVerticalScrollIndicator={false}
-      data={attributes}
-      keyExtractor={item => item?._id}
-      renderItem={({item}) => <AttributeItem item={item} />}
-    />
-    {attributes.length > 2 && (
-      <TouchableOpacity onPress={toggleExpand} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>
-          {isExpanded ? 'Rút Gọn' : 'Xem Thêm'}
-        </Text>
-      </TouchableOpacity>
-    )}
-  </>
 );
 
 const Description = ({productData, isExpanded, toggleExpand}) => (

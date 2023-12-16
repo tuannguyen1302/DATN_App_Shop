@@ -69,7 +69,7 @@ const NotifiScreen = ({navigation}) => {
           size="large"
           color="black"
         />
-      ) : !data ? (
+      ) : data.length == 0 ? (
         <View
           style={{alignSelf: 'center', alignItems: 'center', marginTop: '40%'}}>
           <Image

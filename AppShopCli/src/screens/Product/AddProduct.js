@@ -189,37 +189,35 @@ const AddProduct = () => {
               },
             ].map((item, index) => (
               <View key={index} style={styles.inputContainer}>
-                <View style={styles.inputRow}>
-                  <Text style={styles.inputLabel}>{item.label}</Text>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      marginVertical: 5,
-                      flexDirection: 'row',
-                      paddingHorizontal: 10,
-                      justifyContent: 'space-between',
-                    }}>
-                    <TextInput
-                      style={styles.inputField}
-                      value={item.state}
-                      multiline={true}
-                      onChangeText={item.setState}
-                      maxLength={item.maxLength}
-                      placeholder={`Nhập ${item.label.toLowerCase()}`}
-                    />
-                    <View style={styles.inputStatus}>
-                      <Text>
-                        {item.state.length}/{item.maxLength}
-                      </Text>
-                      <Pressable onPress={() => clearField(item.setState)}>
-                        <AntDesign
-                          name="closesquareo"
-                          size={20}
-                          color={item.state ? 'red' : 'gray'}
-                        />
-                      </Pressable>
-                    </View>
+                <Text style={styles.inputLabel}>{item.label}</Text>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    marginVertical: 5,
+                    flexDirection: 'row',
+                    paddingHorizontal: 10,
+                    justifyContent: 'space-between',
+                  }}>
+                  <TextInput
+                    style={styles.inputField}
+                    value={item.state}
+                    multiline={true}
+                    onChangeText={item.setState}
+                    maxLength={item.maxLength}
+                    placeholder={`Nhập ${item.label.toLowerCase()}`}
+                  />
+                  <View style={styles.inputStatus}>
+                    <Text>
+                      {item.state.length}/{item.maxLength}
+                    </Text>
+                    <Pressable onPress={() => clearField(item.setState)}>
+                      <AntDesign
+                        name="closesquareo"
+                        size={20}
+                        color={item.state ? 'red' : 'gray'}
+                      />
+                    </Pressable>
                   </View>
                 </View>
               </View>
@@ -271,7 +269,6 @@ const AddProduct = () => {
               backgroundColor: 'white',
               paddingHorizontal: 25,
               marginTop: 5,
-              borderWidth: 1,
               borderColor: '#5F5F5F',
             }}>
             Ngành hàng sản phẩm bạn đã chọn: {selectedCategory}
@@ -354,12 +351,11 @@ const styles = StyleSheet.create({
     marginLeft: '15%',
   },
   imageContainer: {
-    padding: '3%',
     marginVertical: '2%',
     backgroundColor: '#ffffff',
   },
   imageItem: {
-    margin: '2%',
+    margin: '1.5%',
   },
   image: {
     width: 80,
@@ -391,12 +387,7 @@ const styles = StyleSheet.create({
     height: 'auto',
     marginVertical: '1%',
     backgroundColor: 'white',
-    justifyContent: 'center',
-  },
-  inputRow: {
-    marginVertical: '3%',
     paddingHorizontal: 20,
-    justifyContent: 'space-between',
   },
   inputLabel: {
     fontSize: 18,
@@ -404,7 +395,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputField: {
-    width: 305,
+    flex: 1,
     flexWrap: 'nowrap',
   },
   inputStatus: {
@@ -416,7 +407,6 @@ const styles = StyleSheet.create({
     height: 60,
     padding: '2%',
     backgroundColor: 'white',
-    borderWidth: 0.5,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
@@ -454,7 +444,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 26,
-    borderWidth: 0.5,
     borderColor: '#5F5F5F',
     marginBottom: 1,
     marginTop: 5,
