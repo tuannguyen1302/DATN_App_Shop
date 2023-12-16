@@ -174,6 +174,7 @@ const InDeliveryScreen = ({navigation}) => {
 const DeliveredScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.delivered);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -187,13 +188,27 @@ const DeliveredScreen = ({navigation}) => {
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : data.length != 0 ? (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'delivered')}
+            />
+          }
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
           showsVerticalScrollIndicator={false}
         />
       ) : (
-        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'delivered')}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.container, {alignItems: 'center'}]}>
           <Image
             style={{width: 100, height: 100, resizeMode: 'contain'}}
             source={imagePath.order3}
@@ -201,7 +216,7 @@ const DeliveredScreen = ({navigation}) => {
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>
             Chưa có đơn hàng nào đã giao
           </Text>
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -210,6 +225,7 @@ const DeliveredScreen = ({navigation}) => {
 const CanceledScreen = ({navigation}) => {
   const data = useSelector(state => state?.order?.orderData?.cancelled);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -223,13 +239,27 @@ const CanceledScreen = ({navigation}) => {
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : data.length != 0 ? (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'cancelled')}
+            />
+          }
           data={data}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
           showsVerticalScrollIndicator={false}
         />
       ) : (
-        <View style={{alignSelf: 'center', alignItems: 'center'}}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => load(setRefreshing, 'cancelled')}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.container, {alignItems: 'center'}]}>
           <Image
             style={{width: 100, height: 100, resizeMode: 'contain'}}
             source={imagePath.order4}
@@ -237,7 +267,7 @@ const CanceledScreen = ({navigation}) => {
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>
             Chưa có đơn hàng được hủy ✨
           </Text>
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -268,7 +298,7 @@ const patchApi = (oderId, status, navigation) => {
                 screen: status === 'shipped' ? 'Đang giao' : 'Đã giao',
               });
               ToastAndroid.show(
-                'Xác nhận đơn hàng thành công thành công',
+                'Xác nhận đơn hàng thành công',
                 ToastAndroid.show,
               );
             }

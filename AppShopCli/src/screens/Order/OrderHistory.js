@@ -303,8 +303,6 @@ const styles = StyleSheet.create({
   approvalButton: {
     height: 50,
     width: '80%',
-    bottom: '5%',
-    position: 'absolute',
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',

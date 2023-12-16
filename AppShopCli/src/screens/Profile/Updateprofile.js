@@ -213,7 +213,7 @@ export default Updateprofile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     paddingBottom: 35,
   },
   header: {

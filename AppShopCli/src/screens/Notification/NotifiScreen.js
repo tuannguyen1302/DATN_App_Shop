@@ -69,7 +69,7 @@ const NotifiScreen = ({navigation}) => {
           size="large"
           color="black"
         />
-      ) : !data ? (
+      ) : data.length == 0 ? (
         <View
           style={{alignSelf: 'center', alignItems: 'center', marginTop: '40%'}}>
           <Image
@@ -77,7 +77,7 @@ const NotifiScreen = ({navigation}) => {
             source={imagePath.notification1}
           />
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-            Chưa có đơn hàng được hủy ✨
+            Chưa có thông báo nào✨
           </Text>
         </View>
       ) : (
