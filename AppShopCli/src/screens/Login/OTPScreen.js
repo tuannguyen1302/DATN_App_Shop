@@ -87,7 +87,7 @@ const OTPScreen = () => {
                     });
                     setItem('LoginUser', { ...res.message, isChecked });
                     console.log(res.message);
-                    navigation.navigate('Updateprofile',);
+                    navigation.navigate('Updateprofile', { email });
                 } catch (error) {
                     setError(error.message);
 

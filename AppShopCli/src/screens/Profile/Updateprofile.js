@@ -24,7 +24,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { updateUserData } from '../../redux/actions/user';
 
-const Updateprofile = ({ navigation }) => {
+const Updateprofile = ({ navigation, route }) => {
+  const email = route.params?.email || '';
 
   const [data, setData] = useState({
     avatar: {
@@ -32,6 +33,7 @@ const Updateprofile = ({ navigation }) => {
     },
     nameShop: '',
     address: '',
+    email: '   ',
     phoneNumberShop: '',
     des: '',
   });
@@ -51,8 +53,10 @@ const Updateprofile = ({ navigation }) => {
   };
   const postApi = async () => {
     if (
+
       !data.nameShop ||
       !data.address ||
+
       !data.phoneNumberShop.trim() || // Kiểm tra rỗng sau khi xóa khoảng trắng
       !/^[0-9]{10}$/.test(data.phoneNumberShop.trim()) || // Kiểm tra định dạng số điện thoại
       !data.des
@@ -67,6 +71,7 @@ const Updateprofile = ({ navigation }) => {
     formData.append('nameShop', data?.nameShop);
     formData.append('phoneNumberShop', data?.phoneNumberShop);
     formData.append('des', data?.des);
+    formData.append('emailShop', data?.email);
     formData.append('address', data?.address);
     let localUri = data?.avatar?.uri;
     let filename = localUri.split('/').pop();
