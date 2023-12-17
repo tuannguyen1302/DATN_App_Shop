@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   view: {
     backgroundColor: '#ffffff',
     marginTop: '1%',
-    paddingHorizontal: 16,
+    paddingHorizontal: '1%',
   },
   dialogContainer: {
     flex: 1,

@@ -14,7 +14,6 @@ export const saveUserData = async navigation => {
     if (error.code === 403) {
       navigation.navigate('Updateprofile');
     }
-
   }
 };
 

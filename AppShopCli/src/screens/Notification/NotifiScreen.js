@@ -76,7 +76,11 @@ const NotifiScreen = ({ navigation }) => {
             style={{ width: 100, height: 100, resizeMode: 'contain' }}
             source={imagePath.notification1}
           />
+
           <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+
+         
+
             Chưa có thông báo nào✨
           </Text>
         </View>
