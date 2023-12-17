@@ -35,10 +35,15 @@ const UpdateProduct = ({ navigation, route }) => {
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
   const { selectedCategory, buil, newid, id } = route.params || {};
-  const [productAttribute, setproductAttribute] = useState(item?.product_attributes);
+  const [productAttribute, setproductAttribute] = useState(
+    item?.product_attributes,
+  );
+
   const typeProduct = useSelector(state => state?.product?.typeData);
   const ngang = typeProduct.find(items => items._id === item?.category);
   const [productid, setproductid] = useState(ngang?._id);
+  const [tenngang, settenngang] = useState('');
+
   const clearField = setField => setField('');
   const defaultNewId = item?._id;
   const effectiveNewId = newid !== undefined ? newid : defaultNewId;
@@ -76,7 +81,7 @@ const UpdateProduct = ({ navigation, route }) => {
     );
   };
   const hienthi = () => {
-    console.log(productAttribute, ngang?._id, ngang?.category_name);
+    console.log(productAttribute, ngang?._id, ngang?.category_name, selectedCategory);
   };
   const postApi = async () => {
     try {
@@ -84,7 +89,9 @@ const UpdateProduct = ({ navigation, route }) => {
         !selectedImages ||
         !productName ||
         !productDescription ||
-        !productPrice || (productAttributes !== undefined) || !productid
+        !productPrice ||
+        productAttributes !== undefined ||
+        !productid
       ) {
         ToastAndroid.show(
           'Vui lòng nhập đủ các trường dữ liệu hiện có!',
@@ -107,10 +114,10 @@ const UpdateProduct = ({ navigation, route }) => {
       formData.append('product_price', productPrice);
       if (id === undefined) {
         formData.append('category', productid);
-        console.log("ssss");
+        console.log('ssss');
       } else {
         formData.append('category', id);
-        console.log("dđ");
+        console.log('dđ');
       }
       formData.append('product_attributes', productAttributes);
       //console.log(JSON.stringify(formData) + "=======================");
@@ -125,12 +132,13 @@ const UpdateProduct = ({ navigation, route }) => {
       await apiPut(`${PRODUCT_API}/editProduct/${effectiveNewId}`, formData, {
         'Content-Type': 'multipart/form-data',
       });
-      console.log("sửa thành công ");
+      console.log('sửa thành công ');
       navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.message);
     }
   };
+
   const renderInputField = ({ label, state, setState, maxLength }, index) => (
     <View key={index} style={styles.inputContainer}>
       <View style={styles.inputRow}>
@@ -168,14 +176,27 @@ const UpdateProduct = ({ navigation, route }) => {
       </View>
     </View>
   );
+  console.log(selectedCategory + "hhhhhhhhhhh");
+
   let idCounter = 0;
   useEffect(() => {
+
     const newImages = item?.product_thumb.map(uri => ({
       id: (idCounter++).toString(),
       uri: `${API_BASE_URL}uploads/${uri}`,
     }));
     setSelectedImages(prevImages => [...prevImages, ...newImages]);
   }, []);
+
+  useEffect(() => {
+    console.log(selectedCategory);
+    if (selectedCategory === undefined) {
+      settenngang(ngang.category_name);
+    } else {
+      settenngang(selectedCategory);
+    }
+  }, [selectedCategory, ngang]);
+
   const dataWithButton =
     selectedImages.length < 10
       ? [{ id: 'button', isButton: true }, ...selectedImages]
@@ -297,10 +318,9 @@ const UpdateProduct = ({ navigation, route }) => {
               backgroundColor: 'white',
               paddingHorizontal: 25,
               marginTop: 5,
-              borderWidth: 1,
               borderColor: '#5F5F5F',
             }}>
-            Ngành hàng sản phẩm bạn đã chọn: {ngang?.category_name}
+            Ngành hàng sản phẩm bạn đã chọn: {tenngang}
           </Text>
           <Pressable
             onPress={() => {
@@ -362,8 +382,7 @@ const UpdateProduct = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 6,
-    backgroundColor: '#eeeeee',
+    backgroundColor: '#eee',
   },
   header: {
     height: 70,
@@ -383,7 +402,6 @@ const styles = StyleSheet.create({
     marginLeft: '15%',
   },
   imageContainer: {
-    padding: '3%',
     marginVertical: '2%',
     backgroundColor: '#ffffff',
   },
@@ -417,16 +435,10 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   inputContainer: {
-    height: 70,
+    height: 'auto',
     marginVertical: '1%',
     backgroundColor: 'white',
-    justifyContent: 'center',
-    height: 'auto',
-  },
-  inputRow: {
-    marginVertical: '3%',
-    marginHorizontal: '3%',
-    justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
   inputLabel: {
     fontSize: 18,
@@ -434,7 +446,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputField: {
-    width: 320,
+    flex: 1,
+    flexWrap: 'nowrap',
   },
   inputStatus: {
     justifyContent: 'space-around',
@@ -445,9 +458,9 @@ const styles = StyleSheet.create({
     height: 60,
     padding: '2%',
     backgroundColor: 'white',
-    borderWidth: 0.5,
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
   iconAndLabelContainer: {
     flexDirection: 'row',
@@ -480,9 +493,8 @@ const styles = StyleSheet.create({
     height: 45,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', // Để căn chỉnh theo chiều dọc
-    paddingHorizontal: 26, // Khoảng cách đều 2 bên
-    borderWidth: 1,
+    alignItems: 'center',
+    paddingHorizontal: 26,
     borderColor: '#5F5F5F',
     marginBottom: 1,
     marginTop: 5,
