@@ -7,6 +7,7 @@ import { Modal } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useRoute } from '@react-navigation/native';
+import { ToastAndroid } from 'react-native';
 
 const PhanLoaiSP = ({ navigation }) => {
   const [isDialogVisible, setDialogVisible] = useState(false);
@@ -17,10 +18,12 @@ const PhanLoaiSP = ({ navigation }) => {
 
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedItems1, setSelectedItems1] = useState([]);
+  const [array, setArray] = useState([]);
   const route = useRoute();
 
   const { selectedCategory, id } = route.params || {};
   //console.log(selectedCategory, id);
+
   const toggleDialog = () => {
     setDialogVisible(!isDialogVisible);
     setButtonPressed(false);
@@ -118,24 +121,29 @@ const PhanLoaiSP = ({ navigation }) => {
       if (newItem && prevSelectedItems.some(item => item.id === id)) {
         return prevSelectedItems.filter(item => item.id !== id);
       } else if (newItem) {
-        return [
-          ...prevSelectedItems,
-          { id, size: newItem.size, options_quantity: 0 },
-        ];
+        return [...prevSelectedItems, { id, size: newItem.size }];
       }
       return prevSelectedItems;
     });
   };
 
-  const handleQuantityChange = (id, text) => {
-    setSelectedItems1(prev => {
-      const index = prev.findIndex(item => item.id === id);
-      if (index !== -1) {
+  const handleQuantityChange = (id, text, count) => {
+    setArray(prev => {
+      const countId = `${id}${count}`;
+      const existingItemIndex = prev.findIndex(
+        item => item.count_id === countId,
+      );
+
+      if (existingItemIndex !== -1) {
         const updatedItems = [...prev];
-        updatedItems[index] = { ...updatedItems[index], options_quantity: text };
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          options_quantity: text,
+        };
         return updatedItems;
       }
-      return prev;
+
+      return [...prev, { options_quantity: text, count_id: countId }];
     });
   };
 
@@ -145,32 +153,51 @@ const PhanLoaiSP = ({ navigation }) => {
     data1.length < 8 ? [{ id: 1, isButton: true }, ...data1] : data1;
 
   const luu = () => {
-    var data = [];
+    const data = selectedItems.map(item => {
+      const mau = { color: item.text, options: [] };
 
-    console.log(selectedItems);
-    console.log(selectedItems1);
+      selectedItems1.forEach((selectedItem1, j) => {
+        const matchingItem = array.find(
+          arrItem => arrItem.count_id === `${item.id}${j}`,
+        );
 
-    for (let i = 0; i < selectedItems.length; i++) {
-      const mau = { color: selectedItems[i].text, options: [] };
+        if (matchingItem) {
+          mau.options.push({
+            size: selectedItem1.size,
+            options_quantity: matchingItem.options_quantity,
+          });
+        }
+      });
 
-      for (let j = 0; j < selectedItems1.length; j++) {
-        const option = {
-          size: selectedItems1[j].size,
-          options_quantity: selectedItems1[j].options_quantity,
-        };
+      return mau;
+    });
 
-        mau.options.push({ ...option }); // Sử dụng bản sao của đối tượng option
-        console.log(option.options_quantity);
+    if (data.length === 0) {
+      showToast('Vui lòng nhập đầy đủ dữ liệu cần thiết');
+      return;
+    }
+
+    for (const item of data) {
+      if (item.options.length === 0) {
+        showToast('Vui lòng nhập đầy đủ dữ liệu cần thiết');
+        return;
       }
 
-      data.push(mau);
+      for (const option of item.options) {
+        if (!option.options_quantity) {
+          showToast('Vui lòng nhập đầy đủ dữ liệu cần thiết');
+          return;
+        }
+      }
     }
 
-    if (data.length != 0) {
-      // const buil = JSON.stringify(data);
-      // console.log(buil);
-      // navigation.navigate('AddProduct', {buil, selectedCategory, id});
+    function showToast(message) {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
     }
+
+    const buil = JSON.stringify(data);
+    console.log(buil);
+    navigation.navigate('AddProduct', { buil, selectedCategory, id });
   };
 
   return (
@@ -384,9 +411,7 @@ const PhanLoaiSP = ({ navigation }) => {
                           keyboardType="numeric"
                           placeholder={'Nhập số lượng '}
                           onChangeText={text => {
-                            if (text.trim() !== '') {
-                              handleQuantityChange(value.id, text);
-                            }
+                            handleQuantityChange(item.id, text, index);
                           }}
                         />
                       </View>

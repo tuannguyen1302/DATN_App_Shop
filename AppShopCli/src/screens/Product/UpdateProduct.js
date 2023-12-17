@@ -35,15 +35,18 @@ const UpdateProduct = ({navigation, route}) => {
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
 
-  const {selectedCategory, buil, newid, id} = route.params || {};
+  const { selectedCategory, buil, newid, id } = route.params || {};
+
+
+
   const [productAttribute, setproductAttribute] = useState(
     item?.product_attributes,
   );
-
-
   const typeProduct = useSelector(state => state?.product?.typeData);
   const ngang = typeProduct.find(items => items._id === item?.category);
   const [productid, setproductid] = useState(ngang?._id);
+  const [tenngang, settenngang] = useState('');
+
   const clearField = setField => setField('');
   const defaultNewId = item?._id;
   const effectiveNewId = newid !== undefined ? newid : defaultNewId;
@@ -81,7 +84,7 @@ const UpdateProduct = ({navigation, route}) => {
     );
   };
   const hienthi = () => {
-    console.log(productAttribute, ngang?._id, ngang?.category_name);
+    console.log(productAttribute, ngang?._id, ngang?.category_name, selectedCategory);
   };
   const postApi = async () => {
     try {
@@ -115,10 +118,10 @@ const UpdateProduct = ({navigation, route}) => {
       if (id === undefined) {
         formData.append('category', productid);
 
-        console.log("ssss");
+        console.log('ssss');
       } else {
         formData.append('category', id);
-        console.log("dđ");
+        console.log('dđ');
 
       }
       formData.append('product_attributes', productAttributes);
@@ -182,14 +185,27 @@ const UpdateProduct = ({navigation, route}) => {
       </View>
     </View>
   );
+  console.log(selectedCategory + "hhhhhhhhhhh");
+
   let idCounter = 0;
   useEffect(() => {
+
     const newImages = item?.product_thumb.map(uri => ({
       id: (idCounter++).toString(),
       uri: `${API_BASE_URL}uploads/${uri}`,
     }));
     setSelectedImages(prevImages => [...prevImages, ...newImages]);
   }, []);
+
+  useEffect(() => {
+    console.log(selectedCategory);
+    if (selectedCategory === undefined) {
+      settenngang(ngang.category_name);
+    } else {
+      settenngang(selectedCategory);
+    }
+  }, [selectedCategory, ngang]);
+
   const dataWithButton =
     selectedImages.length < 10
       ? [{id: 'button', isButton: true}, ...selectedImages]
@@ -313,7 +329,7 @@ const UpdateProduct = ({navigation, route}) => {
               marginTop: 5,
               borderColor: '#5F5F5F',
             }}>
-            Ngành hàng sản phẩm bạn đã chọn: {ngang?.category_name}
+            Ngành hàng sản phẩm bạn đã chọn: {tenngang}
           </Text>
           <Pressable
             onPress={() => {
