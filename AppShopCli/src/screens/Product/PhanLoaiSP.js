@@ -167,9 +167,9 @@ const PhanLoaiSP = ({ navigation }) => {
     }
 
     if (data.length != 0) {
-      // const buil = JSON.stringify(data);
-      // console.log(buil);
-      // navigation.navigate('AddProduct', {buil, selectedCategory, id});
+      const buil = JSON.stringify(data);
+      console.log(buil);
+      navigation.navigate('AddProduct', { buil, selectedCategory, id });
     }
   };
 
