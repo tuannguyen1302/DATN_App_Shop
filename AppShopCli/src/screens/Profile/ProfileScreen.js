@@ -116,6 +116,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   avatar: {
+    borderWidth: 1,
+    borderColor: 'gray',
     width: 110,
     height: 110,
     borderRadius: 100,

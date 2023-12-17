@@ -255,6 +255,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   avatar: {
+    borderWidth: 1,
+    borderColor: 'gray',
     width: 130,
     height: 130,
     borderRadius: 100,

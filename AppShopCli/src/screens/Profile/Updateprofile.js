@@ -74,7 +74,7 @@ const Updateprofile = ({navigation}) => {
     formData.append('avatar', {uri: localUri, name: filename, type});
 
     try {
-      updateUserData(formData);
+      await updateUserData(formData);
       console.log('đăng kí ok ');
       navigation.replace('BottomTab');
     } catch (error) {

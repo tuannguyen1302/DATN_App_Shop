@@ -23,6 +23,7 @@ import {apiPost} from '../../../src/utils/utils';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
 const AddProduct = () => {
   const navigation = useNavigation();
   const [selectedImages, setSelectedImages] = useState([]);
@@ -75,9 +76,9 @@ const AddProduct = () => {
       {cancelable: true},
     );
   };
+
   const postApi = async () => {
     try {
-      console.log(productAttributes);
       if (
         !selectedImages ||
         !productName ||

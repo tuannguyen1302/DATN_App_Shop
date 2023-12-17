@@ -78,13 +78,15 @@ const OrderListScreen = ({navigation}) => {
     }, []),
   );
 
+  const reversedData = data && data.length > 0 ? [...data].reverse() : [];
+
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'black'} />
       ) : data.length != 0 ? (
         <FlatList
-          data={data}
+          data={reversedData}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
           scrollEnabled={true}
@@ -130,13 +132,15 @@ const InDeliveryScreen = ({navigation}) => {
     }, []),
   );
 
+  const reversedData = data && data.length > 0 ? [...data].reverse() : [];
+
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'black'} />
       ) : data.length != 0 ? (
         <FlatList
-          data={data}
+          data={reversedData}
           keyExtractor={item => item?.oderId}
           renderItem={({item}) => renderItem(item, navigation)}
           scrollEnabled={true}
@@ -182,22 +186,24 @@ const DeliveredScreen = ({navigation}) => {
     }, []),
   );
 
+  const reversedData = data && data.length > 0 ? [...data].reverse() : [];
+
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : data.length != 0 ? (
         <FlatList
+          data={reversedData}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => load(setRefreshing, 'delivered')}
             />
           }
-          data={data}
-          keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
-          showsVerticalScrollIndicator={false}
         />
       ) : (
         <ScrollView
@@ -233,22 +239,24 @@ const CanceledScreen = ({navigation}) => {
     }, []),
   );
 
+  const reversedData = data && data.length > 0 ? [...data].reverse() : [];
+
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size={'large'} color={'gray'} />
       ) : data.length != 0 ? (
         <FlatList
+          data={reversedData}
+          keyExtractor={item => item?.oderId}
+          renderItem={({item}) => renderItem(item, navigation)}
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => load(setRefreshing, 'cancelled')}
             />
           }
-          data={data}
-          keyExtractor={item => item?.oderId}
-          renderItem={({item}) => renderItem(item, navigation)}
-          showsVerticalScrollIndicator={false}
         />
       ) : (
         <ScrollView

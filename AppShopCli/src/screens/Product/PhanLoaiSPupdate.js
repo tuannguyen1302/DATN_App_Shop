@@ -13,6 +13,7 @@ const PhanLoaiSP = ({navigation, route}) => {
   const [inputValue, setInputValue] = useState('');
   const [data, setData] = useState([]);
   const [data1, setData1] = useState([]);
+  const [array, setArray] = useState([]);
   const {newid, item, selectedCategory, id} = route.params || {};
 
   console.log(id, selectedCategory);
@@ -164,45 +165,77 @@ const PhanLoaiSP = ({navigation, route}) => {
     });
   };
 
-  const handleQuantityChange = (id, text) => {
-    setSelectedItems1(prev => {
-      const updatedItems = prev.map(item => {
-        if (item.id === id) {
-          return {...item, options_quantity: text};
-        }
-        return item;
-      });
-      return updatedItems;
+  const handleQuantityChange = (id, text, count) => {
+    setArray(prev => {
+      const countId = `${id}${count}`;
+      const existingItemIndex = prev.findIndex(
+        item => item.count_id === countId,
+      );
+
+      if (existingItemIndex !== -1) {
+        const updatedItems = [...prev];
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          options_quantity: text,
+        };
+        return updatedItems;
+      }
+
+      return [...prev, {options_quantity: text, count_id: countId}];
     });
   };
+
   const dataWithButton =
     data.length < 8 ? [{id: 1, isButton: true}, ...data] : data;
   const dataWithButton1 =
     data1.length < 8 ? [{id: 1, isButton: true}, ...data1] : data1;
 
   const luu = () => {
-    var data = [];
+    const data = selectedItems.map(item => {
+      const mau = {color: item.text, options: []};
 
-    for (let i = 0; i < selectedItems.length; i++) {
-      const mau = {color: selectedItems[i].text, options: []};
-      for (let j = 0; j < selectedItems1.length; j++) {
-        mau.options.push({
-          size: selectedItems1[j].size,
-          options_quantity: selectedItems1[j].options_quantity,
-        });
+      selectedItems1.forEach((selectedItem1, j) => {
+        const matchingItem = array.find(
+          arrItem => arrItem.count_id === `${item.id}${j}`,
+        );
+
+        if (matchingItem) {
+          mau.options.push({
+            size: selectedItem1.size,
+            options_quantity: matchingItem.options_quantity,
+          });
+        }
+      });
+
+      return mau;
+    });
+
+    if (data.length === 0) {
+      showToast('Vui lòng nhập đầy đủ dữ liệu cần thiết');
+      return;
+    }
+
+    for (const item of data) {
+      if (item.options.length === 0) {
+        showToast('Vui lòng nhập đầy đủ dữ liệu cần thiết');
+        return;
       }
-      data.push(mau);
+
+      for (const option of item.options) {
+        if (!option.options_quantity) {
+          showToast('Vui lòng nhập đầy đủ dữ liệu cần thiết');
+          return;
+        }
+      }
     }
-    if (data.length != 0) {
-      const buil = JSON.stringify(data);
-      console.log(buil);
-      navigation.navigate('UpdateProduct', {buil, newid, selectedCategory, id});
-    } else {
-      ToastAndroid.show(
-        'Vui lòng chọn các thông tin trên ',
-        ToastAndroid.SHORT,
-      );
+
+    function showToast(message) {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
     }
+
+    const buil = JSON.stringify(data);
+    console.log(buil);
+    navigation.navigate('UpdateProduct', {buil, newid, selectedCategory, id});
   };
 
   return (
@@ -417,7 +450,7 @@ const PhanLoaiSP = ({navigation, route}) => {
                           placeholder={'Nhập số lượng hàng loạt'}
                           // value={value.options_quantity.toString()}
                           onChangeText={text => {
-                            handleQuantityChange(value.id, text);
+                            handleQuantityChange(item.id, text, index);
                           }}
                         />
                       </View>

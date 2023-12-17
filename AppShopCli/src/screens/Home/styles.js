@@ -15,7 +15,7 @@ const HomeStyle = StyleSheet.create({
   avatarShop: {
     width: 45,
     height: 45,
-    borderColor: 'green',
+    borderColor: 'gray',
     borderWidth: 1,
     resizeMode: 'contain',
     borderRadius: 15,
