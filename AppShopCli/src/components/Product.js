@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   productItem: {
     padding: '1%',
     elevation: 3,
-    height: 120,
+    height: 110,
     borderRadius: 10,
     borderWidth: 0.2,
     borderColor: 'gray',

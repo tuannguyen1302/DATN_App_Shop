@@ -26,14 +26,13 @@ import { updateUserData } from '../../redux/actions/user';
 
 const Updateprofile = ({ navigation, route }) => {
   const email = route.params?.email || '';
-
   const [data, setData] = useState({
     avatar: {
       uri: 'https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj',
     },
     nameShop: '',
     address: '',
-    email: '   ',
+    // email: 'dd@gmail.com',
     phoneNumberShop: '',
     des: '',
   });
@@ -52,11 +51,11 @@ const Updateprofile = ({ navigation, route }) => {
     }
   };
   const postApi = async () => {
+    //console.log(data.email);
     if (
 
       !data.nameShop ||
       !data.address ||
-
       !data.phoneNumberShop.trim() || // Kiểm tra rỗng sau khi xóa khoảng trắng
       !/^[0-9]{10}$/.test(data.phoneNumberShop.trim()) || // Kiểm tra định dạng số điện thoại
       !data.des
@@ -71,7 +70,7 @@ const Updateprofile = ({ navigation, route }) => {
     formData.append('nameShop', data?.nameShop);
     formData.append('phoneNumberShop', data?.phoneNumberShop);
     formData.append('des', data?.des);
-    formData.append('emailShop', data?.email);
+    // formData.append('emailShop', data?.email);
     formData.append('address', data?.address);
     let localUri = data?.avatar?.uri;
     let filename = localUri.split('/').pop();
@@ -80,9 +79,13 @@ const Updateprofile = ({ navigation, route }) => {
     formData.append('avatar', { uri: localUri, name: filename, type });
 
     try {
-      updateUserData(formData);
-      console.log("đăng kí ok ");
-      navigation.replace('BottomTab');
+      const res = await updateUserData(formData, navigation);
+
+      if (res) {
+        console.log('đăng kí ok ');
+        navigation.replace('BottomTab');
+      }
+
     } catch (error) {
       throw error;
     }
@@ -102,7 +105,9 @@ const Updateprofile = ({ navigation, route }) => {
           placeholder={`Nhập ${label.toLowerCase()}`}
         />
         <View style={{ alignItems: 'center', justifyContent: 'space-around' }}>
-          <Text>{state.length}/{maxLength}</Text>
+          <Text>
+            {state.length}/{maxLength}
+          </Text>
           <Pressable onPress={() => setData({ ...data, [value]: '' })}>
             <AntDesign
               name="closecircleo"
@@ -166,7 +171,12 @@ const Updateprofile = ({ navigation, route }) => {
                     maxLength: 100,
                   },
                 ].map(item =>
-                  renderTextInput(item.label, item.state, item.value, item.maxLength),
+                  renderTextInput(
+                    item.label,
+                    item.state,
+                    item.value,
+                    item.maxLength,
+                  ),
                 )}
               </View>
             </ScrollView>
@@ -177,8 +187,8 @@ const Updateprofile = ({ navigation, route }) => {
         </KeyboardAvoidingView>
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={['1%', '50%']}
+          // index={1}
+          snapPoints={['50%']}
           backgroundStyle={styles.bottomSheetBackground}>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Text style={{ fontSize: 20, color: 'gray', fontWeight: 'bold' }}>

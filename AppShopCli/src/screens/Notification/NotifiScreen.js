@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,19 +9,19 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {apiGet} from '../../utils/utils';
-import {NOTIFI_API} from '../../config/urls';
-import {formatNotificationTime} from '../../components/DateTime';
+import { apiGet } from '../../utils/utils';
+import { NOTIFI_API } from '../../config/urls';
+import { formatNotificationTime } from '../../components/DateTime';
 import imagePath from '../../constants/imagePath';
 
-const NotifiScreen = ({navigation}) => {
+const NotifiScreen = ({ navigation }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('NotiItem', {item})}
+        onPress={() => navigation.navigate('NotiItem', { item })}
         style={styles.notificationItem}>
         <Image
           resizeMode="contain"
@@ -65,19 +65,19 @@ const NotifiScreen = ({navigation}) => {
       </View>
       {loading ? (
         <ActivityIndicator
-          style={{marginTop: '40%'}}
+          style={{ marginTop: '40%' }}
           size="large"
           color="black"
         />
-      ) : !data ? (
+      ) : data.length == 0 ? (
         <View
-          style={{alignSelf: 'center', alignItems: 'center', marginTop: '40%'}}>
+          style={{ alignSelf: 'center', alignItems: 'center', marginTop: '40%' }}>
           <Image
-            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            style={{ width: 100, height: 100, resizeMode: 'contain' }}
             source={imagePath.notification1}
           />
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-            Chưa có đơn hàng được hủy ✨
+          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+            Chưa có thông báo nào✨
           </Text>
         </View>
       ) : (

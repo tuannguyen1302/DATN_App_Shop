@@ -126,21 +126,32 @@ const UpdatedOrderHistory = ({navigation, route}) => {
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Số điện thoại:</Text>
-            <Text style={styles.infoText}>{orderItem?.phoneNumber}</Text>
+            <Text style={styles.infoText}>0{orderItem?.phoneNumber}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Địa chỉ:</Text>
             <Text style={styles.infoText}>
-              {orderItem?.order_shipping.City}
+              {orderItem?.order_shipping.Address}
             </Text>
           </View>
         </View>
 
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Giá: </Text>
+            <Text style={styles.infoLabel}>Giá gốc: </Text>
             <Text style={[styles.infoText, {color: 'red'}]}>
-              {formatCurrency(orderItem?.order_checkout?.totalPrice)}
+              {formatCurrency(
+                orderItem?.order_checkout?.totalPrice /
+                  orderItem?.product_attributes?.quantity,
+              )}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Giá trị đơn: </Text>
+            <Text style={[styles.infoText, {color: 'red'}]}>
+              {`(X${orderItem?.product_attributes?.quantity}) ${formatCurrency(
+                orderItem?.order_checkout?.totalPrice,
+              )}`}
             </Text>
           </View>
           <View style={styles.infoRow}>
@@ -158,7 +169,11 @@ const UpdatedOrderHistory = ({navigation, route}) => {
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Tổng:</Text>
             <Text style={[styles.infoText, {color: 'red'}]}>
-              {formatCurrency(orderItem?.order_checkout?.totalCheckout)}
+              {formatCurrency(
+                orderItem?.order_checkout?.totalCheckout +
+                  orderItem?.order_checkout?.feeShip -
+                  orderItem?.order_checkout?.totalDiscount,
+              )}
             </Text>
           </View>
         </View>

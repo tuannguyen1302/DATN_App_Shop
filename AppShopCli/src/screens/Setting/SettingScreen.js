@@ -166,8 +166,8 @@ const SettingScreen = ({navigation}) => {
 
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={['1%', '30%']}
+          // index={1}
+          snapPoints={['30%']}
           backgroundStyle={{
             borderRadius: 25,
             borderWidth: 0.5,
