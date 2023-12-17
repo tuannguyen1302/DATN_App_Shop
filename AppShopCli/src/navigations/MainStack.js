@@ -139,6 +139,10 @@ export default function (Stack) {
         name={navigationStrings.FORGOT}
         component={Screens.ForgotScreen}
       />
+      <Stack.Screen
+        name={navigationStrings.DetailRating}
+        component={Screens.DetailRating}
+      />
     </>
   );
 }

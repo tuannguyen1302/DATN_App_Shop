@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,21 +11,21 @@ import {
   ToastAndroid,
   ScrollView,
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import imagePath from '../../constants/imagePath';
-import {saveProductData, updateProductData} from '../../redux/actions/product';
-import {useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
-import {renderProductItem} from '../../components/Product';
+import { saveProductData, updateProductData } from '../../redux/actions/product';
+import { useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import { renderProductItem } from '../../components/Product';
 
 const TAB_ITEMS = [
-  {status: 'all'},
-  {status: 'con_hang'},
-  {status: 'het_hang'},
-  {status: 'private'},
+  { status: 'all' },
+  { status: 'con_hang' },
+  { status: 'het_hang' },
+  { status: 'private' },
 ];
 
 const TAB_TEXT = {
@@ -35,7 +35,7 @@ const TAB_TEXT = {
   private: 'Được ẩn',
 };
 
-const ProductScreen = ({navigation}) => {
+const ProductScreen = ({ navigation }) => {
   const productList = useSelector(state => state?.product?.productData);
   const typeProduct = useSelector(state => state?.product?.typeData);
   const [status, setStatus] = useState('all');
@@ -45,6 +45,7 @@ const ProductScreen = ({navigation}) => {
   const flatListRef = useRef();
   const bottomSheetModalRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+
 
   const toggleHideProduct = async product => {
     const action = product?.isDraft ? 'hiện' : 'ẩn';
@@ -95,25 +96,26 @@ const ProductScreen = ({navigation}) => {
       throw error;
     }
   };
-
+  //console.log(productList.all, "========================================");
   useFocusEffect(
     useCallback(() => {
       load();
+
     }, [status]),
   );
 
-  const renderTabItem = ({item, index}) => (
+  const renderTabItem = ({ item, index }) => (
     <Pressable
       style={[
         styles.tabItem,
-        item?.status === status && {backgroundColor: '#EEEEEE'},
+        item?.status === status && { backgroundColor: '#EEEEEE' },
       ]}
       onPress={() => {
         setStatus(item?.status);
-        flatListRef.current.scrollToIndex({index});
+        flatListRef.current.scrollToIndex({ index });
       }}>
       <Text
-        style={[styles.tabText, item?.status === status && {color: 'black'}]}>
+        style={[styles.tabText, item?.status === status && { color: 'black' }]}>
         {TAB_TEXT[item?.status]}
       </Text>
     </Pressable>
@@ -138,7 +140,7 @@ const ProductScreen = ({navigation}) => {
 
   return (
     <GestureHandlerRootView
-      style={[styles.container, {zIndex: isOpen ? 1 : 0}]}>
+      style={[styles.container, { zIndex: isOpen ? 1 : 0 }]}>
       <BottomSheetModalProvider>
         <Pressable onPress={() => bottomSheetModalRef.current?.close()}>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -166,14 +168,14 @@ const ProductScreen = ({navigation}) => {
               showsHorizontalScrollIndicator={false}
             />
             {loading ? (
-              <View style={{marginTop: '50%'}}>
+              <View style={{ marginTop: '50%' }}>
                 <ActivityIndicator size="large" color="black" />
               </View>
             ) : productList[status] ? (
               <FlatList
                 scrollEnabled={false}
                 data={productList[status]}
-                renderItem={({item}) =>
+                renderItem={({ item }) =>
                   renderProductItem(item, navigation, toggleHideProduct)
                 }
                 keyExtractor={item => item?._id}
@@ -195,7 +197,7 @@ const ProductScreen = ({navigation}) => {
           snapPoints={['80%']}
           backgroundStyle={bottomSheetStyles.backgroundStyle}
           onDismiss={() => setIsOpen(false)}>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Text
               style={{
                 textAlign: 'center',
@@ -209,10 +211,10 @@ const ProductScreen = ({navigation}) => {
               {typeProduct && (
                 <FlatList
                   numColumns={4}
-                  data={[{_id: 'null', category_name: 'All'}, ...typeProduct]}
+                  data={[{ _id: 'null', category_name: 'All' }, ...typeProduct]}
                   keyExtractor={item => item?._id}
                   columnWrapperStyle={bottomSheetStyles.typeColumnWrapper}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <Pressable
                       style={[
                         bottomSheetStyles.typeItem,
@@ -230,7 +232,7 @@ const ProductScreen = ({navigation}) => {
                       <Text
                         style={[
                           bottomSheetStyles.typeText,
-                          selectedTypes.includes(item?._id) && {color: 'white'},
+                          selectedTypes.includes(item?._id) && { color: 'white' },
                         ]}>
                         {item?.category_name}
                       </Text>
@@ -244,13 +246,13 @@ const ProductScreen = ({navigation}) => {
               <Pressable
                 style={[
                   bottomSheetStyles.priceButton,
-                  sortByPrice === 'up' && {backgroundColor: 'black'},
+                  sortByPrice === 'up' && { backgroundColor: 'black' },
                 ]}
                 onPress={() => handlePricePress('up')}>
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
-                    sortByPrice === 'up' && {color: 'white'},
+                    sortByPrice === 'up' && { color: 'white' },
                   ]}>
                   Tăng dần
                 </Text>
@@ -258,13 +260,13 @@ const ProductScreen = ({navigation}) => {
               <Pressable
                 style={[
                   bottomSheetStyles.priceButton,
-                  sortByPrice === 'down' && {backgroundColor: 'black'},
+                  sortByPrice === 'down' && { backgroundColor: 'black' },
                 ]}
                 onPress={() => handlePricePress('down')}>
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
-                    sortByPrice === 'down' && {color: 'white'},
+                    sortByPrice === 'down' && { color: 'white' },
                   ]}>
                   Giảm dần
                 </Text>
@@ -274,7 +276,7 @@ const ProductScreen = ({navigation}) => {
               <Pressable
                 style={[
                   bottomSheetStyles.applyButton,
-                  {backgroundColor: '#536EFF'},
+                  { backgroundColor: '#536EFF' },
                 ]}
                 onPress={async () => {
                   if (selectedTypes) {
@@ -290,7 +292,7 @@ const ProductScreen = ({navigation}) => {
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
-                    {color: 'white', fontWeight: 'bold'},
+                    { color: 'white', fontWeight: 'bold' },
                   ]}>
                   Áp dụng
                 </Text>
@@ -304,7 +306,7 @@ const ProductScreen = ({navigation}) => {
                 <Text
                   style={[
                     bottomSheetStyles.typeText,
-                    {color: '#536EFF', fontWeight: 'bold'},
+                    { color: '#536EFF', fontWeight: 'bold' },
                   ]}>
                   Clear
                 </Text>

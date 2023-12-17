@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -17,20 +17,22 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {API_BASE_URL} from '../../config/urls';
-import {useSelector} from 'react-redux';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {updateUserData} from '../../redux/actions/user';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { API_BASE_URL } from '../../config/urls';
+import { useSelector } from 'react-redux';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { updateUserData } from '../../redux/actions/user';
 
-const Updateprofile = ({navigation}) => {
+const Updateprofile = ({ navigation, route }) => {
+  const email = route.params?.email || '';
   const [data, setData] = useState({
     avatar: {
       uri: 'https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj',
     },
     nameShop: '',
     address: '',
+    // email: 'dd@gmail.com',
     phoneNumberShop: '',
     des: '',
   });
@@ -40,16 +42,18 @@ const Updateprofile = ({navigation}) => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
 
       const response = isFrontCamera
-        ? await launchCamera({mediaType: 'photo'})
-        : await launchImageLibrary({mediaType: 'photo', multiple: true});
-      setData({...data, avatar: response.assets[0]});
+        ? await launchCamera({ mediaType: 'photo' })
+        : await launchImageLibrary({ mediaType: 'photo', multiple: true });
+      setData({ ...data, avatar: response.assets[0] });
       bottomSheetModalRef.current?.close();
     } catch (error) {
       console.log(error);
     }
   };
   const postApi = async () => {
+    //console.log(data.email);
     if (
+
       !data.nameShop ||
       !data.address ||
       !data.phoneNumberShop.trim() || // Kiểm tra rỗng sau khi xóa khoảng trắng
@@ -66,17 +70,22 @@ const Updateprofile = ({navigation}) => {
     formData.append('nameShop', data?.nameShop);
     formData.append('phoneNumberShop', data?.phoneNumberShop);
     formData.append('des', data?.des);
+    // formData.append('emailShop', data?.email);
     formData.append('address', data?.address);
     let localUri = data?.avatar?.uri;
     let filename = localUri.split('/').pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
-    formData.append('avatar', {uri: localUri, name: filename, type});
+    formData.append('avatar', { uri: localUri, name: filename, type });
 
     try {
-      updateUserData(formData);
-      console.log('đăng kí ok ');
-      navigation.replace('BottomTab');
+      const res = await updateUserData(formData, navigation);
+
+      if (res) {
+        console.log('đăng kí ok ');
+        navigation.replace('BottomTab');
+      }
+
     } catch (error) {
       throw error;
     }
@@ -90,16 +99,16 @@ const Updateprofile = ({navigation}) => {
         <TextInput
           style={styles.input}
           value={state}
-          onChangeText={text => setData({...data, [value]: text})}
+          onChangeText={text => setData({ ...data, [value]: text })}
           maxLength={maxLength}
           multiline={true}
           placeholder={`Nhập ${label.toLowerCase()}`}
         />
-        <View style={{alignItems: 'center', justifyContent: 'space-around'}}>
+        <View style={{ alignItems: 'center', justifyContent: 'space-around' }}>
           <Text>
             {state.length}/{maxLength}
           </Text>
-          <Pressable onPress={() => setData({...data, [value]: ''})}>
+          <Pressable onPress={() => setData({ ...data, [value]: '' })}>
             <AntDesign
               name="closecircleo"
               size={20}
@@ -126,7 +135,7 @@ const Updateprofile = ({navigation}) => {
                   onPress={() => bottomSheetModalRef.current?.present()}>
                   <Image
                     style={styles.avatar}
-                    source={{uri: data?.avatar?.uri}}
+                    source={{ uri: data?.avatar?.uri }}
                   />
                   <View style={styles.cameraIcon}>
                     <Feather color={'white'} name="camera" size={20} />
@@ -181,8 +190,8 @@ const Updateprofile = ({navigation}) => {
           // index={1}
           snapPoints={['50%']}
           backgroundStyle={styles.bottomSheetBackground}>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{fontSize: 20, color: 'gray', fontWeight: 'bold'}}>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 20, color: 'gray', fontWeight: 'bold' }}>
               Chọn ảnh từ
             </Text>
             <TouchableOpacity

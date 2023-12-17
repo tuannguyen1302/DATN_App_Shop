@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   ScrollView,
@@ -9,15 +9,15 @@ import {
   Image,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Rating} from 'react-native-elements';
-import {formatMessageTime} from '../../components/DateTime';
+import { Rating } from 'react-native-elements';
+import { formatMessageTime } from '../../components/DateTime';
 import imagePath from '../../constants/imagePath';
-import {API_BASE_URL} from '../../config/urls';
+import { API_BASE_URL } from '../../config/urls';
 
-const DetailRating = ({navigation, route}) => {
+const DetailRating = ({ navigation, route }) => {
   const [selectedRating, setSelectedRating] = useState('Tất cả');
   const [selectedStar, setSelectedStar] = useState(null);
-  const {data} = route.params;
+  const { data } = route.params;
 
   const handleRatingSelect = rating => {
     setSelectedRating(rating);
@@ -32,17 +32,17 @@ const DetailRating = ({navigation, route}) => {
         paddingVertical: '20%',
       }}>
       <Image
-        style={{width: 100, height: 100, resizeMode: 'contain'}}
+        style={{ width: 100, height: 100, resizeMode: 'contain' }}
         source={imagePath.evaluate}
       />
-      <Text style={{fontSize: 15, marginTop: 20, fontWeight: 'bold'}}>
+      <Text style={{ fontSize: 15, marginTop: 20, fontWeight: 'bold' }}>
         Không có đánh giá nào nào 👑
       </Text>
     </View>
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -51,7 +51,7 @@ const DetailRating = ({navigation, route}) => {
         </TouchableOpacity>
         <Text style={styles.title}>Infomation Rating</Text>
       </View>
-      <View style={{marginHorizontal: '3%'}}>
+      <View style={{ marginHorizontal: '3%' }}>
         <View style={styles.ratingContainer}>
           <Rating
             readonly
@@ -82,7 +82,7 @@ const DetailRating = ({navigation, route}) => {
                 <Text
                   style={[
                     styles.ratingFilterText,
-                    {color: selectedRating === item ? 'white' : 'black'},
+                    { color: selectedRating === item ? 'white' : 'black' },
                   ]}>
                   {item}
                 </Text>
@@ -107,7 +107,7 @@ const DetailRating = ({navigation, route}) => {
               )}
               scrollEnabled={false}
               keyExtractor={item => item._id.toString()}
-              renderItem={({item}) => <ReviewItem item={item} />}
+              renderItem={({ item }) => <ReviewItem item={item} />}
             />
           ) : (
             renderNoComments()
@@ -120,14 +120,14 @@ const DetailRating = ({navigation, route}) => {
   );
 };
 
-const ReviewItem = ({item}) => {
+const ReviewItem = ({ item }) => {
   return (
     <View style={styles.reviewItemContainer}>
-      <View style={{width: '80%'}}>
+      <View style={{ width: '80%' }}>
         <View style={styles.reviewItemLeft}>
           <Image
             style={styles.avatar}
-            source={{uri: `${API_BASE_URL}${item?.user?.information?.avatar}`}}
+            source={{ uri: `${API_BASE_URL}${item?.user?.information?.avatar}` }}
           />
           <Text style={styles.reviewItemName}>
             {item?.user?.information?.fullName}

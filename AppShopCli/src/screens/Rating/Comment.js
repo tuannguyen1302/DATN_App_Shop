@@ -8,16 +8,16 @@ import {
   Image,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Rating} from 'react-native-elements';
-import {formatMessageTime} from '../../components/DateTime';
+import { Rating } from 'react-native-elements';
+import { formatMessageTime } from '../../components/DateTime';
 import imagePath from '../../constants/imagePath';
-import {API_BASE_URL} from '../../config/urls';
+import { API_BASE_URL } from '../../config/urls';
 
-const Comment = ({navigation, data}) => {
+const Comment = ({ navigation, data }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('DetailRating', {data})}
+        onPress={() => navigation.navigate('DetailRating', { data })}
         style={styles.headerContainer}>
         <View>
           <Text style={styles.reviewTitle}>Đánh giá sản phẩm</Text>
@@ -44,7 +44,7 @@ const Comment = ({navigation, data}) => {
           data={data?.reviews?.slice(0, 3)}
           scrollEnabled={false}
           keyExtractor={item => item?._id.toString()}
-          renderItem={({item}) => <ReviewItem item={item} />}
+          renderItem={({ item }) => <ReviewItem item={item} />}
         />
       ) : (
         <View
@@ -54,10 +54,10 @@ const Comment = ({navigation, data}) => {
             paddingVertical: '20%',
           }}>
           <Image
-            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            style={{ width: 100, height: 100, resizeMode: 'contain' }}
             source={imagePath.evaluate}
           />
-          <Text style={{fontSize: 15, marginTop: 20, fontWeight: 'bold'}}>
+          <Text style={{ fontSize: 15, marginTop: 20, fontWeight: 'bold' }}>
             Sản phẩm chưa có đánh giá 👑
           </Text>
         </View>
@@ -66,14 +66,14 @@ const Comment = ({navigation, data}) => {
   );
 };
 
-const ReviewItem = ({item}) => {
+const ReviewItem = ({ item }) => {
   return (
     <View style={styles.reviewItemContainer}>
-      <View style={{width: '80%'}}>
+      <View style={{ width: '80%' }}>
         <View style={styles.reviewItemLeft}>
           <Image
             style={styles.avatar}
-            source={{uri: `${API_BASE_URL}${item?.user?.information?.avatar}`}}
+            source={{ uri: `${API_BASE_URL}${item?.user?.information?.avatar}` }}
           />
           <Text style={styles.reviewItemName}>
             {item?.user?.information?.fullName}

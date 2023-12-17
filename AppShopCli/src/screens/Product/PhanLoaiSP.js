@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
-import {ScrollView, TextInput} from 'react-native';
-import {FlatList} from 'react-native';
-import {Alert} from 'react-native';
-import {TouchableOpacity} from 'react-native';
-import {Modal} from 'react-native';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, TextInput } from 'react-native';
+import { FlatList } from 'react-native';
+import { Alert } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { Modal } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
-const PhanLoaiSP = ({navigation}) => {
+const PhanLoaiSP = ({ navigation }) => {
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [isButtonPressed, setButtonPressed] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -19,7 +19,7 @@ const PhanLoaiSP = ({navigation}) => {
   const [selectedItems1, setSelectedItems1] = useState([]);
   const route = useRoute();
 
-  const {selectedCategory, id} = route.params || {};
+  const { selectedCategory, id } = route.params || {};
   //console.log(selectedCategory, id);
   const toggleDialog = () => {
     setDialogVisible(!isDialogVisible);
@@ -41,7 +41,7 @@ const PhanLoaiSP = ({navigation}) => {
   const handleAdd = () => {
     if (inputValue.trim() !== '') {
       setData(prevData => [
-        {id: Date.now().toString(), text: inputValue},
+        { id: Date.now().toString(), text: inputValue },
         ...prevData,
       ]);
     }
@@ -53,7 +53,7 @@ const PhanLoaiSP = ({navigation}) => {
     if (inputValue.trim() !== '') {
       setData1(prevData1 => [
         ...prevData1,
-        {id: Date.now().toString(), size: inputValue},
+        { id: Date.now().toString(), size: inputValue },
       ]);
     }
     toggleDialog();
@@ -65,7 +65,7 @@ const PhanLoaiSP = ({navigation}) => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn xóa màu sắc này?',
       [
-        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
+        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
         {
           text: 'Xóa',
           onPress: () => {
@@ -76,7 +76,7 @@ const PhanLoaiSP = ({navigation}) => {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -85,7 +85,7 @@ const PhanLoaiSP = ({navigation}) => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn size này?',
       [
-        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
+        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
         {
           text: 'Xóa',
           onPress: () => {
@@ -96,7 +96,7 @@ const PhanLoaiSP = ({navigation}) => {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -106,7 +106,7 @@ const PhanLoaiSP = ({navigation}) => {
       if (newItem && prevSelectedItems.some(item => item.id === id)) {
         return prevSelectedItems.filter(item => item.id !== id);
       } else if (newItem) {
-        return [...prevSelectedItems, {id, text: newItem.text}];
+        return [...prevSelectedItems, { id, text: newItem.text }];
       }
       return prevSelectedItems;
     });
@@ -120,7 +120,7 @@ const PhanLoaiSP = ({navigation}) => {
       } else if (newItem) {
         return [
           ...prevSelectedItems,
-          {id, size: newItem.size, options_quantity: 0},
+          { id, size: newItem.size, options_quantity: 0 },
         ];
       }
       return prevSelectedItems;
@@ -132,7 +132,7 @@ const PhanLoaiSP = ({navigation}) => {
       const index = prev.findIndex(item => item.id === id);
       if (index !== -1) {
         const updatedItems = [...prev];
-        updatedItems[index] = {...updatedItems[index], options_quantity: text};
+        updatedItems[index] = { ...updatedItems[index], options_quantity: text };
         return updatedItems;
       }
       return prev;
@@ -140,27 +140,36 @@ const PhanLoaiSP = ({navigation}) => {
   };
 
   const dataWithButton =
-    data.length < 8 ? [{id: 1, isButton: true}, ...data] : data;
+    data.length < 8 ? [{ id: 1, isButton: true }, ...data] : data;
   const dataWithButton1 =
-    data1.length < 8 ? [{id: 1, isButton: true}, ...data1] : data1;
+    data1.length < 8 ? [{ id: 1, isButton: true }, ...data1] : data1;
 
   const luu = () => {
     var data = [];
 
+    console.log(selectedItems);
+    console.log(selectedItems1);
+
     for (let i = 0; i < selectedItems.length; i++) {
-      const mau = {color: selectedItems[i].text, options: []};
+      const mau = { color: selectedItems[i].text, options: [] };
+
       for (let j = 0; j < selectedItems1.length; j++) {
-        mau.options.push({
+        const option = {
           size: selectedItems1[j].size,
           options_quantity: selectedItems1[j].options_quantity,
-        });
+        };
+
+        mau.options.push({ ...option }); // Sử dụng bản sao của đối tượng option
+        console.log(option.options_quantity);
       }
+
       data.push(mau);
     }
+
     if (data.length != 0) {
-      const buil = JSON.stringify(data);
-      console.log(buil);
-      navigation.navigate('AddProduct', {buil, selectedCategory, id});
+      // const buil = JSON.stringify(data);
+      // console.log(buil);
+      // navigation.navigate('AddProduct', {buil, selectedCategory, id});
     }
   };
 
@@ -184,7 +193,7 @@ const PhanLoaiSP = ({navigation}) => {
       <ScrollView>
         <View style={styles.view}>
           <View style={styles.view1}>
-            <Text style={{fontSize: 20, color: '#000000'}}> Màu sắc </Text>
+            <Text style={{ fontSize: 20, color: '#000000' }}> Màu sắc </Text>
           </View>
           <View style={styles.horizontalLine1} />
           <View
@@ -196,7 +205,7 @@ const PhanLoaiSP = ({navigation}) => {
               keyExtractor={item => item.id}
               numColumns={4}
               scrollEnabled={false}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <View style={styles.imageItem}>
                   {item.isButton ? (
                     <View
@@ -211,7 +220,7 @@ const PhanLoaiSP = ({navigation}) => {
                       }}>
                       <Text
                         onPress={toggleDialog}
-                        style={{color: '#FFFFFF', fontSize: 15}}>
+                        style={{ color: '#FFFFFF', fontSize: 15 }}>
                         +Thêm
                       </Text>
                     </View>
@@ -249,7 +258,7 @@ const PhanLoaiSP = ({navigation}) => {
         </View>
         <View style={styles.view}>
           <View style={styles.view1}>
-            <Text style={{fontSize: 20, color: '#000000'}}> Size </Text>
+            <Text style={{ fontSize: 20, color: '#000000' }}> Size </Text>
           </View>
           <View style={styles.horizontalLine1} />
           <View>
@@ -258,7 +267,7 @@ const PhanLoaiSP = ({navigation}) => {
               keyExtractor={item => item.id}
               numColumns={4}
               scrollEnabled={false}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <View style={styles.imageItem}>
                   {item.isButton ? (
                     <View
@@ -273,7 +282,7 @@ const PhanLoaiSP = ({navigation}) => {
                       }}>
                       <Text
                         onPress={toggleDialog1}
-                        style={{color: '#FFFFFF', fontSize: 17}}>
+                        style={{ color: '#FFFFFF', fontSize: 17 }}>
                         +Thêm
                       </Text>
                     </View>
@@ -310,7 +319,7 @@ const PhanLoaiSP = ({navigation}) => {
           </View>
         </View>
         <View style={styles.view}>
-          <Text style={{fontSize: 20, padding: 5, color: 'black'}}>
+          <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>
             Thông tin chi tiết phân loại{' '}
           </Text>
         </View>
@@ -322,12 +331,12 @@ const PhanLoaiSP = ({navigation}) => {
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-          <Text style={{fontSize: 18, padding: 5, color: 'black', width: 200}}>
+          <Text style={{ fontSize: 18, padding: 5, color: 'black', width: 200 }}>
             Đặt số lượng hàng cho tất cả phân loại
           </Text>
           <Text
             onPress={() => Alert.alert('Thông báo', 'Thôi~')}
-            style={{fontSize: 18, color: 'red'}}>
+            style={{ fontSize: 18, color: 'red' }}>
             Thay đổi hàng loạt
           </Text>
         </View>
@@ -335,18 +344,18 @@ const PhanLoaiSP = ({navigation}) => {
           data={selectedItems}
           keyExtractor={item => item.id}
           scrollEnabled={false}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <View style={styles.item12}>
               <View style={styles.view3}>
-                <Text style={{fontSize: 20, padding: 5, color: 'black'}}>
+                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>
                   Màu Sắc:
                 </Text>
-                <Text style={{fontSize: 20, padding: 5, color: 'black'}}>
+                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>
                   {item.text}
                 </Text>
               </View>
               <View style={styles.view4}>
-                <Text style={{fontSize: 20, padding: 5, color: 'black'}}>
+                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>
                   Size:
                 </Text>
               </View>
@@ -370,12 +379,14 @@ const PhanLoaiSP = ({navigation}) => {
                           {value.size}
                         </Text>
                         <TextInput
-                          style={{textAlign: 'right'}}
+                          style={{ textAlign: 'right' }}
                           maxLength={10}
                           keyboardType="numeric"
-                          placeholder={'Nhập số lượng hàng loạt'}
+                          placeholder={'Nhập số lượng '}
                           onChangeText={text => {
-                            handleQuantityChange(value.id, text);
+                            if (text.trim() !== '') {
+                              handleQuantityChange(value.id, text);
+                            }
                           }}
                         />
                       </View>
@@ -408,10 +419,10 @@ const PhanLoaiSP = ({navigation}) => {
               <TouchableOpacity
                 style={styles.buttonCancel}
                 onPress={toggleDialog}>
-                <Text style={{color: '#fff', fontSize: 16}}>Hủy</Text>
+                <Text style={{ color: '#fff', fontSize: 16 }}>Hủy</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonAdd} onPress={check}>
-                <Text style={{color: '#fff', fontSize: 16}}>Thêm</Text>
+                <Text style={{ color: '#fff', fontSize: 16 }}>Thêm</Text>
               </TouchableOpacity>
             </View>
           </View>

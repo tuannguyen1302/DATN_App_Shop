@@ -1,11 +1,11 @@
 import socketServices from '../../utils/socketService';
-import {getItem, setItem} from '../../utils/utils';
-import {saveChatData, saveNotiData} from './chat';
+import { getItem, setItem } from '../../utils/utils';
+import { saveChatData, saveNotiData } from './chat';
 
-import {PermissionsAndroid} from 'react-native';
-import {Notifications} from 'react-native-notifications';
-import {saveUserData} from './user';
-import {saveTypeData} from './product';
+import { PermissionsAndroid } from 'react-native';
+import { Notifications } from 'react-native-notifications';
+import { saveUserData } from './user';
+import { saveTypeData } from './product';
 
 const handlePress = async () => {
   try {
@@ -22,7 +22,7 @@ const handlePress = async () => {
       throw new Error('Permission not granted');
     }
   } catch (error) {
-    throw error;
+    //  throw error;
   }
 };
 
@@ -52,10 +52,10 @@ export const fetchData = async navigation => {
 
         saveNotiData(newCount);
       } catch (error) {
-        throw error;
+        //throw error;
       }
     });
   } catch (error) {
-    throw error;
+    //throw error;
   }
 };

@@ -34,23 +34,22 @@ const UpdateProduct = ({navigation, route}) => {
     item?.product_description,
   );
   const [productPrice, setProductPrice] = useState(item?.product_price);
+
   const {selectedCategory, buil, newid, id} = route.params || {};
   const [productAttribute, setproductAttribute] = useState(
     item?.product_attributes,
   );
 
-  const typeProduct = useSelector(state => state?.product?.typeData);
 
+  const typeProduct = useSelector(state => state?.product?.typeData);
   const ngang = typeProduct.find(items => items._id === item?.category);
   const [productid, setproductid] = useState(ngang?._id);
-
   const clearField = setField => setField('');
   const defaultNewId = item?._id;
   const effectiveNewId = newid !== undefined ? newid : defaultNewId;
   const openCamera = async isFrontCamera => {
     try {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-
       const result = isFrontCamera
         ? await launchCamera({mediaType: 'photo', cameraType: 'front'})
         : await launchImageLibrary({mediaType: 'photo'});
@@ -63,7 +62,6 @@ const UpdateProduct = ({navigation, route}) => {
       console.log(error);
     }
   };
-
   const handleDeleteImage = id => {
     Alert.alert(
       'Xác nhận xóa',
@@ -85,7 +83,6 @@ const UpdateProduct = ({navigation, route}) => {
   const hienthi = () => {
     console.log(productAttribute, ngang?._id, ngang?.category_name);
   };
-
   const postApi = async () => {
     try {
       if (
@@ -102,9 +99,7 @@ const UpdateProduct = ({navigation, route}) => {
         );
         return;
       }
-
       let productAttributes;
-
       if (buil === undefined) {
         productAttributes = [JSON.stringify(productAttribute)];
         console.log(productAttributes);
@@ -119,12 +114,13 @@ const UpdateProduct = ({navigation, route}) => {
       formData.append('product_price', productPrice);
       if (id === undefined) {
         formData.append('category', productid);
-        console.log('ssss');
+
+        console.log("ssss");
       } else {
         formData.append('category', id);
-        console.log('dđ');
-      }
+        console.log("dđ");
 
+      }
       formData.append('product_attributes', productAttributes);
       //console.log(JSON.stringify(formData) + "=======================");
       selectedImages.forEach(image => {
@@ -134,7 +130,6 @@ const UpdateProduct = ({navigation, route}) => {
         let type = match ? `image/${match[1]}` : `image`;
         formData.append('thumbs', {uri: localUri, name: filename, type});
       });
-
       console.log(`${PRODUCT_API}/editProduct/${effectiveNewId}`);
       await apiPut(`${PRODUCT_API}/editProduct/${effectiveNewId}`, formData, {
         'Content-Type': 'multipart/form-data',
@@ -146,7 +141,11 @@ const UpdateProduct = ({navigation, route}) => {
     }
   };
 
-  const renderInputField = ({label, state, setState, maxLength}, index) => (
+  const renderInputField = ({ label, state, setState, maxLength }, index) => (
+
+
+  
+
     <View key={index} style={styles.inputContainer}>
       <View style={styles.inputRow}>
         <Text style={styles.inputLabel}>{label} 🕸️</Text>
@@ -183,7 +182,6 @@ const UpdateProduct = ({navigation, route}) => {
       </View>
     </View>
   );
-
   let idCounter = 0;
   useEffect(() => {
     const newImages = item?.product_thumb.map(uri => ({
@@ -192,12 +190,10 @@ const UpdateProduct = ({navigation, route}) => {
     }));
     setSelectedImages(prevImages => [...prevImages, ...newImages]);
   }, []);
-
   const dataWithButton =
     selectedImages.length < 10
       ? [{id: 'button', isButton: true}, ...selectedImages]
       : selectedImages;
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
@@ -376,7 +372,6 @@ const UpdateProduct = ({navigation, route}) => {
     </GestureHandlerRootView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -530,5 +525,4 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
-
 export default UpdateProduct;

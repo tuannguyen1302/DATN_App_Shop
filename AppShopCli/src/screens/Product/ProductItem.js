@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,18 +11,18 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Swiper from 'react-native-swiper';
-import {formatCurrency} from '../../components/Price';
-import {Rating} from 'react-native-elements';
-import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
-import {apiGet, apiPost} from '../../utils/utils';
-import {useSelector} from 'react-redux';
+import { formatCurrency } from '../../components/Price';
+import { Rating } from 'react-native-elements';
+import { API_BASE_URL, PRODUCT_API } from '../../config/urls';
+import { apiGet, apiPost } from '../../utils/utils';
+import { useSelector } from 'react-redux';
 import Comment from '../Rating/Comment';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const ProductItem = ({navigation, route}) => {
+const ProductItem = ({ navigation, route }) => {
   const typeProduct = useSelector(state => state?.product?.typeData);
-  const {id} = route.params;
+  const { id } = route.params;
   const [productData, setProductData] = useState(null);
   const [isExpanded, setExpanded] = useState(false);
 
@@ -62,7 +62,7 @@ const ProductItem = ({navigation, route}) => {
   );
 };
 
-const Header = ({navigation}) => (
+const Header = ({ navigation }) => (
   <View style={styles.header}>
     <TouchableOpacity
       onPress={() => navigation.goBack()}
@@ -73,7 +73,7 @@ const Header = ({navigation}) => (
   </View>
 );
 
-const ImageSlider = ({images}) => (
+const ImageSlider = ({ images }) => (
   <Swiper
     autoplay
     autoplayTimeout={5}
@@ -84,7 +84,7 @@ const ImageSlider = ({images}) => (
       <Image
         key={index}
         style={styles.productImage}
-        source={{uri: `${API_BASE_URL}uploads/${image}`}}
+        source={{ uri: `${API_BASE_URL}uploads/${image}` }}
       />
     ))}
   </Swiper>
@@ -113,11 +113,10 @@ const ProductDetails = ({
           )
         </Text>
         <Text style={styles.sales}>
-          {`Đã bán: ${
-            productData.product_sold > 1000
-              ? `${productData.product_sold.toString().charAt(0)}k`
-              : productData.product_sold
-          }`}
+          {`Đã bán: ${productData.product_sold > 1000
+            ? `${productData.product_sold.toString().charAt(0)}k`
+            : productData.product_sold
+            }`}
         </Text>
       </View>
       <FlatList
@@ -127,7 +126,9 @@ const ProductDetails = ({
         showsVerticalScrollIndicator={false}
         data={productData.product_attributes}
         keyExtractor={item => item?._id}
-        renderItem={({item}) => <AttributeItem item={item} />}
+
+        renderItem={({ item }) => <AttributeItem item={item} />}
+
       />
 
       <Text style={styles.sectionTitle}>Chi tiết sản phẩm</Text>
@@ -141,7 +142,7 @@ const ProductDetails = ({
   );
 };
 
-const PriceAndSales = ({productData}) => (
+const PriceAndSales = ({ productData }) => (
   <View style={styles.productInfo}>
     <Text style={styles.productPrice}>
       {formatCurrency(productData.product_price)}
@@ -155,7 +156,9 @@ const PriceAndSales = ({productData}) => (
   </View>
 );
 
+
 const Description = ({productData, isExpanded, toggleExpand}) => (
+
   <>
     <Text style={styles.productDescription}>
       {isExpanded
@@ -172,7 +175,7 @@ const Description = ({productData, isExpanded, toggleExpand}) => (
   </>
 );
 
-const AttributeItem = ({item}) => (
+const AttributeItem = ({ item }) => (
   <View style={styles.attributeItem}>
     <Text style={styles.attributeLabel}>
       {`${item?.color}\n(${item?.quantity})`}
@@ -184,12 +187,12 @@ const AttributeItem = ({item}) => (
       showsVerticalScrollIndicator={false}
       data={item?.options}
       keyExtractor={(_, index) => index.toString()}
-      renderItem={({item}) => <SizeItem item={item} />}
+      renderItem={({ item }) => <SizeItem item={item} />}
     />
   </View>
 );
 
-const SizeItem = ({item}) => (
+const SizeItem = ({ item }) => (
   <View style={styles.sizeItem}>
     <Text style={styles.sizeLabel}>{item.size}</Text>
     <Text style={styles.quantityLabel}>{item.options_quantity}</Text>
