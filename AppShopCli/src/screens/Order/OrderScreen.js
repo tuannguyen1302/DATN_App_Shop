@@ -214,7 +214,9 @@ const DeliveredScreen = ({ navigation }) => {
             />
           }
           showsVerticalScrollIndicator={false}
+
           contentContainerStyle={[styles.container, { alignItems: 'center' }]}>
+
           <Image
             style={{ width: 100, height: 100, resizeMode: 'contain' }}
             source={imagePath.order3}
@@ -267,7 +269,9 @@ const CanceledScreen = ({ navigation }) => {
             />
           }
           showsVerticalScrollIndicator={false}
+
           contentContainerStyle={[styles.container, { alignItems: 'center' }]}>
+
           <Image
             style={{ width: 100, height: 100, resizeMode: 'contain' }}
             source={imagePath.order4}

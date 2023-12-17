@@ -15,7 +15,6 @@ const PhanLoaiSP = ({navigation, route}) => {
   const [data1, setData1] = useState([]);
   const [array, setArray] = useState([]);
   const {newid, item, selectedCategory, id} = route.params || {};
-
   console.log(id, selectedCategory);
 
   const [selectedItems, setSelectedItems] = useState([]);
@@ -149,7 +148,6 @@ const PhanLoaiSP = ({navigation, route}) => {
         const sizeInfo = product_attributes.find(attr =>
           attr.options.some(option => option.size === newItem.size),
         );
-
         // Lấy giá trị options_quantity từ sizeInfo
         const options_quantity = sizeInfo
           ? sizeInfo.options.find(option => option.size === newItem.size)
@@ -237,7 +235,6 @@ const PhanLoaiSP = ({navigation, route}) => {
     console.log(buil);
     navigation.navigate('UpdateProduct', {buil, newid, selectedCategory, id});
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -451,6 +448,7 @@ const PhanLoaiSP = ({navigation, route}) => {
                           // value={value.options_quantity.toString()}
                           onChangeText={text => {
                             handleQuantityChange(item.id, text, index);
+
                           }}
                         />
                       </View>

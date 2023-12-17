@@ -126,7 +126,9 @@ const ProductDetails = ({
         showsVerticalScrollIndicator={false}
         data={productData.product_attributes}
         keyExtractor={item => item?._id}
+
         renderItem={({ item }) => <AttributeItem item={item} />}
+
       />
 
       <Text style={styles.sectionTitle}>Chi tiết sản phẩm</Text>
@@ -154,7 +156,9 @@ const PriceAndSales = ({ productData }) => (
   </View>
 );
 
-const Description = ({ productData, isExpanded, toggleExpand }) => (
+
+const Description = ({productData, isExpanded, toggleExpand}) => (
+
   <>
     <Text style={styles.productDescription}>
       {isExpanded
