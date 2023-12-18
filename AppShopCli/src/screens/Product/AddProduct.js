@@ -111,6 +111,10 @@ const AddProduct = () => {
       await apiPost(`${PRODUCT_API}/createProduct`, formData, {
         'Content-Type': 'multipart/form-data',
       });
+      ToastAndroid.show(
+        'Thêm sản phẩm thành công ',
+        ToastAndroid.SHORT,
+      );
       navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.response);
@@ -289,13 +293,7 @@ const AddProduct = () => {
           <TouchableOpacity style={styles.button} onPress={postApi}>
             <Text style={styles.buttonText}>Lưu</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              console.log(selectedCategory, id, buil);
-            }}
-            style={[styles.button, { backgroundColor: '#000000' }]}>
-            <Text style={[styles.buttonText, { color: 'white' }]}>Hiển Thị</Text>
-          </TouchableOpacity>
+
         </View>
         <BottomSheetModal
           ref={bottomSheetModalRef}
