@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -14,13 +14,13 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {apiDelete, apiGet} from '../../utils/utils';
-import {API_BASE_URL, DISCOUNT_API} from '../../config/urls';
-import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
-import {formatNotificationTime} from '../../components/DateTime';
+import { apiDelete, apiGet } from '../../utils/utils';
+import { API_BASE_URL, DISCOUNT_API } from '../../config/urls';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import { formatNotificationTime } from '../../components/DateTime';
 import imagePath from '../../constants/imagePath';
 
-const DiscountCodeScreen = ({navigation}) => {
+const DiscountCodeScreen = ({ navigation }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,6 +49,7 @@ const DiscountCodeScreen = ({navigation}) => {
   const getApi = async () => {
     try {
       const res = await apiGet(`${DISCOUNT_API}/all`);
+
       setData(res?.message);
     } catch (error) {
       console.log('Call api: ', error.message);
@@ -63,7 +64,7 @@ const DiscountCodeScreen = ({navigation}) => {
     }, []),
   );
 
-  const renderDiscountItem = ({item}) => {
+  const renderDiscountItem = ({ item }) => {
     return (
       <Swipeable
         renderRightActions={() => (
@@ -75,18 +76,18 @@ const DiscountCodeScreen = ({navigation}) => {
             </Pressable>
             <Pressable
               onPress={() =>
-                navigation.navigate('UpdateDiscount', {data: item})
+                navigation.navigate('UpdateDiscount', { data: item })
               }
-              style={[styles.deleteButton, {backgroundColor: 'orange'}]}>
+              style={[styles.deleteButton, { backgroundColor: 'orange' }]}>
               <MaterialIcons name="update" size={30} color={'white'} />
             </Pressable>
           </>
         )}>
         <Pressable
-          onPress={() => navigation.navigate('DiscountItem', {discount: item})}
+          onPress={() => navigation.navigate('DiscountItem', { discount: item })}
           style={styles.discountItem}>
           <Image
-            source={{uri: `${API_BASE_URL}${item?.thumb}`}}
+            source={{ uri: `${API_BASE_URL}${item?.thumb}` }}
             style={styles.discountImage}
           />
           <View style={styles.discountDetails}>
@@ -134,10 +135,10 @@ const DiscountCodeScreen = ({navigation}) => {
             marginTop: '40%',
           }}>
           <Image
-            style={{width: 100, height: 100, resizeMode: 'contain'}}
+            style={{ width: 100, height: 100, resizeMode: 'contain' }}
             source={imagePath.discount}
           />
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
             Chưa có mã giảm giá nào ✨
           </Text>
         </View>
@@ -146,7 +147,7 @@ const DiscountCodeScreen = ({navigation}) => {
           data={data}
           keyExtractor={item => item?._id}
           renderItem={renderDiscountItem}
-          contentContainerStyle={{marginHorizontal: '3%'}}
+          contentContainerStyle={{ marginHorizontal: '3%' }}
           showsVerticalScrollIndicator={false}
         />
       )}
@@ -164,7 +165,7 @@ const DiscountCodeScreen = ({navigation}) => {
           position: 'absolute',
           bottom: '5%',
         }}>
-        <Text style={{color: 'white', fontWeight: '700', fontSize: 15}}>
+        <Text style={{ color: 'white', fontWeight: '700', fontSize: 15 }}>
           Add Discount
         </Text>
       </TouchableOpacity>
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
   discountImage: {
     width: 100,
     height: 100,
+    resizeMode: 'contain',
     borderRadius: 10,
   },
   discountDetails: {

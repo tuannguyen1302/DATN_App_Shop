@@ -7,12 +7,12 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {API_BASE_URL} from '../../config/urls';
+import { API_BASE_URL } from '../../config/urls';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {formatNotificationTime} from '../../components/DateTime';
+import { formatNotificationTime } from '../../components/DateTime';
 
-const DiscountItem = ({navigation, route}) => {
-  const {discount} = route.params;
+const DiscountItem = ({ navigation, route }) => {
+  const { discount } = route.params;
 
   const value = {
     all: 'Tất cả các sản phẩm',
@@ -33,7 +33,7 @@ const DiscountItem = ({navigation, route}) => {
       </View>
       <ScrollView>
         <Image
-          source={{uri: `${API_BASE_URL}${discount?.thumb}`}}
+          source={{ uri: `${API_BASE_URL}${discount?.thumb}` }}
           style={styles.image}
         />
         <View style={styles.infoContainer}>
@@ -136,11 +136,12 @@ const styles = StyleSheet.create({
     left: 10,
   },
   image: {
-    width: '100%',
+
     height: 200,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     borderRadius: 8,
     marginBottom: 10,
+    marginHorizontal: '5%'
   },
   infoContainer: {
     marginVertical: '1%',
