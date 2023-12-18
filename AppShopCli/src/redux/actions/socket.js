@@ -1,11 +1,11 @@
 import socketServices from '../../utils/socketService';
-import { getItem, setItem } from '../../utils/utils';
-import { saveChatData, saveNotiData } from './chat';
+import {getItem, setItem} from '../../utils/utils';
+import {saveChatData, saveNotiData} from './chat';
 
-import { PermissionsAndroid } from 'react-native';
-import { Notifications } from 'react-native-notifications';
-import { saveUserData } from './user';
-import { saveTypeData } from './product';
+import {PermissionsAndroid} from 'react-native';
+import {Notifications} from 'react-native-notifications';
+import {saveUserData} from './user';
+import {saveTypeData} from './product';
 
 const handlePress = async () => {
   try {
@@ -50,7 +50,7 @@ export const fetchData = async navigation => {
 
         await setItem('notifi', newCount.toString());
 
-        saveNotiData(newCount);
+        await saveNotiData(newCount);
       } catch (error) {
         //throw error;
       }
