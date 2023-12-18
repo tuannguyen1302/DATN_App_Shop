@@ -9,15 +9,15 @@ import {
   StyleSheet,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { ListItem, Avatar } from '@rneui/themed';
-import { Icon } from 'react-native-elements';
-import { useSelector } from 'react-redux';
-import { API_BASE_URL } from '../../config/urls';
+import {ListItem, Avatar} from '@rneui/themed';
+import {Icon} from 'react-native-elements';
+import {useSelector} from 'react-redux';
+import {API_BASE_URL} from '../../config/urls';
 import imagePath from '../../constants/imagePath';
-import { formatMessageTime } from '../../components/DateTime';
+import {formatMessageTime} from '../../components/DateTime';
 import Chat from '../../assets/images/Chat.png';
 
-const MessageScreen = ({ navigation }) => {
+const MessageScreen = ({navigation}) => {
   const data = useSelector(state => state?.chat?.chatData);
 
   const showAlert = itemId => {
@@ -25,15 +25,16 @@ const MessageScreen = ({ navigation }) => {
       'Xác nhận',
       'Bạn có chắc chắn muốn xóa tin nhắn này?',
       [
-        { text: 'Hủy', style: 'cancel' },
-        { text: 'Xóa', onPress: () => { } },
+        {text: 'Hủy', style: 'cancel'},
+        {text: 'Xóa', onPress: () => {}},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     const count = item?.chat?.isRead?.shop?.countNew || 0;
+
     return (
       <ListItem.Swipeable
         onPress={() => navigateToMessItem(item)}
@@ -42,7 +43,7 @@ const MessageScreen = ({ navigation }) => {
         <Avatar
           size={70}
           rounded
-          source={{ uri: `${API_BASE_URL}${item?.user?.user_avatar}` }}>
+          source={{uri: `${API_BASE_URL}${item?.user?.user_avatar}`}}>
           <Icon
             name="circle"
             type="font-awesome"
@@ -68,9 +69,9 @@ const MessageScreen = ({ navigation }) => {
             <ListItem.Subtitle
               style={[
                 styles.subtitle,
-                { color: count > 0 ? '#536EFF' : 'black' },
+                {color: count > 0 ? '#536EFF' : 'black'},
               ]}>
-              {item?.chat?.messagers[item?.chat?.messagers.length - 1]}
+              {/* {item?.chat?.messagers[item?.chat?.messagers.length - 1]} */}
             </ListItem.Subtitle>
             <ListItem.Subtitle style={styles.timeText}>
               {formatMessageTime(item?.chat?.updatedAt)}
@@ -104,7 +105,7 @@ const MessageScreen = ({ navigation }) => {
         <Image style={styles.logo} source={imagePath.logo} />
         <Text style={styles.title}>Chat box</Text>
       </View>
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{flex: 1, justifyContent: 'center'}}>
         {data[0]?.chat ? (
           <FlatList
             data={data}
@@ -113,13 +114,13 @@ const MessageScreen = ({ navigation }) => {
             showsVerticalScrollIndicator={false}
           />
         ) : (
-          <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+          <View style={{alignSelf: 'center', alignItems: 'center'}}>
             <Image
-              style={{ width: 100, height: 100, resizeMode: 'contain' }}
+              style={{width: 100, height: 100, resizeMode: 'contain'}}
               source={Chat}
             />
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-              hãy bắt đầu cuộc trò chuyện  👑
+            <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+              hãy bắt đầu cuộc trò chuyện 👑
             </Text>
           </View>
         )}

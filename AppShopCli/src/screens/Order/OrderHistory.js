@@ -25,6 +25,7 @@ const statusTranslations = {
 
 const UpdatedOrderHistory = ({navigation, route}) => {
   const {orderItem} = route.params;
+  console.log(orderItem);
 
   const handleApproval = async text => {
     Alert.alert(
