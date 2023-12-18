@@ -106,7 +106,7 @@ const DiscountCodeScreen = ({ navigation }) => {
     );
   };
 
-  console.log(data);
+
 
   return (
     <GestureHandlerRootView style={styles.container}>

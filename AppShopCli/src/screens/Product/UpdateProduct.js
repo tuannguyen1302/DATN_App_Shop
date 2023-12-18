@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Alert,
   FlatList,
@@ -15,18 +15,18 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {API_BASE_URL, PRODUCT_API} from '../../config/urls';
-import {apiPut} from '../../utils/utils';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { API_BASE_URL, PRODUCT_API } from '../../config/urls';
+import { apiPut } from '../../utils/utils';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const UpdateProduct = ({navigation, route}) => {
+const UpdateProduct = ({ navigation, route }) => {
   const bottomSheetModalRef = useRef(null);
-  const {item} = route.params;
+  const { item } = route.params;
   //console.log(item?.productAttributes);
   const [selectedImages, setSelectedImages] = useState([]);
   const [productName, setProductName] = useState(item?.product_name);
@@ -36,8 +36,6 @@ const UpdateProduct = ({navigation, route}) => {
   const [productPrice, setProductPrice] = useState(item?.product_price);
 
   const { selectedCategory, buil, newid, id } = route.params || {};
-
-
 
   const [productAttribute, setproductAttribute] = useState(
     item?.product_attributes,
@@ -54,12 +52,12 @@ const UpdateProduct = ({navigation, route}) => {
     try {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
       const result = isFrontCamera
-        ? await launchCamera({mediaType: 'photo', cameraType: 'front'})
-        : await launchImageLibrary({mediaType: 'photo'});
+        ? await launchCamera({ mediaType: 'photo', cameraType: 'front' })
+        : await launchImageLibrary({ mediaType: 'photo' });
 
       setSelectedImages([
         ...selectedImages,
-        {id: Date.now().toString(), uri: result.assets[0].uri},
+        { id: Date.now().toString(), uri: result.assets[0].uri },
       ]);
     } catch (error) {
       console.log(error);
@@ -70,7 +68,7 @@ const UpdateProduct = ({navigation, route}) => {
       'Xác nhận xóa',
       'Bạn có chắc chắn muốn xóa ảnh này?',
       [
-        {text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel'},
+        { text: 'Hủy', onPress: () => console.log('Hủy xóa'), style: 'cancel' },
         {
           text: 'Xóa',
           onPress: () => {
@@ -80,11 +78,16 @@ const UpdateProduct = ({navigation, route}) => {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
   const hienthi = () => {
-    console.log(productAttribute, ngang?._id, ngang?.category_name, selectedCategory);
+    console.log(
+      productAttribute,
+      ngang?._id,
+      ngang?.category_name,
+      selectedCategory,
+    );
   };
   const postApi = async () => {
     try {
@@ -122,7 +125,6 @@ const UpdateProduct = ({navigation, route}) => {
       } else {
         formData.append('category', id);
         console.log('dđ');
-
       }
       formData.append('product_attributes', productAttributes);
       //console.log(JSON.stringify(formData) + "=======================");
@@ -131,13 +133,17 @@ const UpdateProduct = ({navigation, route}) => {
         let filename = localUri.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
-        formData.append('thumbs', {uri: localUri, name: filename, type});
+        formData.append('thumbs', { uri: localUri, name: filename, type });
       });
       console.log(`${PRODUCT_API}/editProduct/${effectiveNewId}`);
       await apiPut(`${PRODUCT_API}/editProduct/${effectiveNewId}`, formData, {
         'Content-Type': 'multipart/form-data',
       });
       console.log('sửa thành công ');
+      ToastAndroid.show(
+        'Sửa sản phẩm thành công ',
+        ToastAndroid.SHORT,
+      );
       navigation.replace('BottomTab');
     } catch (error) {
       console.log('Post api: ', error.message);
@@ -145,10 +151,6 @@ const UpdateProduct = ({navigation, route}) => {
   };
 
   const renderInputField = ({ label, state, setState, maxLength }, index) => (
-
-
-  
-
     <View key={index} style={styles.inputContainer}>
       <View style={styles.inputRow}>
         <Text style={styles.inputLabel}>{label} 🕸️</Text>
@@ -185,11 +187,10 @@ const UpdateProduct = ({navigation, route}) => {
       </View>
     </View>
   );
-  console.log(selectedCategory + "hhhhhhhhhhh");
+  console.log(selectedCategory + 'hhhhhhhhhhh');
 
   let idCounter = 0;
   useEffect(() => {
-
     const newImages = item?.product_thumb.map(uri => ({
       id: (idCounter++).toString(),
       uri: `${API_BASE_URL}uploads/${uri}`,
@@ -200,7 +201,7 @@ const UpdateProduct = ({navigation, route}) => {
   useEffect(() => {
     console.log(selectedCategory);
     if (selectedCategory === undefined) {
-      settenngang(ngang.category_name);
+      settenngang(ngang?.category_name);
     } else {
       settenngang(selectedCategory);
     }
@@ -208,7 +209,7 @@ const UpdateProduct = ({navigation, route}) => {
 
   const dataWithButton =
     selectedImages.length < 10
-      ? [{id: 'button', isButton: true}, ...selectedImages]
+      ? [{ id: 'button', isButton: true }, ...selectedImages]
       : selectedImages;
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -237,7 +238,7 @@ const UpdateProduct = ({navigation, route}) => {
               data={dataWithButton}
               scrollEnabled={false}
               keyExtractor={item => item?.id}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <View style={styles.imageItem}>
                   {item.isButton ? (
                     <TouchableOpacity
@@ -247,7 +248,7 @@ const UpdateProduct = ({navigation, route}) => {
                     </TouchableOpacity>
                   ) : (
                     <>
-                      <Image style={styles.image} source={{uri: item?.uri}} />
+                      <Image style={styles.image} source={{ uri: item?.uri }} />
                       <TouchableOpacity
                         onPress={() => {
                           console.log(item), handleDeleteImage(item?.id);
@@ -289,7 +290,7 @@ const UpdateProduct = ({navigation, route}) => {
                   <MaterialIcons name={item.icon} size={25} />
                   <Text style={styles.inputLabel}>{item.label}</Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <TextInput
                     style={styles.priceAndInventoryInput}
                     maxLength={10}
@@ -298,7 +299,7 @@ const UpdateProduct = ({navigation, route}) => {
                     placeholder={`0`}
                   />
                   {item.label === 'Giá sản phẩm 🕸️' && (
-                    <Text style={{fontSize: 18}}>đ</Text>
+                    <Text style={{ fontSize: 18 }}>đ</Text>
                   )}
                 </View>
               </View>
@@ -314,7 +315,7 @@ const UpdateProduct = ({navigation, route}) => {
               });
             }}
             style={styles.nganhsp}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
               Ngành hàng sản phẩm
             </Text>
             <AntDesign name="right" size={20} />
@@ -341,7 +342,7 @@ const UpdateProduct = ({navigation, route}) => {
               });
             }}
             style={styles.nganhsp}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#000000'}}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>
               Phân loại sản phẩm{' '}
             </Text>
             <AntDesign name="right" size={20} />
@@ -351,19 +352,15 @@ const UpdateProduct = ({navigation, route}) => {
           <TouchableOpacity style={styles.button} onPress={postApi}>
             <Text style={styles.buttonText}>Lưu</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={hienthi}
-            style={[styles.button, {backgroundColor: '#000000'}]}>
-            <Text style={[styles.buttonText, {color: 'white'}]}>Hiển Thị</Text>
-          </TouchableOpacity>
+
         </View>
         <BottomSheetModal
           ref={bottomSheetModalRef}
           index={1}
           snapPoints={['1%', '50%']}
           backgroundStyle={styles.bottomSheetBackground}>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{fontSize: 20, color: 'gray', fontWeight: 'bold'}}>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 20, color: 'gray', fontWeight: 'bold' }}>
               Chọn ảnh từ
             </Text>
             <TouchableOpacity

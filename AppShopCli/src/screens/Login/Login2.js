@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -8,22 +8,23 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
-import {CheckBox} from 'react-native-elements';
-import {SIGNIN_API} from '../../config/urls';
+import { CheckBox } from 'react-native-elements';
+import { SIGNIN_API } from '../../config/urls';
 import imagePath from '../../constants/imagePath';
-import {apiPost, setItem} from '../../utils/utils';
-import {Login2Style} from './styles';
+import { apiPost, setItem } from '../../utils/utils';
+import { Login2Style } from './styles';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const isValidEmail = email => /^[A-Z0-9._%+-]+@gmail\.com$/i.test(email);
 const isValidPassword = password =>
   /^(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password);
 
-const Login2 = ({navigation}) => {
+const Login2 = ({ navigation }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,10 +47,16 @@ const Login2 = ({navigation}) => {
           password: password,
           role: 'Shop',
         });
+        console.log(res);
+        if (res.code === 403) {
+          Alert.alert(res.message);
+        } else {
+          setItem('LoginUser', { ...res.message, isChecked });
+          setButtonDisabled(false);
+          navigation.replace('BottomTab');
+        }
 
-        setItem('LoginUser', {...res.message, isChecked});
-        setButtonDisabled(false);
-        navigation.replace('BottomTab');
+
       } catch (error) {
         setError(error.message);
         setButtonDisabled(false);
@@ -64,7 +71,7 @@ const Login2 = ({navigation}) => {
       <ScrollView contentContainerStyle={Login2Style.scrollViewContainer}>
         <Text style={Login2Style.title}>Login to your Account</Text>
 
-        <View style={{marginTop: '10%'}}>
+        <View style={{ marginTop: '10%' }}>
           <InputField
             icon={<Fontisto name="email" size={25} color={'#999999'} />}
             value={email}
@@ -112,7 +119,7 @@ const Login2 = ({navigation}) => {
       <Spinner
         visible={isButtonDisabled}
         textContent={'Loading...'}
-        textStyle={{color: '#FFF'}}
+        textStyle={{ color: '#FFF' }}
       />
     </KeyboardAvoidingView>
   );
@@ -167,13 +174,13 @@ const SocialLoginButtons = () => (
   </>
 );
 
-const SocialButton = ({imageSource, onPress}) => (
+const SocialButton = ({ imageSource, onPress }) => (
   <TouchableOpacity style={Login2Style.button} onPress={onPress}>
     <Image source={imageSource} style={Login2Style.icon} />
   </TouchableOpacity>
 );
 
-const SignUpLink = ({onPress}) => (
+const SignUpLink = ({ onPress }) => (
   <View style={Login2Style.signUpLinkContainer}>
     <Text style={Login2Style.signUpLinkText}>Don't have an account? </Text>
     <Text style={Login2Style.signUpLink} onPress={onPress}>

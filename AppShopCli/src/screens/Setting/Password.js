@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,12 +10,12 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import {Input, Button, Icon} from 'react-native-elements';
-import {useNavigation} from '@react-navigation/native';
+import { Input, Button, Icon } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import imagePath from '../../constants/imagePath';
-import {apiPut} from '../../utils/utils';
-import {USER_API} from '../../config/urls';
+import { apiPut } from '../../utils/utils';
+import { USER_API } from '../../config/urls';
 
 const Password = () => {
   const navigation = useNavigation();
@@ -46,7 +46,13 @@ const Password = () => {
           newPassword,
         });
         Alert.alert('Thông báo', res?.message?.message);
+        console.log(res);
+        if (res.status === 200) {
+
+          navigation.goBack();
+        }
       } catch (error) {
+        setError(error);
         console.log(error);
       }
     }
@@ -67,7 +73,7 @@ const Password = () => {
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{marginHorizontal: '5%'}}>
+        contentContainerStyle={{ marginHorizontal: '5%' }}>
         <Image source={imagePath.logo} style={styles.logo} />
         {renderInput(
           'Mật khẩu cũ',
@@ -91,7 +97,7 @@ const Password = () => {
           setConfirmPassword,
         )}
         {error && (
-          <Text style={{color: 'red', marginBottom: '5%'}}>{error}</Text>
+          <Text style={{ color: 'red', marginBottom: '5%' }}>{error}</Text>
         )}
         <Button
           title="Save"
